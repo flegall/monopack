@@ -2,7 +2,6 @@ module.exports = {
   extends: [
     'standard',
     'plugin:flowtype/recommended',
-    'plugin:react/recommended',
     'prettier',
     'prettier/flowtype',
     'prettier/standard',

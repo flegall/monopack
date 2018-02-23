@@ -7,7 +7,11 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
+    "babel-core": "^6.26.0",
     "babel-eslint": "^8.1.2",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-flow": "^6.23.0",
+    "chalk": "^2.3.1",
     "eslint": "^4.14.0",
     "eslint-config-prettier": "^2.9.0",
     "eslint-config-standard": "^11.0.0-beta.0",
@@ -19,18 +23,25 @@
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
     "flow-bin": "^0.66.0",
+    "glob": "^7.1.2",
     "husky": "^0.14.3",
     "lerna": "^2.9.0",
     "lint-staged": "^7.0.0",
-    "prettier": "^1.10.2"
+    "micromatch": "^3.1.8",
+    "mkdirp": "^0.5.1",
+    "prettier": "^1.10.2",
+    "string-length": "^2.0.0"
   },
   "scripts": {
+    "build": "node scripts/build.js",
+    "watch": "node scripts/watch.js",
     "eslint": "eslint . --cache",
     "format":
       "prettier --write \"**/*.js\" \"**/*.json\" \"**/*.css\" \"**/*.md\"",
     "precommit": "lint-staged && yarn run flow && yarn test",
     "prepush": "yarn run eslint && yarn run flow && yarn test",
-    "test": "echo 'OK'"
+    "test": "echo 'OK'",
+    "postinstall": "yarn build"
   },
   "lint-staged": {
     "linters": {
