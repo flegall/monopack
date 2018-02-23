@@ -1,0 +1,9 @@
+{
+  "pinVersions": false,
+  "semanticCommits": true,
+  "extends": [":library"],
+  "automerge": true,
+  "major": {
+    "automerge": false
+  }
+}
