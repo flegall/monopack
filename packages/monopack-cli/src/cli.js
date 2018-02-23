@@ -1,2 +1,4 @@
 // @flow
-console.log('monopack ready !!');
+export function run() {
+  console.log('monopack ready !!');
+}
