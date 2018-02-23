@@ -33,15 +33,16 @@
     "string-length": "^2.0.0"
   },
   "scripts": {
+    "postinstall": "yarn build",
     "build": "node scripts/build.js",
     "watch": "node scripts/watch.js",
+    "test": "echo 'OK'",
     "eslint": "eslint . --cache",
     "format":
       "prettier --write \"**/*.js\" \"**/*.json\" \"**/*.css\" \"**/*.md\"",
     "precommit": "lint-staged && yarn run flow && yarn test",
     "prepush": "yarn run eslint && yarn run flow && yarn test",
-    "test": "echo 'OK'",
-    "postinstall": "yarn build"
+    "test": "echo 'OK'"
   },
   "lint-staged": {
     "linters": {
