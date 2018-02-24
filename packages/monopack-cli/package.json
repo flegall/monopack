@@ -7,7 +7,8 @@
   "author": "Florent Le Gall <florent.legall@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "import-local": "^1.0.0"
+    "import-local": "^1.0.0",
+    "yargs": "^11.0.0"
   },
   "bin": {
     "monopack": "./bin/monopack.js"
