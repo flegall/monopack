@@ -1,6 +1,4 @@
 {
-  "name": "monopack",
-  "version": "0.0.1",
   "description": "A JavaScript bundler for node.js monorepo applications",
   "repository": "https://github.com/flegall/monopack.git",
   "author": "Florent Le Gall <florent.legall@gmail.com>",
@@ -9,6 +7,7 @@
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.1.2",
+    "babel-jest": "^22.4.1",
     "babel-preset-env": "^1.6.1",
     "babel-preset-flow": "^6.23.0",
     "chalk": "^2.3.1",
@@ -23,8 +22,10 @@
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
     "flow-bin": "^0.66.0",
+    "flow-typed": "^2.3.0",
     "glob": "^7.1.2",
     "husky": "^0.14.3",
+    "jest": "^22.4.2",
     "lerna": "^2.9.0",
     "lint-staged": "^7.0.0",
     "micromatch": "^3.1.8",
@@ -36,13 +37,13 @@
     "postinstall": "yarn build",
     "build": "node scripts/build.js",
     "watch": "node scripts/watch.js",
-    "test": "echo 'OK'",
+    "pretest": "yarn build",
+    "test": "jest",
     "eslint": "eslint . --cache",
     "format":
       "prettier --write \"**/*.js\" \"**/*.json\" \"**/*.css\" \"**/*.md\"",
     "precommit": "lint-staged && yarn run flow && yarn test",
-    "prepush": "yarn run eslint && yarn run flow && yarn test",
-    "test": "echo 'OK'"
+    "prepush": "yarn run eslint && yarn run flow && yarn test"
   },
   "lint-staged": {
     "linters": {
