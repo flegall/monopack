@@ -1,10 +1,9 @@
 {
   "name": "monopack-process",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A JavaScript bundler for node.js monorepo applications",
   "main": "build/index.js",
   "repository": "https://github.com/flegall/monopack",
   "author": "Florent Le Gall <florent.legall@gmail.com>",
-  "license": "MIT",
-  "dependencies": {}
+  "license": "MIT"
 }
