@@ -2,15 +2,13 @@
 
 A JavaScript bundler for node.js monorepo-codebased applications.
 
-![Quality](https://img.shields.io/badge/quality-vaporware-yellow.svg)
-
-[![Build Status](https://travis-ci.org/flegall/monopack.svg?branch=master)](https://travis-ci.org/flegall/monopack)
+![Quality](https://img.shields.io/badge/quality-vaporware-yellow.svg) [![Build Status](https://travis-ci.org/flegall/monopack.svg?branch=master)](https://travis-ci.org/flegall/monopack)
 
 ## Why such a tool ?
 
 This tool comes to fill a gap for node.js developpers who :
 
-* are building node.js applications (micro-services, monolithic servers or client applications)
+* are building node.js applications (serverless functions, micro-services, monolithic servers or client applications)
 * are using a monorepo codebase.
 * are performing continuous integration/deployment.
 
@@ -19,7 +17,7 @@ Monopack aims to build **a static deterministic deliverable bundle** from your a
 It will build:
 
 * **a single main.js** file that bundles all the imported sources from the monorepo.
-* **a package.json and a yarn.lock** files including **only** the required third-party dependencies.
+* **package.json and yarn.lock** files including **only** the used third-party dependencies.
 * **optionally**: the **node_modules directory** for these dependencies.
 
 As far as I know such a tool does not exist so far.
@@ -37,7 +35,7 @@ I personally find it very practical :
   * It's easier to setup a development environment.
   * Tests across modules are ran together which finds bugs that touch multiple modules easier.
 * Median:
-  * It forces you to perform continous integration. This is generally a very good thing, but it requires some maturity within your team and your test/release process. Of course nothing forces you to perform continous integration, but I think that releasing a mono-repo without a decent automated testing strategy is quite risky !
+  * It forces you to perform continous integration. This is generally a very good thing, but it requires some maturity within your team and your test/release process. Of course a mono-repo does not force you to perform continous integration, but I think that releasing frequently from a mono-repo without a decent automated testing strategy is quite risky !
 * Cons:
   * Codebase looks more intimidating.
   * Repo is bigger in size.
@@ -52,7 +50,9 @@ The classical tooling in Node.JS is designed for delivering open-source librarie
 
 When deploying a node.js application (either within a container, or within a PAAS or on physical/virtual machine), you would like to rely on NPM/Yarn to install the application dependencies and rely on your "start" script to execute your application.
 
-But how do bundle your application from your mono-repo sources to a static deliverable package ? That's the purpose of monopack !
+But how to bundle your application from your mono-repo sources to a static deliverable package ?
+
+That's the purpose of monopack !
 
 ### Some alternatives
 
