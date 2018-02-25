@@ -1,17 +1,10 @@
 {
-  "name": "monopack-cli",
+  "name": "monopack-process",
   "version": "0.0.4",
   "description": "A JavaScript bundler for node.js monorepo applications",
   "main": "build/index.js",
   "repository": "https://github.com/flegall/monopack",
   "author": "Florent Le Gall <florent.legall@gmail.com>",
   "license": "MIT",
-  "dependencies": {
-    "import-local": "^1.0.0",
-    "monopack-process": "^0.0.4",
-    "yargs": "^11.0.0"
-  },
-  "bin": {
-    "monopack": "./bin/monopack.js"
-  }
+  "dependencies": {}
 }

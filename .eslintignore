@@ -1,3 +1,4 @@
 **/packages/*/build/**/*.js
 **/node_modules/**/*.js
+**/custom-flow-typed/**/*.js
 **/flow-typed/**/*.js

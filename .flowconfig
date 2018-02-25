@@ -4,6 +4,7 @@
 
 [libs]
 flow-typed
+custom-flow-typed
 
 [lints]
 
