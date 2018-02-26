@@ -29,7 +29,7 @@
     "jest": "22.4.2",
     "lerna": "2.9.0",
     "lint-staged": "7.0.0",
-    "micromatch": "3.1.8",
+    "micromatch": "3.1.9",
     "mkdirp": "0.5.1",
     "prettier": "1.10.2",
     "string-length": "2.0.0"
