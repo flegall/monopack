@@ -1,4 +1,5 @@
 // @flow
+import 'source-map-support/register';
 import yargs from 'yargs';
 
 export function run() {

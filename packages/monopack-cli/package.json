@@ -9,6 +9,7 @@
   "dependencies": {
     "import-local": "1.0.0",
     "monopack-process": "^0.0.7",
+    "source-map-support": "^0.5.3",
     "yargs": "11.0.0"
   },
   "bin": {

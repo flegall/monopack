@@ -28,6 +28,7 @@ const transformOptions = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '..', '.babelrc'), 'utf8')
 );
 transformOptions.babelrc = false;
+transformOptions.sourceMaps = 'true';
 
 const adjustToTerminalWidth = str => {
   const columns = process.stdout.columns || 80;
@@ -94,10 +95,21 @@ function buildFile(file, silent) {
           '\n'
       );
   } else {
-    const options = Object.assign({}, transformOptions);
+    const options = Object.assign(
+      { sourceFileName: path.relative(path.dirname(destPath), file) },
+      transformOptions
+    );
+    const sourceMapDestPath = destPath + '.map';
 
-    const transformed = babel.transformFileSync(file, options).code;
-    fs.writeFileSync(destPath, transformed);
+    const { code: transformed, map } = babel.transformFileSync(file, options);
+    fs.writeFileSync(
+      destPath,
+      transformed +
+        '\n' +
+        `//# sourceMappingURL=${path.basename(sourceMapDestPath)}` +
+        '\n'
+    );
+    fs.writeFileSync(sourceMapDestPath, JSON.stringify(map, null, 2));
     silent ||
       process.stdout.write(
         chalk.green('  \u2022 ') +
