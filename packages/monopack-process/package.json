@@ -1,6 +1,6 @@
 {
   "name": "monopack-process",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A JavaScript bundler for node.js monorepo applications",
   "main": "build/index.js",
   "repository": "https://github.com/flegall/monopack",
