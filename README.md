@@ -2,7 +2,8 @@
 
 A JavaScript bundler for node.js monorepo-codebased applications.
 
-![Quality](https://img.shields.io/badge/quality-vaporware-yellow.svg) [![Build Status](https://travis-ci.org/flegall/monopack.svg?branch=master)](https://travis-ci.org/flegall/monopack)
+[![Build Status](https://travis-ci.org/flegall/monopack.svg?branch=master)](https://travis-ci.org/flegall/monopack)
+![Quality](https://img.shields.io/badge/quality-vaporware-yellow.svg) [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 
 ## Why such a tool ?
 
