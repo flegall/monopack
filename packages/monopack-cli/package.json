@@ -1,6 +1,6 @@
 {
   "name": "monopack-cli",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A JavaScript bundler for node.js monorepo applications",
   "main": "build/index.js",
   "repository": "https://github.com/flegall/monopack",
@@ -8,7 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "import-local": "1.0.0",
-    "monopack-process": "^0.0.6",
+    "monopack-process": "^0.0.7",
     "yargs": "11.0.0"
   },
   "bin": {

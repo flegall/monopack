@@ -1,6 +1,6 @@
 {
   "name": "monopack-config",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A JavaScript bundler for node.js monorepo applications",
   "main": "build/index.js",
   "repository": "https://github.com/flegall/monopack",
