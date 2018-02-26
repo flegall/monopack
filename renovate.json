@@ -1,6 +1,6 @@
 {
   "extends": ["config:base"],
-  "pinVersions": false,
+  "pinVersions": true,
   "semanticCommits": true,
   "automerge": true,
   "major": {
