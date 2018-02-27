@@ -5,6 +5,8 @@ export type MonopackConfig = {
   babelConfigModifier: Object => Object,
 };
 
-export async function getMonopackConfig(path: string): Promise<MonopackConfig> {
+export async function getMonopackConfig(
+  mainFilePath: string
+): Promise<MonopackConfig> {
   throw new Error();
 }

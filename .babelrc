@@ -9,5 +9,6 @@
       }
     ],
     "flow"
-  ]
+  ],
+  "plugins": ["transform-class-properties"]
 }

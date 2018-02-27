@@ -1,12 +1,12 @@
 {
-  "name": "monopack-config",
+  "name": "monopack-repo-builder",
   "version": "0.0.7",
   "description": "A JavaScript bundler for node.js monorepo applications",
   "main": "build/index.js",
   "repository": "https://github.com/flegall/monopack",
   "author": "Florent Le Gall <florent.legall@gmail.com>",
   "license": "MIT",
-  "devDependencies": {
-    "monopack-repo-builder": "^0.0.7"
+  "dependencies": {
+    "tmp-promise": "1.0.4"
   }
 }

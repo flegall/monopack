@@ -1,8 +1,14 @@
 // @flow
+import { aMonorepo, aPackage } from 'monopack-repo-builder';
 
 describe('getMonopackConfig', () => {
   it(`when a local .monopack.config.js is present,
-    it should use it ever if there are top-level config files`, () => {});
+    it should use it even if there are top-level config files`, async () => {
+    await aMonorepo()
+      .withDefaultConfigFile()
+      .withPackages(aPackage().withDefaultConfigFile())
+      .then(async monorepo => {});
+  });
   it(`when no local config is present if a top-level .monopack.config.js is present,
      it should use it`, () => {});
   it(`when no file exists if there is a lerna.json file upwards,
