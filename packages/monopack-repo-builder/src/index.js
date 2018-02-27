@@ -1,9 +1,23 @@
 // @flow
+import fs from 'fs';
+
+import Bluebird from 'bluebird';
 import tmp from 'tmp-promise';
+
+const writeFile: (
+  string | Buffer | number,
+  string | Buffer | Uint8Array,
+  Object | string | void
+) => Promise<void> = Bluebird.promisify(fs.writeFile);
+
+const mkdir: (
+  string | Buffer | URL,
+  number | void
+) => Promise<void> = Bluebird.promisify(fs.mkdir);
 
 let repositoryCount = 0;
 
-opaque type Dir = { cleanup: () => any };
+opaque type Dir = { path: string, cleanup: () => any };
 
 type Monorepo = {
   root: string,
@@ -12,7 +26,7 @@ type Monorepo = {
 };
 
 class Package {
-  name: null | string = `package-${repositoryCount++}`;
+  name: string = `package-${repositoryCount++}`;
   configFile: null | (() => string) = null;
   packages: Package[] = [];
 
@@ -22,7 +36,12 @@ class Package {
   }
 
   withDefaultConfigFile(): this {
-    this.configFile = () => 'module.exports = {}';
+    this.configFile = () => 'module.exports = {};';
+    return this;
+  }
+
+  withConfigFile(configFileContent: string): this {
+    this.configFile = () => configFileContent;
     return this;
   }
 
@@ -31,23 +50,49 @@ class Package {
     return this;
   }
 
-  async then(actionOnMonorepo: Monorepo => Promise<void>): Promise<void> {
-    const monorepo = await this._build();
+  async execute(actionOnMonorepo: Monorepo => Promise<void>): Promise<void> {
+    const dir = await this._createTempDir();
+    const monorepo = await this._buildPackage(dir.path, dir);
     try {
       await actionOnMonorepo(monorepo);
     } finally {
-      await this._cleanup(monorepo);
+      await this._cleanup(dir);
     }
   }
 
-  async _build(): Promise<Monorepo> {
-    const dir = await tmp.dir();
-    const { path } = dir;
-    return { root: path, packages: [], dir };
+  _createTempDir(): Promise<Dir> {
+    return tmp.dir({ unsafeCleanup: true });
   }
 
-  async _cleanup(monorepo: Monorepo): Promise<void> {
-    await monorepo.dir.cleanup();
+  async _buildPackage(path: string, dir: Dir): Promise<Monorepo> {
+    await writeFile(
+      path + '/package.json',
+      `{
+      "name": "${this.name}",
+      "private": true
+    }`
+    );
+
+    if (this.configFile) {
+      await writeFile(path + '/monopack.config.js', this.configFile());
+    }
+
+    if (this.packages.length > 0) {
+      await mkdir(path + '/packages');
+    }
+    const packages = [];
+    for (const pkg of this.packages) {
+      const packagePath = path + '/packages/' + pkg.name;
+      await mkdir(packagePath);
+      await pkg._buildPackage(packagePath, dir);
+      packages.push(packagePath);
+    }
+
+    return { root: path, packages, dir };
+  }
+
+  async _cleanup(dir: Dir): Promise<void> {
+    await dir.cleanup();
   }
 }
 

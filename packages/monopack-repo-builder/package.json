@@ -7,6 +7,7 @@
   "author": "Florent Le Gall <florent.legall@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "bluebird": "^3.5.1",
     "tmp-promise": "1.0.4"
   }
 }

@@ -8,5 +8,8 @@
   "license": "MIT",
   "devDependencies": {
     "monopack-repo-builder": "^0.0.8"
+  },
+  "dependencies": {
+    "tcomb-validation": "^3.4.1"
   }
 }
