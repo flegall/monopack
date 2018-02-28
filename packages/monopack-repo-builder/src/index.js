@@ -28,20 +28,41 @@ type Monorepo = {
 class Package {
   name: string = `package-${repositoryCount++}`;
   configFile: null | (() => string) = null;
+  lernaJsonfile: null | (() => string) = null;
   packages: Package[] = [];
+  useWorkspaces: boolean = false;
 
   named(name: string): this {
     this.name = name;
     return this;
   }
 
-  withDefaultConfigFile(): this {
+  withEmptyConfigFile(): this {
     this.configFile = () => 'module.exports = {};';
     return this;
   }
 
   withConfigFile(configFileContent: string): this {
     this.configFile = () => configFileContent;
+    return this;
+  }
+
+  withLernaJsonFile(): this {
+    this.lernaJsonfile = () => `{
+      "lerna": "2.9.0",
+      "packages": [
+        "packages/*"
+      ],
+      "version": "0.0.9",
+      "npmClient": "yarn",
+      "useWorkspaces": true
+    }
+`;
+    return this;
+  }
+
+  withWorkspacesEnabled(): this {
+    this.useWorkspaces = true;
     return this;
   }
 
@@ -65,16 +86,24 @@ class Package {
   }
 
   async _buildPackage(path: string, dir: Dir): Promise<Monorepo> {
-    await writeFile(
-      path + '/package.json',
-      `{
-      "name": "${this.name}",
-      "private": true
-    }`
-    );
+    const packageJsonContent = this.useWorkspaces
+      ? `{
+    "name": "${this.name}",
+    "private": true,
+    "workspaces": ["packages/*"]
+  }`
+      : `{
+    "name": "${this.name}",
+    "private": true
+  }`;
+    await writeFile(path + '/package.json', packageJsonContent);
 
     if (this.configFile) {
       await writeFile(path + '/monopack.config.js', this.configFile());
+    }
+
+    if (this.lernaJsonfile) {
+      await writeFile(path + '/lerna.json', this.lernaJsonfile());
     }
 
     if (this.packages.length > 0) {
