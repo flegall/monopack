@@ -1,6 +1,17 @@
 // @flow
+import path from 'path';
+
 import 'source-map-support/register';
 import yargs from 'yargs';
+
+import { main } from './main';
+
+export type MonopackArgs = {
+  command: 'build' | 'run' | 'debug',
+  mainJs: string,
+  outputDirectory: string | null,
+  watch: boolean,
+};
 
 export function run() {
   const commandOption = yargs => {
@@ -27,5 +38,17 @@ export function run() {
       nargs: 1,
     })
     .strict();
-  console.log(argv);
+
+  const mainJs = path.join(process.cwd(), argv.main);
+  const args: MonopackArgs = {
+    command: argv._[0],
+    mainJs,
+    outputDirectory: argv['out-dir'] || null,
+    watch: argv.watch,
+  };
+
+  main(args).catch(error => {
+    console.log(error);
+    process.exit(1);
+  });
 }
