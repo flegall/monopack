@@ -1,23 +1,38 @@
 // @flow
-import chalk from 'chalk';
-import { getMonopackConfig } from 'monopack-config';
+import path from 'path';
 
-import type { MonopackArgs } from './cli';
+import chalk from 'chalk';
+import type { MonopackBuilderParams } from 'monopack-builder';
+import { getMonopackConfig } from 'monopack-config';
+import tmp from 'tmp-promise';
+
+export type MonopackArgs = {
+  command: 'build' | 'run' | 'debug',
+  mainJs: string,
+  outputDirectory: string | null,
+  watch: boolean,
+  println: string => void,
+  currentWorkingDirectory: string,
+};
 
 export async function main({
   command,
   mainJs,
   watch,
   outputDirectory,
+  println,
+  currentWorkingDirectory,
 }: MonopackArgs): Promise<void> {
   const version = require('../package.json').version;
-  process.stdout.write(chalk.white('=>> monopack v' + version) + '\n');
-  process.stdout.write(
+  const mainJsFullPath = path.join(currentWorkingDirectory, mainJs);
+
+  println(chalk.white('=>> monopack v' + version) + '\n');
+  println(
     chalk.white('=>> monopack') +
       ' ' +
       chalk.red(command) +
       ' ' +
-      chalk.cyan(mainJs) +
+      chalk.cyan(mainJsFullPath) +
       ' ' +
       (watch ? chalk.blue('--watch') : '') +
       ' ' +
@@ -25,13 +40,29 @@ export async function main({
       ' ' +
       '\n'
   );
+  const monopackConfig = getMonopackConfig(mainJsFullPath);
 
-  const monopackConfig = getMonopackConfig(mainJs);
+  const builderParams: MonopackBuilderParams = {
+    ...monopackConfig,
+    mainJs: mainJsFullPath,
+    outputDirectory: outputDirectory
+      ? path.join(currentWorkingDirectory, outputDirectory)
+      : (await tmp.dir()).path,
+    println,
+  };
 
-  process.stdout.write(
-    chalk.white('=>> monopack is using monorepo root:') +
+  println(
+    chalk.white('=>> monopack is using monorepo root') +
       ' ' +
       chalk.green(monopackConfig.monorepoRootPath) +
+      ' ' +
+      '\n'
+  );
+
+  println(
+    chalk.white('=>> monopack will build a main.js into') +
+      ' ' +
+      chalk.green(builderParams.outputDirectory) +
       ' ' +
       '\n'
   );

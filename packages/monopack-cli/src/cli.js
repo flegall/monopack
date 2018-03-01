@@ -1,17 +1,8 @@
 // @flow
-import path from 'path';
-
 import 'source-map-support/register';
 import yargs from 'yargs';
 
-import { main } from './main';
-
-export type MonopackArgs = {
-  command: 'build' | 'run' | 'debug',
-  mainJs: string,
-  outputDirectory: string | null,
-  watch: boolean,
-};
+import { main, type MonopackArgs } from './main';
 
 export function run() {
   const commandOption = yargs => {
@@ -39,12 +30,16 @@ export function run() {
     })
     .strict();
 
-  const mainJs = path.join(process.cwd(), argv.main);
+  const mainJs = argv.main;
   const args: MonopackArgs = {
     command: argv._[0],
     mainJs,
     outputDirectory: argv['out-dir'] || null,
     watch: argv.watch,
+    println: text => {
+      process.stdout.write(text);
+    },
+    currentWorkingDirectory: process.cwd(),
   };
 
   main(args).catch(error => {
