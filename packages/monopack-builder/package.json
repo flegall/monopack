@@ -7,6 +7,6 @@
   "author": "Florent Le Gall <florent.legall@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "webpack": "^4.0.1"
+    "webpack": "4.0.1"
   }
 }
