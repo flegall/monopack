@@ -10,15 +10,12 @@ export type MonopackBuilderParams = {
   +println: string => void,
 };
 
-export type MonopackBuilderResults = {
-  +outputDirectory: string,
-};
-
 export function build({
   mainJs,
   outputDirectory,
   webpackConfigModifier,
-}: MonopackBuilderParams): Promise<MonopackBuilderResults> {
+  println,
+}: MonopackBuilderParams): Promise<void> {
   return new Promise((resolve, reject) => {
     const baseWebPackConfig = {
       entry: mainJs,
@@ -26,9 +23,19 @@ export function build({
         path: outputDirectory,
         filename: 'main.js',
       },
+      mode: 'production',
+      devtool: 'source-map',
     };
     const modifiedWebPackConfig = webpackConfigModifier(baseWebPackConfig);
-    webpack(modifiedWebPackConfig || baseWebPackConfig);
-    resolve({ outputDirectory: '' });
+    webpack(modifiedWebPackConfig || baseWebPackConfig, (err, stats) => {
+      if (err) {
+        reject(err);
+      }
+      if (stats.hasErrors()) {
+        reject(new Error('Compilation failed' + stats.toString()));
+      }
+      println(stats.toString());
+      resolve();
+    });
   });
 }

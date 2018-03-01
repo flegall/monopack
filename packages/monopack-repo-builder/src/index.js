@@ -1,5 +1,6 @@
 // @flow
 import fs from 'fs';
+import path from 'path';
 
 import Bluebird from 'bluebird';
 import tmp from 'tmp-promise';
@@ -31,6 +32,7 @@ class Package {
   lernaJsonfile: null | (() => string) = null;
   packages: Package[] = [];
   useWorkspaces: boolean = false;
+  sources: { [string]: () => string } = {};
 
   named(name: string): this {
     this.name = name;
@@ -71,6 +73,11 @@ class Package {
     return this;
   }
 
+  withSource(sourceFileName: string, sourceContent: string): this {
+    this.sources[sourceFileName] = () => sourceContent;
+    return this;
+  }
+
   async execute(actionOnMonorepo: Monorepo => Promise<void>): Promise<void> {
     const dir = await this._createTempDir();
     const monorepo = await this._buildPackage(dir.path, dir);
@@ -85,7 +92,7 @@ class Package {
     return tmp.dir({ unsafeCleanup: true });
   }
 
-  async _buildPackage(path: string, dir: Dir): Promise<Monorepo> {
+  async _buildPackage(packagePath: string, dir: Dir): Promise<Monorepo> {
     const packageJsonContent = this.useWorkspaces
       ? `{
     "name": "${this.name}",
@@ -96,28 +103,37 @@ class Package {
     "name": "${this.name}",
     "private": true
   }`;
-    await writeFile(path + '/package.json', packageJsonContent);
+    await writeFile(path.join(packagePath, 'package.json'), packageJsonContent);
 
     if (this.configFile) {
-      await writeFile(path + '/monopack.config.js', this.configFile());
+      const { configFile } = this;
+      await writeFile(
+        path.join(packagePath, '/monopack.config.js'),
+        configFile()
+      );
     }
 
     if (this.lernaJsonfile) {
-      await writeFile(path + '/lerna.json', this.lernaJsonfile());
+      const { lernaJsonfile } = this;
+      await writeFile(path.join(packagePath, '/lerna.json'), lernaJsonfile());
+    }
+
+    for (const source in this.sources) {
+      await writeFile(path.join(packagePath, source), this.sources[source]());
     }
 
     if (this.packages.length > 0) {
-      await mkdir(path + '/packages');
+      await mkdir(path.join(packagePath, 'packages'));
     }
     const packages = [];
     for (const pkg of this.packages) {
-      const packagePath = path + '/packages/' + pkg.name;
-      await mkdir(packagePath);
-      await pkg._buildPackage(packagePath, dir);
-      packages.push(packagePath);
+      const subPackagePath = path.join(packagePath, '/packages/', pkg.name);
+      await mkdir(subPackagePath);
+      await pkg._buildPackage(subPackagePath, dir);
+      packages.push(subPackagePath);
     }
 
-    return { root: path, packages, dir };
+    return { root: packagePath, packages, dir };
   }
 
   async _cleanup(dir: Dir): Promise<void> {

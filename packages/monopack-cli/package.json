@@ -12,11 +12,15 @@
     "monopack-builder": "^0.0.13",
     "monopack-config": "^0.0.10",
     "monopack-process": "^0.0.7",
+    "monopack-repo-builder": "^0.0.10",
     "source-map-support": "0.5.3",
     "tmp-promise": "1.0.4",
     "yargs": "11.0.0"
   },
   "bin": {
     "monopack": "./bin/monopack.js"
+  },
+  "devDependencies": {
+    "monopack-repo-builder": "^0.0.10"
   }
 }

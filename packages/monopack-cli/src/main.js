@@ -2,7 +2,7 @@
 import path from 'path';
 
 import chalk from 'chalk';
-import type { MonopackBuilderParams } from 'monopack-builder';
+import { build, type MonopackBuilderParams } from 'monopack-builder';
 import { getMonopackConfig } from 'monopack-config';
 import tmp from 'tmp-promise';
 
@@ -66,4 +66,8 @@ export async function main({
       ' ' +
       '\n'
   );
+
+  await build(builderParams);
+
+  println(chalk.green('=>> monopack successfully packaged your app !') + '\n');
 }
