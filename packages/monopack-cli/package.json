@@ -7,7 +7,7 @@
   "author": "Florent Le Gall <florent.legall@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "chalk": "2.3.1",
+    "chalk": "2.3.2",
     "import-local": "1.0.0",
     "monopack-builder": "^0.0.14",
     "monopack-config": "^0.0.14",
