@@ -25,6 +25,30 @@ export function build({
       },
       mode: 'production',
       devtool: 'source-map',
+      module: {
+        rules: [
+          {
+            test: /\.js$/,
+            exclude: /(node_modules)/,
+            use: {
+              loader: 'babel-loader',
+              options: {
+                presets: [
+                  [
+                    require.resolve('babel-preset-env'),
+                    {
+                      targets: {
+                        node: '6.10',
+                      },
+                      modules: false,
+                    },
+                  ],
+                ],
+              },
+            },
+          },
+        ],
+      },
     };
     const modifiedWebPackConfig = webpackConfigModifier(baseWebPackConfig);
     webpack(modifiedWebPackConfig || baseWebPackConfig, (err, stats) => {
