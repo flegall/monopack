@@ -1,6 +1,7 @@
 // @flow
 import { expect } from 'chai';
 import { executeChildProcess } from 'monopack-process';
+import type { ExitOrSignal } from 'monopack-process';
 import { aMonorepo } from 'monopack-repo-builder';
 
 import { main } from '../main';
@@ -19,24 +20,8 @@ describe('monopack build', () => {
         .withEmptyConfigFile()
         .withSource('main.js', `console.log('ok');`)
         .execute(async ({ root }) => {
-          let buffer = '';
-
           // when
-          await main({
-            watch: false,
-            println: content => {
-              buffer = buffer + content;
-            },
-            outputDirectory: './build',
-            mainJs: 'main.js',
-            currentWorkingDirectory: root,
-            command: 'build',
-          });
-          const { result, stdout, stderr } = await executeChildProcess(
-            'node',
-            ['./build/main.js'],
-            { cwd: root }
-          );
+          const { buffer, result, stdout, stderr } = await buildAndRun(root);
 
           // then
           expect(buffer).to.include('monopack successfully packaged your app');
@@ -66,24 +51,8 @@ describe('monopack build', () => {
         `
         )
         .execute(async ({ root }) => {
-          let buffer = '';
-
           // when
-          await main({
-            watch: false,
-            println: content => {
-              buffer = buffer + content;
-            },
-            outputDirectory: './build',
-            mainJs: 'main.js',
-            currentWorkingDirectory: root,
-            command: 'build',
-          });
-          const { result, stdout, stderr } = await executeChildProcess(
-            'node',
-            ['./build/main.js'],
-            { cwd: root }
-          );
+          const { buffer, result, stdout, stderr } = await buildAndRun(root);
 
           // then
           expect(buffer).to.include('monopack successfully packaged your app');
@@ -104,3 +73,30 @@ describe('monopack build', () => {
     it('should build a js file, watch for file changes and rebuild on file changes', async () => {});
   });
 });
+
+async function buildAndRun(
+  root: string
+): Promise<{
+  buffer: string,
+  result: ExitOrSignal,
+  stdout: string,
+  stderr: string,
+}> {
+  let buffer = '';
+  await main({
+    watch: false,
+    println: content => {
+      buffer = buffer + content;
+    },
+    outputDirectory: './build',
+    mainJs: 'main.js',
+    currentWorkingDirectory: root,
+    command: 'build',
+  });
+  const { result, stdout, stderr } = await executeChildProcess(
+    'node',
+    ['./build/main.js'],
+    { cwd: root }
+  );
+  return { buffer, result, stdout, stderr };
+}

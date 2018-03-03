@@ -14,7 +14,7 @@ type ExecuteChildProcessOptions = {
   uid?: number,
   gid?: number,
 };
-type ExitOrSignal =
+export type ExitOrSignal =
   | { type: 'EXIT', exitCode: number }
   | { type: 'SIGNAL', signal: string };
 type ExecuteChildResult = {
