@@ -14,9 +14,24 @@ export function build({
   mainJs,
   outputDirectory,
   webpackConfigModifier,
+  babelConfigModifier,
   println,
 }: MonopackBuilderParams): Promise<void> {
   return new Promise((resolve, reject) => {
+    const baseBabelConfig = {
+      presets: [
+        [
+          require.resolve('babel-preset-env'),
+          {
+            targets: {
+              node: '6.10',
+            },
+            modules: false,
+          },
+        ],
+      ],
+    };
+    const modifiedBabelConfig = babelConfigModifier(baseBabelConfig);
     const baseWebPackConfig = {
       entry: mainJs,
       output: {
@@ -32,19 +47,7 @@ export function build({
             exclude: /(node_modules)/,
             use: {
               loader: 'babel-loader',
-              options: {
-                presets: [
-                  [
-                    require.resolve('babel-preset-env'),
-                    {
-                      targets: {
-                        node: '6.10',
-                      },
-                      modules: false,
-                    },
-                  ],
-                ],
-              },
+              options: modifiedBabelConfig || baseBabelConfig,
             },
           },
         ],

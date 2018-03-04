@@ -9,5 +9,8 @@
   "dependencies": {
     "bluebird": "3.5.1",
     "tmp-promise": "1.0.4"
+  },
+  "devDependencies": {
+    "monopack-process": "^0.0.7"
   }
 }

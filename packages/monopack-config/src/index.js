@@ -58,8 +58,8 @@ function buildConfigFromConfigFile(configFile: string): MonopackConfig {
     monorepoRootPath: monorepoRootPath
       ? path.resolve(path.dirname(configFile), monorepoRootPath)
       : lookupMonorepoRoot(configFile),
-    webpackConfigModifier: config.babelConfigModifier || identity,
-    babelConfigModifier: config.webpackConfigModifier || identity,
+    webpackConfigModifier: config.webpackConfigModifier || identity,
+    babelConfigModifier: config.babelConfigModifier || identity,
   };
 }
 

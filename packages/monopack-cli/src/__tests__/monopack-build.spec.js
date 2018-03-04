@@ -8,9 +8,9 @@ import { main } from '../main';
 
 describe('monopack build', () => {
   describe('validation', () => {
-    it('should reject building a non-existing file', async () => {});
+    xit('should reject building a non-existing file', async () => {});
 
-    it('should reject building a file outside the monorepo', async () => {});
+    xit('should reject building a file outside the monorepo', async () => {});
   });
   describe('command', () => {
     it('should build a js file at the top of the monorepo', async () => {
@@ -62,15 +62,66 @@ describe('monopack build', () => {
         });
     });
 
-    it('should build a js file using another package from the monorepo', async () => {});
+    it('should build a js file written using custom babel config at the top of the monorepo', async () => {
+      // given
+      await aMonorepo()
+        .named('root')
+        .withConfigFile(
+          `module.exports = {
+          babelConfigModifier: () => ({
+            presets: [
+              [
+                'env',
+                {
+                  targets: {
+                    node: '6.10',
+                  },
+                  modules: false,
+                },
+              ],
+              'flow',
+            ],
+          }),
+        };`
+        )
+        .withDevDependencies({
+          'babel-core': '^6.26.0',
+          'babel-loader': '^7.1.2',
+          'babel-preset-env': '^1.6.1',
+          'babel-preset-flow': '^6.23.0',
+        })
+        .withSource(
+          'main.js',
+          `
+            // @flow
+            type Something = number;
+            function doSomething(something: Something): Something {
+              return something + something;
+            }
+            console.log(doSomething(5));
+        `
+        )
+        .execute(async ({ root }) => {
+          // when
+          const { buffer, result, stdout, stderr } = await buildAndRun(root);
 
-    it('should build a js file using a third-party package', async () => {});
+          // then
+          expect(buffer).to.include('monopack successfully packaged your app');
+          expect(result).to.deep.equal({ type: 'EXIT', exitCode: 0 });
+          expect(stdout).to.equal('10\n');
+          expect(stderr).to.equal('');
+        });
+    });
 
-    it('should build a js file using a nodejs module', async () => {});
+    xit('should build a js file using another package from the monorepo', async () => {});
 
-    it('should build a js file to a temp directory', async () => {});
+    xit('should build a js file using a third-party package', async () => {});
 
-    it('should build a js file, watch for file changes and rebuild on file changes', async () => {});
+    xit('should build a js file using a nodejs module', async () => {});
+
+    xit('should build a js file to a temp directory', async () => {});
+
+    xit('should build a js file, watch for file changes and rebuild on file changes', async () => {});
   });
 });
 

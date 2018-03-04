@@ -5,6 +5,8 @@ import path from 'path';
 import Bluebird from 'bluebird';
 import tmp from 'tmp-promise';
 
+import { executeChildProcessOrFail } from 'monopack-process';
+
 const writeFile: (
   string | Buffer | number,
   string | Buffer | Uint8Array,
@@ -32,6 +34,8 @@ class Package {
   lernaJsonfile: null | (() => string) = null;
   packages: Package[] = [];
   useWorkspaces: boolean = false;
+  dependencies: { [string]: string } = {};
+  devDependencies: { [string]: string } = {};
   sources: { [string]: () => string } = {};
 
   named(name: string): this {
@@ -40,7 +44,7 @@ class Package {
   }
 
   withEmptyConfigFile(): this {
-    this.configFile = () => 'module.exports = {};';
+    this.configFile = () => `module.exports = {};`;
     return this;
   }
 
@@ -65,6 +69,16 @@ class Package {
 
   withWorkspacesEnabled(): this {
     this.useWorkspaces = true;
+    return this;
+  }
+
+  withDependencies(dependencies: { [string]: string }): this {
+    this.dependencies = dependencies;
+    return this;
+  }
+
+  withDevDependencies(devDependencies: { [string]: string }): this {
+    this.devDependencies = devDependencies;
     return this;
   }
 
@@ -93,17 +107,34 @@ class Package {
   }
 
   async _buildPackage(packagePath: string, dir: Dir): Promise<Monorepo> {
-    const packageJsonContent = this.useWorkspaces
-      ? `{
-    "name": "${this.name}",
-    "private": true,
-    "workspaces": ["packages/*"]
-  }`
-      : `{
-    "name": "${this.name}",
-    "private": true
-  }`;
-    await writeFile(path.join(packagePath, 'package.json'), packageJsonContent);
+    const packageJsonContent: {
+      name: string,
+      private: true,
+      workspaces?: string[],
+      dependencies: { [string]: string },
+      devDependencies: { [string]: string },
+    } = {
+      name: this.name,
+      private: true,
+      dependencies: this.dependencies,
+      devDependencies: this.devDependencies,
+    };
+    if (this.useWorkspaces) {
+      packageJsonContent.workspaces = ['packages/*'];
+    }
+
+    await writeFile(
+      path.join(packagePath, 'package.json'),
+      JSON.stringify(packageJsonContent, null, 2)
+    );
+
+    if (
+      Object.keys(packageJsonContent.dependencies).length > 0 ||
+      Object.keys(packageJsonContent.devDependencies).length > 0
+    )
+      await executeChildProcessOrFail('yarn', [], {
+        cwd: packagePath,
+      });
 
     if (this.configFile) {
       const { configFile } = this;
