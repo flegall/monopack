@@ -34,9 +34,8 @@ describe('monopack build', () => {
           }
         });
     });
-
-    xit('should reject building a file outside the monorepo', async () => {});
   });
+
   describe('command', () => {
     it('should build a js file at the top of the monorepo', async () => {
       // given
