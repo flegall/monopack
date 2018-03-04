@@ -2,7 +2,7 @@
 import { expect } from 'chai';
 import { executeChildProcess } from 'monopack-process';
 import type { ExitOrSignal } from 'monopack-process';
-import { aMonorepo } from 'monopack-repo-builder';
+import { aMonorepo, aPackage } from 'monopack-repo-builder';
 
 import { main } from '../main';
 
@@ -45,13 +45,17 @@ describe('monopack build', () => {
         .withSource('main.js', `console.log('ok');`)
         .execute(async ({ root }) => {
           // when
-          const { output, result, stdout, stderr } = await buildAndRun(
-            root,
-            'main.js'
-          );
+          const {
+            compilationOutput,
+            result,
+            stdout,
+            stderr,
+          } = await buildAndRun(root, 'main.js');
 
           // then
-          expect(output).to.include('monopack successfully packaged your app');
+          expect(compilationOutput).to.include(
+            'monopack successfully packaged your app'
+          );
           expect(result).to.deep.equal({ type: 'EXIT', exitCode: 0 });
           expect(stdout).to.equal('ok\n');
           expect(stderr).to.equal('');
@@ -79,13 +83,17 @@ describe('monopack build', () => {
         )
         .execute(async ({ root }) => {
           // when
-          const { output, result, stdout, stderr } = await buildAndRun(
-            root,
-            'main.js'
-          );
+          const {
+            compilationOutput,
+            result,
+            stdout,
+            stderr,
+          } = await buildAndRun(root, 'main.js');
 
           // then
-          expect(output).to.include('monopack successfully packaged your app');
+          expect(compilationOutput).to.include(
+            'monopack successfully packaged your app'
+          );
           expect(result).to.deep.equal({ type: 'EXIT', exitCode: 0 });
           expect(stdout).to.equal('ok\n');
           expect(stderr).to.equal('');
@@ -133,20 +141,72 @@ describe('monopack build', () => {
         )
         .execute(async ({ root }) => {
           // when
-          const { output, result, stdout, stderr } = await buildAndRun(
-            root,
-            'main.js'
-          );
+          const {
+            compilationOutput,
+            result,
+            stdout,
+            stderr,
+          } = await buildAndRun(root, 'main.js');
 
           // then
-          expect(output).to.include('monopack successfully packaged your app');
+          expect(compilationOutput).to.include(
+            'monopack successfully packaged your app'
+          );
           expect(result).to.deep.equal({ type: 'EXIT', exitCode: 0 });
           expect(stdout).to.equal('10\n');
           expect(stderr).to.equal('');
         });
     });
 
-    xit('should build a js file using another package from the monorepo', async () => {});
+    it('should build a js file using another package from the monorepo', async () => {
+      // given
+      await aMonorepo()
+        .named('root')
+        .withEmptyConfigFile()
+        .withWorkspacesEnabled()
+        .withPackages(
+          aPackage()
+            .named('test-mp-main')
+            .withDependencies({
+              'test-mp-lib': '1.0.0',
+            })
+            .withSource(
+              'main.js',
+              `
+                import {lib} from 'test-mp-lib/lib';
+                lib();
+              `
+            ),
+          aPackage()
+            .named('test-mp-lib')
+            .withSource(
+              'lib.js',
+              `
+                  export function lib() {
+                    console.log('ok');
+                  }
+                `
+            )
+        )
+        .execute(async ({ root }) => {
+          console.log(root);
+          // when
+          const {
+            compilationOutput,
+            result,
+            stdout,
+            stderr,
+          } = await buildAndRun(root, './packages/test-mp-main/main.js');
+
+          // then
+          expect(compilationOutput).to.include(
+            'monopack successfully packaged your app'
+          );
+          expect(result).to.deep.equal({ type: 'EXIT', exitCode: 0 });
+          expect(stdout).to.equal('ok\n');
+          expect(stderr).to.equal('');
+        });
+    });
 
     xit('should build a js file using a third-party package', async () => {});
 
@@ -162,36 +222,36 @@ async function buildAndRun(
   root: string,
   mainJs: string
 ): Promise<{
-  output: string,
+  compilationOutput: string,
   result: ExitOrSignal,
   stdout: string,
   stderr: string,
 }> {
-  const { output } = await build(root, mainJs);
+  const { compilationOutput } = await build(root, mainJs);
   const { result, stdout, stderr } = await executeChildProcess(
     'node',
     ['./build/main.js'],
     { cwd: root }
   );
-  return { output, result, stdout, stderr };
+  return { compilationOutput, result, stdout, stderr };
 }
 
 async function build(
   root: string,
   mainJs: string
 ): Promise<{
-  output: string,
+  compilationOutput: string,
 }> {
-  let output = '';
+  let compilationOutput = '';
   await main({
     watch: false,
     println: content => {
-      output = output + content;
+      compilationOutput = compilationOutput + content;
     },
     outputDirectory: './build',
     mainJs,
     currentWorkingDirectory: root,
     command: 'build',
   });
-  return { output };
+  return { compilationOutput };
 }

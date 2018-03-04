@@ -94,7 +94,7 @@ class Package {
 
   async execute(actionOnMonorepo: Monorepo => Promise<void>): Promise<void> {
     const dir = await this._createTempDir();
-    const monorepo = await this._buildPackage(dir.path, dir);
+    const monorepo = await this._buildPackage(dir.path, dir, true);
     try {
       await actionOnMonorepo(monorepo);
     } finally {
@@ -106,14 +106,20 @@ class Package {
     return tmp.dir({ unsafeCleanup: true });
   }
 
-  async _buildPackage(packagePath: string, dir: Dir): Promise<Monorepo> {
+  async _buildPackage(
+    packagePath: string,
+    dir: Dir,
+    installDeps: boolean
+  ): Promise<Monorepo> {
     const packageJsonContent: {
+      version: string,
       name: string,
       private: true,
       workspaces?: string[],
       dependencies: { [string]: string },
       devDependencies: { [string]: string },
     } = {
+      version: '1.0.0',
       name: this.name,
       private: true,
       dependencies: this.dependencies,
@@ -127,16 +133,6 @@ class Package {
       path.join(packagePath, 'package.json'),
       JSON.stringify(packageJsonContent, null, 2)
     );
-
-    if (
-      Object.keys(packageJsonContent.dependencies).length > 0 ||
-      Object.keys(packageJsonContent.devDependencies).length > 0
-    ) {
-      const yarnCommand = process.platform === 'win32' ? 'yarn.cmd' : 'yarn';
-      await executeChildProcessOrFail(yarnCommand, [], {
-        cwd: packagePath,
-      });
-    }
 
     if (this.configFile) {
       const { configFile } = this;
@@ -162,8 +158,24 @@ class Package {
     for (const pkg of this.packages) {
       const subPackagePath = path.join(packagePath, '/packages/', pkg.name);
       await mkdir(subPackagePath);
-      await pkg._buildPackage(subPackagePath, dir);
+      await pkg._buildPackage(
+        subPackagePath,
+        dir,
+        this.useWorkspaces === false
+      );
       packages.push(subPackagePath);
+    }
+
+    if (
+      installDeps &&
+      (Object.keys(packageJsonContent.dependencies).length > 0 ||
+        Object.keys(packageJsonContent.devDependencies).length > 0 ||
+        this.useWorkspaces)
+    ) {
+      const yarnCommand = process.platform === 'win32' ? 'yarn.cmd' : 'yarn';
+      await executeChildProcessOrFail(yarnCommand, [], {
+        cwd: packagePath,
+      });
     }
 
     return { root: packagePath, packages, dir };
