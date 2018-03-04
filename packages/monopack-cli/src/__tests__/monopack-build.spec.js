@@ -189,7 +189,6 @@ describe('monopack build', () => {
             )
         )
         .execute(async ({ root }) => {
-          console.log(root);
           // when
           const {
             compilationOutput,
