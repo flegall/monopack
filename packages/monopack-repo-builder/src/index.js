@@ -131,10 +131,12 @@ class Package {
     if (
       Object.keys(packageJsonContent.dependencies).length > 0 ||
       Object.keys(packageJsonContent.devDependencies).length > 0
-    )
-      await executeChildProcessOrFail('yarn', [], {
+    ) {
+      const yarnCommand = process.platform === 'win32' ? 'yarn.cmd' : 'yarn';
+      await executeChildProcessOrFail(yarnCommand, [], {
         cwd: packagePath,
       });
+    }
 
     if (this.configFile) {
       const { configFile } = this;
