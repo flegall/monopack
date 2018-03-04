@@ -169,7 +169,6 @@ describe('getMonopackConfig() - config file validation', () => {
         }
 
         // then
-        // eslint-disable-next-line no-unused-expressions
         expect(error).to.not.be.undefined;
         if (error) {
           expect(error.message).to.have.string(
@@ -194,7 +193,6 @@ describe('getMonopackConfig() - config file validation', () => {
         }
 
         // then
-        // eslint-disable-next-line no-unused-expressions
         expect(error).to.not.be.undefined;
         if (error) {
           expect(error.message).to.have.string(
@@ -219,7 +217,6 @@ describe('getMonopackConfig() - config file validation', () => {
         }
 
         // then
-        // eslint-disable-next-line no-unused-expressions
         expect(error).to.not.be.undefined;
         if (error) {
           expect(error.message).to.have.string(

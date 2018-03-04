@@ -25,7 +25,6 @@ describe('monopack build', () => {
           }
 
           // then
-          // eslint-disable-next-line no-unused-expressions
           expect(error).not.to.be.null;
           if (error) {
             expect(error.message).to.have.string('Compilation failed');

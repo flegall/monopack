@@ -18,6 +18,7 @@ module.exports = {
   },
   rules: {
     'prettier/prettier': 'error',
+    'no-unused-expressions': 0,
   },
   globals: {},
 };
