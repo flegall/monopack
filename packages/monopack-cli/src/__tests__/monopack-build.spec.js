@@ -11,7 +11,30 @@ jest.setTimeout(30000);
 
 describe('monopack build', () => {
   describe('validation', () => {
-    xit('should reject building a non-existing file', async () => {});
+    it('should reject building a non-existing file', async () => {
+      await aMonorepo()
+        .named('root')
+        .withEmptyConfigFile()
+        .execute(async ({ root }) => {
+          // when
+          let error = null;
+          try {
+            await build(root, 'main.js');
+          } catch (e) {
+            error = e;
+          }
+
+          // then
+          // eslint-disable-next-line no-unused-expressions
+          expect(error).not.to.be.null;
+          if (error) {
+            expect(error.message).to.have.string('Compilation failed');
+            expect(error.message).to.have.string(
+              'ERROR in Entry module not found'
+            );
+          }
+        });
+    });
 
     xit('should reject building a file outside the monorepo', async () => {});
   });
@@ -24,10 +47,13 @@ describe('monopack build', () => {
         .withSource('main.js', `console.log('ok');`)
         .execute(async ({ root }) => {
           // when
-          const { buffer, result, stdout, stderr } = await buildAndRun(root);
+          const { output, result, stdout, stderr } = await buildAndRun(
+            root,
+            'main.js'
+          );
 
           // then
-          expect(buffer).to.include('monopack successfully packaged your app');
+          expect(output).to.include('monopack successfully packaged your app');
           expect(result).to.deep.equal({ type: 'EXIT', exitCode: 0 });
           expect(stdout).to.equal('ok\n');
           expect(stderr).to.equal('');
@@ -55,10 +81,13 @@ describe('monopack build', () => {
         )
         .execute(async ({ root }) => {
           // when
-          const { buffer, result, stdout, stderr } = await buildAndRun(root);
+          const { output, result, stdout, stderr } = await buildAndRun(
+            root,
+            'main.js'
+          );
 
           // then
-          expect(buffer).to.include('monopack successfully packaged your app');
+          expect(output).to.include('monopack successfully packaged your app');
           expect(result).to.deep.equal({ type: 'EXIT', exitCode: 0 });
           expect(stdout).to.equal('ok\n');
           expect(stderr).to.equal('');
@@ -106,10 +135,13 @@ describe('monopack build', () => {
         )
         .execute(async ({ root }) => {
           // when
-          const { buffer, result, stdout, stderr } = await buildAndRun(root);
+          const { output, result, stdout, stderr } = await buildAndRun(
+            root,
+            'main.js'
+          );
 
           // then
-          expect(buffer).to.include('monopack successfully packaged your app');
+          expect(output).to.include('monopack successfully packaged your app');
           expect(result).to.deep.equal({ type: 'EXIT', exitCode: 0 });
           expect(stdout).to.equal('10\n');
           expect(stderr).to.equal('');
@@ -129,28 +161,39 @@ describe('monopack build', () => {
 });
 
 async function buildAndRun(
-  root: string
+  root: string,
+  mainJs: string
 ): Promise<{
-  buffer: string,
+  output: string,
   result: ExitOrSignal,
   stdout: string,
   stderr: string,
 }> {
-  let buffer = '';
-  await main({
-    watch: false,
-    println: content => {
-      buffer = buffer + content;
-    },
-    outputDirectory: './build',
-    mainJs: 'main.js',
-    currentWorkingDirectory: root,
-    command: 'build',
-  });
+  const { output } = await build(root, mainJs);
   const { result, stdout, stderr } = await executeChildProcess(
     'node',
     ['./build/main.js'],
     { cwd: root }
   );
-  return { buffer, result, stdout, stderr };
+  return { output, result, stdout, stderr };
+}
+
+async function build(
+  root: string,
+  mainJs: string
+): Promise<{
+  output: string,
+}> {
+  let output = '';
+  await main({
+    watch: false,
+    println: content => {
+      output = output + content;
+    },
+    outputDirectory: './build',
+    mainJs,
+    currentWorkingDirectory: root,
+    command: 'build',
+  });
+  return { output };
 }

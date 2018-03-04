@@ -59,7 +59,7 @@ export function build({
         reject(err);
       }
       if (stats.hasErrors()) {
-        reject(new Error('Compilation failed' + stats.toString()));
+        reject(new Error('Compilation failed\n' + stats.toString()));
       }
       println(stats.toString());
       resolve();
