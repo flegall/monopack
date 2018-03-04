@@ -6,6 +6,9 @@ import { aMonorepo } from 'monopack-repo-builder';
 
 import { main } from '../main';
 
+// $FlowIgnore
+jest.setTimeout(30000);
+
 describe('monopack build', () => {
   describe('validation', () => {
     xit('should reject building a non-existing file', async () => {});
