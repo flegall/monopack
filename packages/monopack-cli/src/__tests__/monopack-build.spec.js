@@ -28,9 +28,7 @@ describe('monopack build', () => {
           expect(error).not.to.be.null;
           if (error) {
             expect(error.message).to.have.string('Compilation failed');
-            expect(error.message).to.have.string(
-              'ERROR in Entry module not found'
-            );
+            expect(error.message).to.have.string('entry file was not found');
           }
         });
     });
@@ -201,15 +199,36 @@ describe('monopack build', () => {
           expect(compilationOutput).to.include(
             'monopack successfully packaged your app'
           );
+          expect(stderr).to.equal('');
           expect(result).to.deep.equal({ type: 'EXIT', exitCode: 0 });
           expect(stdout).to.equal('ok\n');
+        });
+    });
+
+    it('should build a js file using a nodejs module', async () => {
+      // given
+      await aMonorepo()
+        .named('root')
+        .withEmptyConfigFile()
+        .withSource(
+          'main.js',
+          `
+            import fs from 'fs';
+            console.log(fs.existsSync(__filename));
+          `
+        )
+        .execute(async ({ root }) => {
+          // when
+          const { result, stdout, stderr } = await buildAndRun(root, 'main.js');
+
+          // then
           expect(stderr).to.equal('');
+          expect(stdout).to.equal('false\n');
+          expect(result).to.deep.equal({ type: 'EXIT', exitCode: 0 });
         });
     });
 
     xit('should build a js file using a third-party package', async () => {});
-
-    xit('should build a js file using a nodejs module', async () => {});
 
     xit('should build a js file to a temp directory', async () => {});
 

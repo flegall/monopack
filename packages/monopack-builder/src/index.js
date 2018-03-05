@@ -1,4 +1,9 @@
 // @flow
+import fs from 'fs';
+import path from 'path';
+
+import _ from 'lodash';
+import glob from 'glob-promise';
 import webpack from 'webpack';
 
 export type MonopackBuilderParams = {
@@ -10,13 +15,43 @@ export type MonopackBuilderParams = {
   +println: string => void,
 };
 
-export function build({
+export async function build({
+  monorepoRootPath,
   mainJs,
   outputDirectory,
   webpackConfigModifier,
   babelConfigModifier,
   println,
 }: MonopackBuilderParams): Promise<void> {
+  if (!fs.existsSync(mainJs)) {
+    throw new Error(`Compilation failed: ${mainJs} entry file was not found`);
+  }
+
+  const monorepoPackages = [];
+  if (fs.existsSync(path.join(monorepoRootPath, 'package.json'))) {
+    const pkg = JSON.parse(
+      fs.readFileSync(path.join(monorepoRootPath, 'package.json'), 'utf-8')
+    );
+    if (_.isArray(pkg.workspaces)) {
+      for (const subPackageGlob of pkg.workspaces) {
+        const subPackagePaths = await glob(subPackageGlob, {
+          cwd: monorepoRootPath,
+        });
+        for (const subPackagePath of subPackagePaths) {
+          const subPackageFullPath = path.join(
+            monorepoRootPath,
+            subPackagePath,
+            'package.json'
+          );
+          const subPackage = JSON.parse(
+            fs.readFileSync(subPackageFullPath, 'utf-8')
+          );
+          monorepoPackages.push(subPackage.name);
+        }
+      }
+    }
+  }
+
   return new Promise((resolve, reject) => {
     const baseBabelConfig = {
       presets: [
@@ -26,7 +61,6 @@ export function build({
             targets: {
               node: '6.10',
             },
-            modules: false,
           },
         ],
       ],
@@ -52,6 +86,28 @@ export function build({
           },
         ],
       },
+      externals: [
+        (
+          context: string,
+          request: string,
+          callback: (void | null, string | void) => void
+        ) => {
+          if (
+            request.startsWith('.') ||
+            monorepoPackages.some(monorepoPackage =>
+              request.startsWith(monorepoPackage)
+            ) ||
+            request === mainJs
+          ) {
+            // It's a local module, or
+            // it starts with one of the monorepo packages
+            // or it's out entrypoint
+            return callback();
+          } else {
+            return callback(null, 'commonjs ' + request);
+          }
+        },
+      ],
     };
     const modifiedWebPackConfig = webpackConfigModifier(baseWebPackConfig);
     webpack(modifiedWebPackConfig || baseWebPackConfig, (err, stats) => {
