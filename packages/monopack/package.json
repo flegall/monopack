@@ -1,13 +1,13 @@
 {
   "name": "monopack",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "A JavaScript bundler for node.js monorepo applications",
   "main": "build/monopack.js",
   "repository": "https://github.com/flegall/monopack",
   "author": "Florent Le Gall <florent.legall@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "monopack-cli": "^0.0.16"
+    "monopack-cli": "^0.0.17"
   },
   "bin": {
     "monopack": "./bin/monopack.js"
