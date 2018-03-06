@@ -6,6 +6,8 @@ import _ from 'lodash';
 import glob from 'glob-promise';
 import webpack from 'webpack';
 
+import { importMatcher } from './importMatcher';
+
 export type MonopackBuilderParams = {
   +monorepoRootPath: string,
   +webpackConfigModifier: Object => Object,
@@ -80,19 +82,21 @@ export async function build({
           request: string,
           callback: (void | null, string | void) => void
         ) => {
-          if (
-            request.startsWith('.') ||
-            monorepoPackages.some(monorepoPackage =>
-              request.startsWith(monorepoPackage)
-            ) ||
-            request === mainJs
-          ) {
-            // It's a local module, or
-            // it starts with one of the monorepo packages
-            // or it's out entrypoint
-            return callback();
-          } else {
-            return callback(null, 'commonjs ' + request);
+          const importMatch = importMatcher(
+            request,
+            context,
+            mainJs,
+            monorepoPackages
+          );
+          switch (importMatch.type) {
+            case 'INLINE': {
+              return callback();
+            }
+            default: {
+              // eslint-disable-next-line no-unused-vars
+              const typeCheck: 'IMPORT' = importMatch.type;
+              return callback(null, 'commonjs ' + request);
+            }
           }
         },
       ],
