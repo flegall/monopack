@@ -4,6 +4,9 @@ import { aMonorepo, aPackage } from 'monopack-repo-builder';
 
 import { getMonopackConfig } from '..';
 
+// $FlowIgnore
+jest.setTimeout(30000);
+
 describe('getMonopackConfig() - monorepo root resolution', () => {
   it(`when no local config is present if a top-level monopack.config.js is present,
      it should use it`, async () => {

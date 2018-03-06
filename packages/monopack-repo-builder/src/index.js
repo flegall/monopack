@@ -59,9 +59,8 @@ class Package {
       "packages": [
         "packages/*"
       ],
-      "version": "0.0.9",
-      "npmClient": "yarn",
-      "useWorkspaces": true
+      "version": "1.0.0",
+      "npmClient": "yarn"
     }
 `;
     return this;
@@ -125,6 +124,9 @@ class Package {
       dependencies: this.dependencies,
       devDependencies: this.devDependencies,
     };
+    if (this.lernaJsonfile) {
+      packageJsonContent.devDependencies['lerna'] = '2.9.0';
+    }
     if (this.useWorkspaces) {
       packageJsonContent.workspaces = ['packages/*'];
     }
@@ -161,7 +163,7 @@ class Package {
       await pkg._buildPackage(
         subPackagePath,
         dir,
-        this.useWorkspaces === false
+        this.useWorkspaces === false && this.lernaJsonfile === null
       );
       packages.push(subPackagePath);
     }
@@ -172,8 +174,13 @@ class Package {
         Object.keys(packageJsonContent.devDependencies).length > 0 ||
         this.useWorkspaces)
     ) {
-      const yarnCommand = process.platform === 'win32' ? 'yarn.cmd' : 'yarn';
       await executeChildProcessOrFail(yarnCommand, [], {
+        cwd: packagePath,
+      });
+    }
+
+    if (this.lernaJsonfile) {
+      await executeChildProcessOrFail(yarnCommand, ['lerna', 'bootstrap'], {
         cwd: packagePath,
       });
     }
@@ -182,7 +189,7 @@ class Package {
   }
 
   async _cleanup(dir: Dir): Promise<void> {
-    await dir.cleanup();
+    // await dir.cleanup();
   }
 }
 
@@ -193,3 +200,5 @@ export function aMonorepo(): Package {
 export function aPackage(): Package {
   return new Package();
 }
+
+const yarnCommand = process.platform === 'win32' ? 'yarn.cmd' : 'yarn';
