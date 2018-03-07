@@ -56,7 +56,7 @@ function matchPackage(request: string, packageName: string): boolean {
 }
 
 function extractPackage(request: string): string | null {
-  const regexp = /^([^/]*)\/?/;
+  const regexp = /^((@[^/]+\/)?[^/]*)\/?/;
   const result = request.match(regexp);
   if (!result || result.length < 2) {
     return null;
