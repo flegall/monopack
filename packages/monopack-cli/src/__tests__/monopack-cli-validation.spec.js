@@ -2,6 +2,9 @@
 import { expect } from 'chai';
 import { executeChildProcess } from 'monopack-process';
 
+// $FlowIgnore
+jest.setTimeout(30000);
+
 describe('monopack cli validation', () => {
   it('when invoking without arguments, it should return an error and display help', async () => {
     const { result, stdout, stderr } = await executeChildProcess(
