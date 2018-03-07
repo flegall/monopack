@@ -5,7 +5,7 @@ import path from 'path';
 import Bluebird from 'bluebird';
 import tmp from 'tmp-promise';
 
-import { executeChildProcessOrFail } from 'monopack-process';
+import { executeYarn } from 'monopack-process';
 
 const writeFile: (
   string | Buffer | number,
@@ -174,15 +174,11 @@ class Package {
         Object.keys(packageJsonContent.devDependencies).length > 0 ||
         this.useWorkspaces)
     ) {
-      await executeChildProcessOrFail(yarnCommand, [], {
-        cwd: packagePath,
-      });
+      await executeYarn(packagePath);
     }
 
     if (this.lernaJsonfile) {
-      await executeChildProcessOrFail(yarnCommand, ['lerna', 'bootstrap'], {
-        cwd: packagePath,
-      });
+      await executeYarn(packagePath, 'lerna', 'bootstrap');
     }
 
     return { root: packagePath, packages, dir };
@@ -200,5 +196,3 @@ export function aMonorepo(): Package {
 export function aPackage(): Package {
   return new Package();
 }
-
-const yarnCommand = process.platform === 'win32' ? 'yarn.cmd' : 'yarn';
