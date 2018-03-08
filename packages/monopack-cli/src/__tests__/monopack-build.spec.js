@@ -312,7 +312,7 @@ async function build(
   let compilationOutput = '';
   await main({
     watch: false,
-    println: content => {
+    print: content => {
       compilationOutput = compilationOutput + content;
     },
     outputDirectory: './build',

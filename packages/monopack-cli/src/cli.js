@@ -36,7 +36,7 @@ export function run() {
     mainJs,
     outputDirectory: argv['out-dir'] || null,
     watch: argv.watch,
-    println: text => {
+    print: text => {
       process.stdout.write(text);
     },
     currentWorkingDirectory: process.cwd(),

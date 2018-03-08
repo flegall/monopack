@@ -13,6 +13,8 @@ type ExecuteChildProcessOptions = {
   killSignal?: string,
   uid?: number,
   gid?: number,
+  outPrint?: string => void,
+  errPrint?: string => void,
 };
 export type ExitOrSignal =
   | { type: 'EXIT', exitCode: number }
@@ -26,7 +28,7 @@ export type ExecuteChildResult = {
 export async function executeChildProcessOrFail(
   file: string,
   args: string[] = [],
-  options: ExecuteChildProcessOptions = {}
+  options: $Shape<ExecuteChildProcessOptions> = {}
 ): Promise<ExecuteChildResult> {
   const { result, stdout, stderr } = await executeChildProcess(
     file,
@@ -45,16 +47,20 @@ export async function executeChildProcessOrFail(
 export async function executeChildProcess(
   file: string,
   args: string[] = [],
-  options: ExecuteChildProcessOptions = {}
+  options: $Shape<ExecuteChildProcessOptions> = {}
 ): Promise<ExecuteChildResult> {
+  const { outPrint = (_: string) => {} } = options;
+  const { errPrint = (_: string) => {} } = options;
   const child = execFile(file, args, options);
   let stdout = '';
   let stderr = '';
   child.stdout.on('data', data => {
     stdout += data;
+    outPrint(data);
   });
   child.stderr.on('data', data => {
     stderr += data;
+    errPrint(data);
   });
   const result = await promiseFromChildProcess(child);
   return { result, stdout, stderr };

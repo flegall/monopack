@@ -14,7 +14,7 @@ export type MonopackBuilderParams = {
   +babelConfigModifier: Object => Object,
   +mainJs: string,
   +outputDirectory: string,
-  +println: string => void,
+  +print: string => void,
 };
 
 export async function build({
@@ -23,7 +23,7 @@ export async function build({
   outputDirectory,
   webpackConfigModifier,
   babelConfigModifier,
-  println,
+  print,
 }: MonopackBuilderParams): Promise<void> {
   if (!fs.existsSync(mainJs)) {
     throw new Error(`Compilation failed: ${mainJs} entry file was not found`);
@@ -109,7 +109,7 @@ export async function build({
       if (stats.hasErrors()) {
         reject(new Error('Compilation failed\n' + stats.toString()));
       }
-      println(stats.toString());
+      print(stats.toString() + '\n');
       resolve();
     });
   });

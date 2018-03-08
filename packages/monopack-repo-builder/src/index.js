@@ -5,7 +5,11 @@ import path from 'path';
 import Bluebird from 'bluebird';
 import tmp from 'tmp-promise';
 
-import { executeYarn } from 'monopack-process';
+import {
+  executeChildProcessOrFail,
+  type ExecuteChildResult,
+  YARN_COMMAND,
+} from 'monopack-process';
 
 const writeFile: (
   string | Buffer | number,
@@ -195,4 +199,13 @@ export function aMonorepo(): Package {
 
 export function aPackage(): Package {
   return new Package();
+}
+
+function executeYarn(
+  cwd: string,
+  ...args: string[]
+): Promise<ExecuteChildResult> {
+  return executeChildProcessOrFail(YARN_COMMAND, args, {
+    cwd,
+  });
 }
