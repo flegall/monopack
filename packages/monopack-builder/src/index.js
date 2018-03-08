@@ -62,7 +62,7 @@ export async function build({
         path: outputDirectory,
         filename: 'main.js',
       },
-      mode: 'production',
+      mode: 'development',
       devtool: 'source-map',
       module: {
         rules: [
