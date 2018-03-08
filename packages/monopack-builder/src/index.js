@@ -100,6 +100,12 @@ export async function build({
           }
         },
       ],
+      plugins: [
+        new webpack.BannerPlugin({
+          banner: "require('source-map-support/register');\n",
+          raw: true,
+        }),
+      ],
     };
     const modifiedWebPackConfig = webpackConfigModifier(baseWebPackConfig);
     webpack(modifiedWebPackConfig || baseWebPackConfig, (err, stats) => {

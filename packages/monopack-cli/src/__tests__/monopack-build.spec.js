@@ -60,6 +60,45 @@ describe('monopack build', () => {
         });
     });
 
+    it('js files should be build with source maps', async () => {
+      // given
+      await aMonorepo()
+        .named('root')
+        .withEmptyConfigFile()
+        .withSource(
+          'main.js',
+          `
+            function action1() {
+              action2();
+            }
+            function action2() {
+              action3();
+            }
+            function action3() {
+              throw new Error('Failed from action 3');
+            }
+            action1();
+          `
+        )
+        .execute(async ({ root }) => {
+          // when
+          const {
+            compilationOutput,
+            result,
+            stdout,
+            stderr,
+          } = await buildAndRun(root, 'main.js');
+
+          // then
+          expect(compilationOutput).to.include(
+            'monopack successfully packaged your app'
+          );
+          expect(stdout).to.equal('');
+          expect(result).to.deep.equal({ type: 'EXIT', exitCode: 1 });
+          expect(stderr).to.have.string('main.js:9:21');
+        });
+    });
+
     it('should build a js file written with es features at the top of the monorepo', async () => {
       // given
       await aMonorepo()
