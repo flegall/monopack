@@ -13,6 +13,7 @@
     "lodash": "4.17.5",
     "monopack-builder": "^0.0.20",
     "monopack-config": "^0.0.20",
+    "monopack-dependency-collector": "^0.0.20",
     "monopack-process": "^0.0.20",
     "monopack-repo-builder": "^0.0.20",
     "source-map-support": "0.5.3",

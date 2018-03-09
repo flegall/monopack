@@ -15,6 +15,7 @@ export type MonopackBuilderParams = {
   +mainJs: string,
   +outputDirectory: string,
   +print: string => void,
+  +collectDependency: (context: string, dependencyName: string) => void,
 };
 
 export async function build({
@@ -24,6 +25,7 @@ export async function build({
   webpackConfigModifier,
   babelConfigModifier,
   print,
+  collectDependency,
 }: MonopackBuilderParams): Promise<void> {
   if (!fs.existsSync(mainJs)) {
     throw new Error(`Compilation failed: ${mainJs} entry file was not found`);
@@ -95,6 +97,12 @@ export async function build({
             default: {
               // eslint-disable-next-line no-unused-vars
               const typeCheck: 'IMPORT' = importMatch.type;
+              if (importMatch.externalDependency) {
+                collectDependency(
+                  importMatch.externalDependency.packageName,
+                  importMatch.externalDependency.context
+                );
+              }
               return callback(null, 'commonjs ' + request);
             }
           }

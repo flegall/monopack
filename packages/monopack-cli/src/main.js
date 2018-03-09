@@ -61,6 +61,7 @@ export async function main({
       ? path.join(currentWorkingDirectory, outputDirectory)
       : (await tmp.dir()).path,
     print,
+    collectDependency: () => {},
   };
 
   print(
