@@ -6,6 +6,9 @@ import { aMonorepo, aPackage } from 'monopack-repo-builder';
 
 import DependencyCollector from '../index';
 
+// $FlowIgnore
+jest.setTimeout(30000);
+
 describe('dependency-collector', () => {
   it('should collect a top-level dependency installed with yarn from the monorepo root', async () => {
     // given
