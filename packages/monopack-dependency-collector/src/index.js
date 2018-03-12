@@ -91,7 +91,12 @@ export default class DependencyCollector {
 
       if (await exists(yarnLockFile)) {
         const lockFileContent = await readFile(yarnLockFile, 'utf8');
-        const yarnLock = lockfile.parse(lockFileContent);
+
+        // Needs to adjust line encoding on windows :(
+        // https://github.com/yarnpkg/yarn/issues/5214#issuecomment-368274679
+        const fixedLockFileContent = lockFileContent.replace(/\r/g, '');
+
+        const yarnLock = lockfile.parse(fixedLockFileContent);
         lockFile = { dependencies: yarnLock.object };
       }
 
