@@ -8,5 +8,9 @@
   "license": "MIT",
   "devDependencies": {
     "monopack-repo-builder": "^0.0.20"
+  },
+  "dependencies": {
+    "@yarnpkg/lockfile": "^1.0.0",
+    "await-semaphore": "^0.1.3"
   }
 }
