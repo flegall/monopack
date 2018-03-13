@@ -1,6 +1,6 @@
 {
   "name": "monopack-builder",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "A JavaScript bundler for node.js monorepo applications",
   "main": "build/index.js",
   "repository": "https://github.com/flegall/monopack",
