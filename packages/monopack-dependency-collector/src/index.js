@@ -48,6 +48,7 @@ export default class DependencyCollector {
   monorepoRoot: string;
   promises: Promise<MaybeResolvedDependency>[] = [];
   yarnLockFiles: string[] = [];
+  packageJsonsByContext: { [string]: Promise<?PackageJson> } = {};
 
   constructor(monorepoRoot: string) {
     this.monorepoRoot = monorepoRoot;
@@ -95,7 +96,27 @@ export default class DependencyCollector {
   }
 
   async _getPackageJsons(context: string): Promise<PackageJson[]> {
-    const localPackageJsons: PackageJson[] = [];
+    const packageJson = await this._getPackageJsonCached(context);
+    const packageJsonsToAdd = packageJson ? [packageJson] : [];
+
+    if (context !== this.monorepoRoot) {
+      return [
+        ...packageJsonsToAdd,
+        ...(await this._getPackageJsons(path.join(context, '..'))),
+      ];
+    } else {
+      return [...packageJsonsToAdd];
+    }
+  }
+
+  _getPackageJsonCached(context: string): Promise<?PackageJson> {
+    if (!this.packageJsonsByContext[context]) {
+      this.packageJsonsByContext[context] = this._getPackageJson(context);
+    }
+    return this.packageJsonsByContext[context];
+  }
+
+  async _getPackageJson(context: string): Promise<?PackageJson> {
     const packageJsonFile = path.join(context, 'package.json');
     if (await exists(packageJsonFile)) {
       const pkgJson = JSON.parse(await readFile(packageJsonFile, 'utf8'));
@@ -117,21 +138,14 @@ export default class DependencyCollector {
         };
       }
 
-      localPackageJsons.push({
+      return {
         path: context,
         dependencies: pkgJson.dependencies,
         devDependencies: pkgJson.devDependencies,
         lockFile,
-      });
-    }
-
-    if (context !== this.monorepoRoot) {
-      return [
-        ...localPackageJsons,
-        ...(await this._getPackageJsons(path.join(context, '..'))),
-      ];
+      };
     } else {
-      return [...localPackageJsons];
+      return undefined;
     }
   }
 
