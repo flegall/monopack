@@ -189,7 +189,7 @@ class Package {
   }
 
   async _cleanup(dir: Dir): Promise<void> {
-    // await dir.cleanup();
+    await dir.cleanup();
   }
 }
 

@@ -181,6 +181,40 @@ export default class DependencyCollector {
         [string]: NotFullyResolvedDependency[],
       } = _.groupBy(notFullyResolvedDeps, ({ packageName }) => packageName);
 
+      const conflicts: Conflicts = Object.keys(
+        dependenciesByPackageName
+      ).reduce((accumulator: Conflicts, packageName) => {
+        const conflicts: Conflicts = {};
+
+        const dependencies = dependenciesByPackageName[packageName];
+        const dependenciesByDeclaredVersion: {
+          [string]: NotFullyResolvedDependency[],
+        } = _.groupBy(dependencies, ({ declaredVersion }) => declaredVersion);
+
+        if (Object.keys(dependenciesByDeclaredVersion).length > 1) {
+          const conflict = [];
+
+          for (const key in dependenciesByDeclaredVersion) {
+            const [firstDependency] = dependenciesByDeclaredVersion[key];
+            conflict.push({
+              context: firstDependency.context,
+              packageVersion: firstDependency.declaredVersion,
+            });
+          }
+
+          conflicts[packageName] = conflict;
+        }
+
+        return { ...accumulator, ...conflicts };
+      }, {});
+
+      if (Object.keys(conflicts).length > 0) {
+        return {
+          type: 'FAILURE_NEEDS_DEPENDENCY_CONFLICT_RESOLUTION',
+          conflicts,
+        };
+      }
+
       return {
         type: 'SUCCESS_NOT_DETERMINISTIC_NO_YARN_LOCKS',
         dependencies: Object.keys(dependenciesByPackageName)
@@ -236,16 +270,28 @@ export default class DependencyCollector {
       };
     }
 
+    const dependencies = Object.keys(resolvedDepsByPackageName)
+      .map(key => resolvedDepsByPackageName[key])
+      .map(([firstDependency]) => firstDependency)
+      .map(({ packageName, declaredVersion }) => ({
+        packageName,
+        version: declaredVersion,
+      }));
+
+    const yarnLockPaths: string[] = _.uniq(
+      fullyResolvedDeps.map(({ yarnLockPath }) => yarnLockPath)
+    );
+    if (yarnLockPaths.length !== 1) {
+      return {
+        type: 'SUCCESS_NOT_DETERMINISTIC_NO_YARN_LOCKS',
+        dependencies,
+      };
+    }
+
     return {
       type: 'SUCCESS_FULLY_DETERMINISTIC',
       yarnLockFileToCopy: path.join(this.monorepoRoot, 'yarn.lock'),
-      dependencies: Object.keys(resolvedDepsByPackageName)
-        .map(key => resolvedDepsByPackageName[key])
-        .map(([firstDependency]) => firstDependency)
-        .map(({ packageName, declaredVersion }) => ({
-          packageName,
-          version: declaredVersion,
-        })),
+      dependencies,
     };
   }
 }
