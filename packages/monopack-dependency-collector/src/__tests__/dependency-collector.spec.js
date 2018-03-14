@@ -335,7 +335,8 @@ describe('dependency-collector', () => {
         // then
         const result = await collector.resolveDependencies();
         expect(result).to.deep.equal({
-          type: 'SUCCESS_NOT_DETERMINISTIC_NO_YARN_LOCKS',
+          type: 'SUCCESS_NOT_DETERMINISTIC_MULTIPLE_YARN_LOCKS',
+          yarnLockFileToCopy: path.join(root, 'packages', 'sub1', 'yarn.lock'),
           dependencies: [
             {
               packageName: 'lodash',

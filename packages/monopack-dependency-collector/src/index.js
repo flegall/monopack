@@ -281,16 +281,19 @@ export default class DependencyCollector {
     const yarnLockPaths: string[] = _.uniq(
       fullyResolvedDeps.map(({ yarnLockPath }) => yarnLockPath)
     );
+    const [firstYarnLockPack] = yarnLockPaths;
+    const yarnLockFileToCopy = path.join(firstYarnLockPack, 'yarn.lock');
     if (yarnLockPaths.length !== 1) {
       return {
-        type: 'SUCCESS_NOT_DETERMINISTIC_NO_YARN_LOCKS',
+        type: 'SUCCESS_NOT_DETERMINISTIC_MULTIPLE_YARN_LOCKS',
+        yarnLockFileToCopy,
         dependencies,
       };
     }
 
     return {
       type: 'SUCCESS_FULLY_DETERMINISTIC',
-      yarnLockFileToCopy: path.join(this.monorepoRoot, 'yarn.lock'),
+      yarnLockFileToCopy,
       dependencies,
     };
   }
