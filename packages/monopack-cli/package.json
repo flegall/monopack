@@ -16,7 +16,7 @@
     "monopack-dependency-collector": "^0.0.22",
     "monopack-process": "^0.0.20",
     "monopack-repo-builder": "^0.0.22",
-    "source-map-support": "0.5.3",
+    "source-map-support": "0.5.4",
     "tmp-promise": "1.0.4",
     "yargs": "11.0.0"
   },
