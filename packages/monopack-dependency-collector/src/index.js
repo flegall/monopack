@@ -26,6 +26,7 @@ export type CollectedDependencies =
       type: 'FAILURE_UNDECLARED_DEPENDENCIES',
       undeclaredDependencies: {
         dependency: string,
+        // TODO Add context
       }[],
     }
   | {
@@ -226,7 +227,6 @@ export default class DependencyCollector {
           })),
       };
     }
-
     const fullyResolvedDeps: FullyResolvedDependency[] = (resolvedDeps.filter(
       isFullyResolved
     ): any);
@@ -281,9 +281,10 @@ export default class DependencyCollector {
     const yarnLockPaths: string[] = _.uniq(
       fullyResolvedDeps.map(({ yarnLockPath }) => yarnLockPath)
     );
-    const [firstYarnLockPack] = yarnLockPaths;
-    const yarnLockFileToCopy = path.join(firstYarnLockPack, 'yarn.lock');
-    if (yarnLockPaths.length !== 1) {
+    const yarnLockPathToCopy =
+      yarnLockPaths.length > 0 ? yarnLockPaths[0] : this.monorepoRoot;
+    const yarnLockFileToCopy = path.join(yarnLockPathToCopy, 'yarn.lock');
+    if (yarnLockPaths.length > 1) {
       return {
         type: 'SUCCESS_NOT_DETERMINISTIC_MULTIPLE_YARN_LOCKS',
         yarnLockFileToCopy,

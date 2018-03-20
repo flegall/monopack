@@ -1,4 +1,6 @@
 // @flow
+import path from 'path';
+
 import { expect } from 'chai';
 import { executeChildProcess } from 'monopack-process';
 import type { ExitOrSignal } from 'monopack-process';
@@ -316,7 +318,34 @@ describe('monopack build', () => {
         });
     });
 
-    xit('should build a js file using a third-party package', async () => {});
+    it('should build a js file using a third-party package', async () => {
+      // given
+      await aMonorepo()
+        .named('root')
+        .withEmptyConfigFile()
+        .withDependencies({ lodash: '4.17.5' })
+        .withSource(
+          'main.js',
+          `
+            import _ from 'lodash';
+            console.log(_.VERSION);
+          `
+        )
+        .execute(async ({ root }) => {
+          // when
+          const { buildDirectory } = await build(root, 'main.js', null);
+          const { result, stdout, stderr } = await executeChildProcess(
+            'node',
+            [path.join(buildDirectory, 'main.js')],
+            { cwd: root }
+          );
+
+          // then
+          expect(stderr).to.equal('');
+          expect(stdout).to.equal('4.17.5\n');
+          expect(result).to.deep.equal({ type: 'EXIT', exitCode: 0 });
+        });
+    });
 
     xit('should build a js file to a temp directory', async () => {});
 
@@ -344,20 +373,22 @@ async function buildAndRun(
 
 async function build(
   root: string,
-  mainJs: string
+  mainJs: string,
+  outputDirectory: string | null = './build'
 ): Promise<{
   compilationOutput: string,
+  buildDirectory: string,
 }> {
   let compilationOutput = '';
-  await main({
+  const { outputDirectory: buildDirectory } = await main({
     watch: false,
     print: content => {
       compilationOutput = compilationOutput + content;
     },
-    outputDirectory: './build',
+    outputDirectory,
     mainJs,
     currentWorkingDirectory: root,
     command: 'build',
   });
-  return { compilationOutput };
+  return { compilationOutput, buildDirectory };
 }

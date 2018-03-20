@@ -22,6 +22,8 @@ const mkdir: (
   number | void
 ) => Promise<void> = Bluebird.promisify(fs.mkdir);
 
+const realpath: string => Promise<string> = Bluebird.promisify(fs.realpath);
+
 let repositoryCount = 0;
 
 opaque type Dir = { path: string, cleanup: () => any };
@@ -105,8 +107,9 @@ class Package {
     }
   }
 
-  _createTempDir(): Promise<Dir> {
-    return tmp.dir({ unsafeCleanup: true });
+  async _createTempDir(): Promise<Dir> {
+    const dir = await tmp.dir({ unsafeCleanup: true });
+    return { ...dir, path: await realpath(dir.path) };
   }
 
   async _buildPackage(

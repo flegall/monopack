@@ -1,5 +1,6 @@
 // @flow
 import fs from 'fs';
+import DependencyCollector from 'monopack-dependency-collector';
 import path from 'path';
 
 import _ from 'lodash';
@@ -34,7 +35,7 @@ export async function main({
   outputDirectory,
   print,
   currentWorkingDirectory,
-}: MonopackArgs): Promise<void> {
+}: MonopackArgs): Promise<{ outputDirectory: string }> {
   const version = require('../package.json').version;
   const mainJsFullPath = path.join(currentWorkingDirectory, mainJs);
 
@@ -54,6 +55,10 @@ export async function main({
   );
   const monopackConfig = getMonopackConfig(mainJsFullPath);
 
+  const dependencyCollector = new DependencyCollector(
+    monopackConfig.monorepoRootPath
+  );
+
   const builderParams: MonopackBuilderParams = {
     ...monopackConfig,
     mainJs: mainJsFullPath,
@@ -61,7 +66,9 @@ export async function main({
       ? path.join(currentWorkingDirectory, outputDirectory)
       : (await tmp.dir()).path,
     print,
-    collectDependency: () => {},
+    collectDependency: (packageName, context) => {
+      dependencyCollector.collectDependency(packageName, context);
+    },
   };
 
   print(
@@ -82,6 +89,44 @@ export async function main({
 
   await build(builderParams);
 
+  print(chalk.white('=>> monopack will resolve dependencies') + '\n');
+
+  const collectedDependencies = await dependencyCollector.resolveDependencies();
+  let dependencies = {};
+
+  switch (collectedDependencies.type) {
+    case 'SUCCESS_FULLY_DETERMINISTIC': {
+      dependencies = collectedDependencies.dependencies.reduce(
+        (dependencies, dependency) => ({
+          ...dependencies,
+          [dependency.packageName]: dependency.version,
+        }),
+        dependencies
+      );
+      print(
+        chalk.white(
+          '=>> monopack has resolved all dependencies, build will be deterministic'
+        ) + '\n'
+      );
+      break;
+    }
+    case 'FAILURE_NEEDS_DEPENDENCY_CONFLICT_RESOLUTION': {
+      throw new Error('TODO');
+    }
+    case 'FAILURE_UNDECLARED_DEPENDENCIES': {
+      throw new Error('TODO');
+    }
+    case 'SUCCESS_NOT_DETERMINISTIC_MULTIPLE_YARN_LOCKS': {
+      throw new Error('TODO');
+    }
+    default: {
+      // eslint-disable-next-line no-unused-vars
+      const typeCheck: 'SUCCESS_NOT_DETERMINISTIC_NO_YARN_LOCKS' =
+        dependencies.type;
+      throw new Error('TODO');
+    }
+  }
+
   print(chalk.white('=>> monopack will build a package.json') + '\n');
   const packageJsonContent = {
     name: 'app',
@@ -92,6 +137,7 @@ export async function main({
       'source-map-support': require('../package.json').dependencies[
         'source-map-support'
       ],
+      ...dependencies,
     },
     devDependencies: {},
   };
@@ -121,4 +167,6 @@ export async function main({
   }
 
   print(chalk.green('=>> monopack successfully packaged your app !') + '\n');
+
+  return { outputDirectory: builderParams.outputDirectory };
 }
