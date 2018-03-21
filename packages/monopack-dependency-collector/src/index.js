@@ -141,8 +141,8 @@ export default class DependencyCollector {
 
       return {
         path: context,
-        dependencies: pkgJson.dependencies,
-        devDependencies: pkgJson.devDependencies,
+        dependencies: pkgJson.dependencies || {},
+        devDependencies: pkgJson.devDependencies || {},
         lockFile,
       };
     } else {

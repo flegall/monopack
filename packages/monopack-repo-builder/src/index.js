@@ -40,8 +40,8 @@ class Package {
   lernaJsonfile: null | (() => string) = null;
   packages: Package[] = [];
   useWorkspaces: boolean = false;
-  dependencies: { [string]: string } = {};
-  devDependencies: { [string]: string } = {};
+  dependencies: null | { [string]: string } = null;
+  devDependencies: null | { [string]: string } = null;
   sources: { [string]: () => string } = {};
 
   named(name: string): this {
@@ -122,20 +122,26 @@ class Package {
       name: string,
       private: true,
       workspaces?: string[],
-      dependencies: { [string]: string },
-      devDependencies: { [string]: string },
+      dependencies?: { [string]: string },
+      devDependencies?: { [string]: string },
     } = {
       version: '1.0.0',
       name: this.name,
       private: true,
-      dependencies: this.dependencies,
-      devDependencies: this.devDependencies,
     };
-    if (this.lernaJsonfile) {
-      packageJsonContent.devDependencies['lerna'] = '2.9.0';
-    }
     if (this.useWorkspaces) {
       packageJsonContent.workspaces = ['packages/*'];
+    }
+    if (this.dependencies) {
+      packageJsonContent.dependencies = this.dependencies;
+    }
+    if (this.devDependencies) {
+      packageJsonContent.devDependencies = this.devDependencies;
+    }
+    if (this.lernaJsonfile) {
+      const devDependencies = packageJsonContent.devDependencies || {};
+      devDependencies['lerna'] = '2.9.0';
+      packageJsonContent.devDependencies = devDependencies;
     }
 
     await writeFile(
@@ -177,9 +183,11 @@ class Package {
 
     if (
       installDeps &&
-      (Object.keys(packageJsonContent.dependencies).length > 0 ||
-        Object.keys(packageJsonContent.devDependencies).length > 0 ||
-        this.useWorkspaces)
+      ((packageJsonContent.dependencies &&
+        Object.keys(packageJsonContent.dependencies).length > 0) ||
+        ((packageJsonContent.devDependencies &&
+          Object.keys(packageJsonContent.devDependencies).length > 0) ||
+          this.useWorkspaces))
     ) {
       await executeYarn(packagePath);
     }
