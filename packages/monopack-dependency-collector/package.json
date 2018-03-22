@@ -1,6 +1,6 @@
 {
   "name": "monopack-dependency-collector",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "description": "A JavaScript bundler for node.js monorepo applications",
   "main": "build/index.js",
   "repository": "https://github.com/flegall/monopack",
