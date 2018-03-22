@@ -40,8 +40,7 @@ const ConfigFileTCombType = t.struct({
 });
 
 function buildConfigFromConfigFile(configFile: string): MonopackConfig {
-  // $FlowIgnore (The config is dynamically loaded !)
-  const config: ConfigFile = require(configFile);
+  const config: ConfigFile = readJsFile(configFile);
   const result = t.validate(config, ConfigFileTCombType);
   if (!result.isValid()) {
     throw new Error(`Invalid file ${configFile}
@@ -103,8 +102,7 @@ function lookupFileInParentDirs(directory: string, filename: string): ?string {
 function lookupPackageJsonWithWorkspacesInParentsDirs(directory): ?string {
   const packageJsonPath = lookupFileInParentDirs(directory, 'package.json');
   if (packageJsonPath) {
-    // $FlowIgnore package.json is parsed.
-    const packageJson = require(packageJsonPath);
+    const packageJson = readJsonFile(packageJsonPath);
     if (_.isArray(packageJson.workspaces)) {
       return packageJsonPath;
     }
@@ -140,4 +138,13 @@ function lookupTopMostPackageJson(
 
 function identity<T>(t: T): T {
   return t;
+}
+
+function readJsonFile<T>(path: string): T {
+  return JSON.parse(fs.readFileSync(path, 'utf-8'));
+}
+
+function readJsFile<T>(path: string): T {
+  // eslint-disable-next-line no-eval
+  return eval(fs.readFileSync(path, 'utf-8'));
 }
