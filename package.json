@@ -31,7 +31,7 @@
     "jest": "22.4.3",
     "lerna": "2.9.0",
     "lint-staged": "7.0.0",
-    "micromatch": "3.1.9",
+    "micromatch": "3.1.10",
     "mkdirp": "0.5.1",
     "prettier": "1.11.1",
     "string-length": "2.0.0"
