@@ -2705,6 +2705,12 @@ from2@^2.1.0:
     inherits "^2.0.1"
     readable-stream "^2.0.0"
 
+fs-copy-file@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/fs-copy-file/-/fs-copy-file-1.0.2.tgz#2a340b80b50eeb925c75637ad01ade02c0bb1a6d"
+  dependencies:
+    pipe-io "^2.0.5"
+
 fs-extra@^4.0.1:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-4.0.3.tgz#0d852122e5bc5beb453fb028e9c0c9bf36340c94"
@@ -5121,6 +5127,10 @@ pinkie-promise@^2.0.0:
 pinkie@^2.0.0:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/pinkie/-/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
+
+pipe-io@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/pipe-io/-/pipe-io-2.0.5.tgz#faa30e51fdb00cc40bb6e4404d8b9e134c1f1f47"
 
 pkg-dir@^1.0.0:
   version "1.0.0"

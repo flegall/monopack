@@ -42,6 +42,9 @@
     "watch": "node scripts/watch.js",
     "pretest": "yarn build",
     "test": "jest --verbose",
+    "posttest": "yarn selfBuild",
+    "preselfBuild": "yarn build",
+    "selfBuild": "yarn monopack build ./packages/monopack/src/run-cli.js",
     "eslint": "eslint . --cache",
     "format":
       "prettier --write \"**/*.js\" \"**/*.json\" \"**/*.css\" \"**/*.md\"",

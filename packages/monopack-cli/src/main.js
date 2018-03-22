@@ -8,6 +8,7 @@ import _ from 'lodash';
 import { executeChildProcess, YARN_COMMAND } from 'monopack-process';
 
 import Bluebird from 'bluebird';
+import fsCopyFile from 'fs-copy-file';
 import chalk from 'chalk';
 import { build, type MonopackBuilderParams } from 'monopack-builder';
 import { getMonopackConfig } from 'monopack-config';
@@ -18,6 +19,10 @@ const writeFile: (
   string | Buffer | Uint8Array,
   Object | string | void
 ) => Promise<void> = Bluebird.promisify(fs.writeFile);
+
+const copyFile: (string, string) => Promise<void> = Bluebird.promisify(
+  fsCopyFile
+);
 
 export type MonopackArgs = {
   command: 'build' | 'run' | 'debug',
@@ -93,6 +98,7 @@ export async function main({
 
   const collectedDependencies = await dependencyCollector.resolveDependencies();
   let dependencies = {};
+  let yarnLockFileToCopy: string | null = null;
 
   switch (collectedDependencies.type) {
     case 'SUCCESS_FULLY_DETERMINISTIC': {
@@ -103,6 +109,7 @@ export async function main({
         }),
         dependencies
       );
+      yarnLockFileToCopy = collectedDependencies.yarnLockFileToCopy;
       print(
         chalk.white(
           '=>> monopack has resolved all dependencies, build will be deterministic'
@@ -114,7 +121,13 @@ export async function main({
       throw new Error('TODO');
     }
     case 'FAILURE_UNDECLARED_DEPENDENCIES': {
-      throw new Error('TODO');
+      print(chalk.red('=>> Undeclared dependencies') + '\n');
+      const dependenciesToString =
+        collectedDependencies.undeclaredDependencies
+          .map(({ dependency, context }) => `    ${dependency} from ${context}`)
+          .join('\n') + '\n';
+      print(chalk.white(dependenciesToString));
+      process.exit(1);
     }
     case 'SUCCESS_NOT_DETERMINISTIC_MULTIPLE_YARN_LOCKS': {
       throw new Error('TODO');
@@ -146,6 +159,18 @@ export async function main({
     JSON.stringify(packageJsonContent, null, 2)
   );
 
+  if (yarnLockFileToCopy) {
+    print(
+      chalk.white(
+        `=>> monopack will copy yarn.lock from ${yarnLockFileToCopy}`
+      ) + '\n'
+    );
+    await copyFile(
+      yarnLockFileToCopy,
+      path.join(builderParams.outputDirectory, 'yarn.lock')
+    );
+  }
+
   print(
     chalk.white(
       `=>> monopack will install dependencies into ${
@@ -166,7 +191,13 @@ export async function main({
     );
   }
 
-  print(chalk.green('=>> monopack successfully packaged your app !') + '\n');
+  print(
+    chalk.green(
+      `=>> monopack successfully packaged your app in ${
+        builderParams.outputDirectory
+      }`
+    ) + '\n'
+  );
 
   return { outputDirectory: builderParams.outputDirectory };
 }

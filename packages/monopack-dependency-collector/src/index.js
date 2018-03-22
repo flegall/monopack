@@ -10,7 +10,7 @@ import * as lockfile from '@yarnpkg/lockfile';
 export type CollectedDependencies =
   | {
       type: 'SUCCESS_FULLY_DETERMINISTIC',
-      yarnLockFileToCopy: string,
+      yarnLockFileToCopy: string | null,
       dependencies: {
         packageName: string,
         version: string,
@@ -26,7 +26,7 @@ export type CollectedDependencies =
       type: 'FAILURE_UNDECLARED_DEPENDENCIES',
       undeclaredDependencies: {
         dependency: string,
-        // TODO Add context
+        context: string,
       }[],
     }
   | {
@@ -159,9 +159,12 @@ export default class DependencyCollector {
     if (unresolvedDeps.length > 0) {
       return {
         type: 'FAILURE_UNDECLARED_DEPENDENCIES',
-        undeclaredDependencies: unresolvedDeps.map(({ packageName }) => ({
-          dependency: packageName,
-        })),
+        undeclaredDependencies: unresolvedDeps.map(
+          ({ packageName, context }) => ({
+            dependency: packageName,
+            context,
+          })
+        ),
       };
     }
 
@@ -281,16 +284,20 @@ export default class DependencyCollector {
     const yarnLockPaths: string[] = _.uniq(
       fullyResolvedDeps.map(({ yarnLockPath }) => yarnLockPath)
     );
-    const yarnLockPathToCopy =
-      yarnLockPaths.length > 0 ? yarnLockPaths[0] : this.monorepoRoot;
-    const yarnLockFileToCopy = path.join(yarnLockPathToCopy, 'yarn.lock');
+
     if (yarnLockPaths.length > 1) {
+      const yarnLockFileToCopy = path.join(yarnLockPaths[0], 'yarn.lock');
       return {
         type: 'SUCCESS_NOT_DETERMINISTIC_MULTIPLE_YARN_LOCKS',
         yarnLockFileToCopy,
         dependencies,
       };
     }
+
+    let yarnLockFileToCopy = path.join(this.monorepoRoot, 'yarn.lock');
+    yarnLockFileToCopy = (await exists(yarnLockFileToCopy))
+      ? yarnLockFileToCopy
+      : null;
 
     return {
       type: 'SUCCESS_FULLY_DETERMINISTIC',

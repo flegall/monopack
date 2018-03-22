@@ -126,7 +126,7 @@ describe('dependency-collector', () => {
         const result = await collector.resolveDependencies();
         expect(result).to.deep.equal({
           type: 'FAILURE_UNDECLARED_DEPENDENCIES',
-          undeclaredDependencies: [{ dependency: 'lodash' }],
+          undeclaredDependencies: [{ dependency: 'lodash', context: root }],
         });
       });
   });
