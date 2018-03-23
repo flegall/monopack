@@ -1,18 +1,18 @@
 // @flow
 import fs from 'fs';
-import DependencyCollector from 'monopack-dependency-collector';
 import path from 'path';
 
 import _ from 'lodash';
-
-import { executeChildProcess, YARN_COMMAND } from 'monopack-process';
-
 import Bluebird from 'bluebird';
 import fsCopyFile from 'fs-copy-file';
 import chalk from 'chalk';
-import { build, type MonopackBuilderParams } from 'monopack-builder';
-import { getMonopackConfig } from 'monopack-config';
 import tmp from 'tmp-promise';
+
+import { build, type MonopackBuilderParams } from 'monopack-builder';
+import DependencyCollector from 'monopack-dependency-collector';
+import { executeChildProcess, YARN_COMMAND } from 'monopack-process';
+import { getMonopackConfig } from 'monopack-config';
+import displayCollectedDependencies from './display-collected-dependencies';
 
 const writeFile: (
   string | Buffer | number,
@@ -32,6 +32,15 @@ export type MonopackArgs = {
   print: string => void,
   currentWorkingDirectory: string,
 };
+export type MonopackResult =
+  | {
+      success: true,
+      outputDirectory: string,
+    }
+  | {
+      success: false,
+      exitCode: number,
+    };
 
 export async function main({
   command,
@@ -40,7 +49,7 @@ export async function main({
   outputDirectory,
   print,
   currentWorkingDirectory,
-}: MonopackArgs): Promise<{ outputDirectory: string }> {
+}: MonopackArgs): Promise<MonopackResult> {
   const version = require('../package.json').version;
   const mainJsFullPath = path.join(currentWorkingDirectory, mainJs);
 
@@ -97,49 +106,18 @@ export async function main({
   print(chalk.white('=>> monopack will resolve dependencies') + '\n');
 
   const collectedDependencies = await dependencyCollector.resolveDependencies();
-  let dependencies = {};
-  let yarnLockFileToCopy: string | null = null;
+  const result = displayCollectedDependencies(collectedDependencies);
+  print(result.output);
 
-  switch (collectedDependencies.type) {
-    case 'SUCCESS_FULLY_DETERMINISTIC': {
-      dependencies = collectedDependencies.dependencies.reduce(
-        (dependencies, dependency) => ({
-          ...dependencies,
-          [dependency.packageName]: dependency.version,
-        }),
-        dependencies
-      );
-      yarnLockFileToCopy = collectedDependencies.yarnLockFileToCopy;
-      print(
-        chalk.white(
-          '=>> monopack has resolved all dependencies, build will be deterministic'
-        ) + '\n'
-      );
-      break;
-    }
-    case 'FAILURE_NEEDS_DEPENDENCY_CONFLICT_RESOLUTION': {
-      throw new Error('TODO');
-    }
-    case 'FAILURE_UNDECLARED_DEPENDENCIES': {
-      print(chalk.red('=>> Undeclared dependencies') + '\n');
-      const dependenciesToString =
-        collectedDependencies.undeclaredDependencies
-          .map(({ dependency, context }) => `    ${dependency} from ${context}`)
-          .join('\n') + '\n';
-      print(chalk.white(dependenciesToString));
-      process.exit(1);
-    }
-    case 'SUCCESS_NOT_DETERMINISTIC_MULTIPLE_YARN_LOCKS': {
-      throw new Error('TODO');
-    }
-    default: {
-      // eslint-disable-next-line no-unused-vars
-      const typeCheck: 'SUCCESS_NOT_DETERMINISTIC_NO_YARN_LOCKS' =
-        dependencies.type;
-      throw new Error('TODO');
-    }
+  if (result.exitCode !== 0) {
+    return {
+      exitCode: result.exitCode,
+      success: false,
+    };
   }
 
+  const dependencies = result.dependencies;
+  const yarnLockFileToCopy = result.yarnLockFileToCopy;
   print(chalk.white('=>> monopack will build a package.json') + '\n');
   const packageJsonContent = {
     name: 'app',
@@ -199,5 +177,5 @@ export async function main({
     ) + '\n'
   );
 
-  return { outputDirectory: builderParams.outputDirectory };
+  return { success: true, outputDirectory: builderParams.outputDirectory };
 }

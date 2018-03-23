@@ -380,7 +380,7 @@ async function build(
   buildDirectory: string,
 }> {
   let compilationOutput = '';
-  const { outputDirectory: buildDirectory } = await main({
+  const result = await main({
     watch: false,
     print: content => {
       compilationOutput = compilationOutput + content;
@@ -390,5 +390,12 @@ async function build(
     currentWorkingDirectory: root,
     command: 'build',
   });
-  return { compilationOutput, buildDirectory };
+  if (result.success) {
+    const buildDirectory = result.outputDirectory;
+    return { compilationOutput, buildDirectory };
+  } else {
+    throw new Error(
+      `Compilation failed : '${compilationOutput}' exitCode: ${result.exitCode}`
+    );
+  }
 }
