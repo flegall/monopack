@@ -58,6 +58,59 @@ describe('displayCollectedDependencies', () => {
     }
   });
 
+  it('should display dependencies for SUCCESS_NOT_DETERMINISTIC_MULTIPLE_YARN_LOCKS', () => {
+    // given
+    const collectedDependencies = {
+      type: 'SUCCESS_NOT_DETERMINISTIC_MULTIPLE_YARN_LOCKS',
+      yarnLockFileToCopy: 'yarn.lock',
+      dependencies: [
+        {
+          packageName: 'lodash',
+          version: '4.17.5',
+        },
+      ],
+    };
+
+    // when
+    const result = displayCollectedDependencies(collectedDependencies);
+
+    // then
+    expect(result.exitCode).to.equal(0);
+    if (result.exitCode === 0) {
+      expect(result.dependencies).to.deep.equal({ lodash: '4.17.5' });
+      expect(result.yarnLockFileToCopy).to.equal('yarn.lock');
+      expect(result.output).to.have.string(
+        '=>> monopack has resolved all dependencies, however build will not be deterministic as multiple yarn.lock files have been found'
+      );
+    }
+  });
+
+  it('should display dependencies for SUCCESS_NOT_DETERMINISTIC_NO_YARN_LOCKS', () => {
+    // given
+    const collectedDependencies = {
+      type: 'SUCCESS_NOT_DETERMINISTIC_NO_YARN_LOCKS',
+      dependencies: [
+        {
+          packageName: 'lodash',
+          version: '4.17.5',
+        },
+      ],
+    };
+
+    // when
+    const result = displayCollectedDependencies(collectedDependencies);
+
+    // then
+    expect(result.exitCode).to.equal(0);
+    if (result.exitCode === 0) {
+      expect(result.dependencies).to.deep.equal({ lodash: '4.17.5' });
+      expect(result.yarnLockFileToCopy).to.equal(null);
+      expect(result.output).to.have.string(
+        '=>> monopack has resolved all dependencies, however build will not be deterministic as no yarn.lock files have been found'
+      );
+    }
+  });
+
   it('should display error for FAILURE_UNDECLARED_DEPENDENCIES', () => {
     // given
     const collectedDependencies = {

@@ -19,12 +19,8 @@ export default function displayCollectedDependencies(
 ): Result {
   switch (collectedDependencies.type) {
     case 'SUCCESS_FULLY_DETERMINISTIC': {
-      const dependencies = collectedDependencies.dependencies.reduce(
-        (dependencies, dependency) => ({
-          ...dependencies,
-          [dependency.packageName]: dependency.version,
-        }),
-        {}
+      const dependencies = collectDependencies(
+        collectedDependencies.dependencies
       );
       const yarnLockFileToCopy = collectedDependencies.yarnLockFileToCopy;
       const output =
@@ -83,13 +79,54 @@ export default function displayCollectedDependencies(
       };
     }
     case 'SUCCESS_NOT_DETERMINISTIC_MULTIPLE_YARN_LOCKS': {
-      throw new Error('TODO');
+      const dependencies = collectDependencies(
+        collectedDependencies.dependencies
+      );
+      const yarnLockFileToCopy = collectedDependencies.yarnLockFileToCopy;
+      const output =
+        chalk.white(
+          '=>> monopack has resolved all dependencies, however build will not be deterministic as multiple yarn.lock files have been found'
+        ) + '\n';
+      return {
+        output,
+        exitCode: 0,
+        dependencies,
+        yarnLockFileToCopy,
+      };
     }
     default: {
       // eslint-disable-next-line no-unused-vars
       const typeCheck: 'SUCCESS_NOT_DETERMINISTIC_NO_YARN_LOCKS' =
         collectedDependencies.type;
-      throw new Error('TODO');
+
+      const dependencies = collectDependencies(
+        collectedDependencies.dependencies
+      );
+      const output =
+        chalk.white(
+          '=>> monopack has resolved all dependencies, however build will not be deterministic as no yarn.lock files have been found'
+        ) + '\n';
+      return {
+        output,
+        exitCode: 0,
+        dependencies,
+        yarnLockFileToCopy: null,
+      };
     }
   }
+}
+
+function collectDependencies(
+  dependencies: {
+    packageName: string,
+    version: string,
+  }[]
+): { [string]: string } {
+  return dependencies.reduce(
+    (dependencies, dependency) => ({
+      ...dependencies,
+      [dependency.packageName]: dependency.version,
+    }),
+    {}
+  );
 }
