@@ -50,7 +50,6 @@
       "prettier --write \"**/*.js\" \"**/*.json\" \"**/*.css\" \"**/*.md\"",
     "copyReadmes": "yarn lerna exec cp ../../README.md .",
     "precommit": "lint-staged && yarn run flow && yarn test",
-    "prepush": "yarn run eslint && yarn run flow && yarn test",
     "prerelease": "yarn run eslint && yarn run flow && yarn test",
     "release": "yarn lerna publish"
   },
