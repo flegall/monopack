@@ -62,7 +62,7 @@ All packages are build from the top of the repo
 | `test`        | Run all tests                        |
 | `eslint`      | Run eslint                           |
 | `flow`        | Run flow                             |
-| `copyReadmes` | Copiy top README.me to all packages  |
+| `copyReadmes` | Copy top README.me to all packages  |
 | `release`     | Publish a new version to NPM         |
 
 ### Coding Style
