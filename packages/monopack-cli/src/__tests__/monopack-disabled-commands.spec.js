@@ -1,6 +1,7 @@
 // @flow
-import { main } from '../main';
 import { expect } from 'chai';
+
+import { main } from '../main';
 
 describe('monopack disabled commands', () => {
   it('build --watch should return -1 with error message', async () => {

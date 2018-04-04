@@ -67,6 +67,8 @@ export async function executeChildProcess(
 }
 
 function promiseFromChildProcess(child: ChildProcess): Promise<ExitOrSignal> {
+  // (process_child does not expose a promise api)
+  // eslint-disable-next-line promise/avoid-new
   return new Promise(function(resolve, reject) {
     child.addListener('error', error => reject(error));
     child.addListener('exit', (exitCode, signal) =>

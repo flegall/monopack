@@ -3,10 +3,12 @@
  * @flow
  */
 
-const fs = require('fs');
 const { execSync } = require('child_process');
+const fs = require('fs');
 const path = require('path');
+
 const chalk = require('chalk');
+
 const getPackages = require('./getPackages');
 
 const BUILD_CMD = `node ${path.resolve(__dirname, './build.js')}`;

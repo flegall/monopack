@@ -1,6 +1,6 @@
 // @flow
-import chalk from 'chalk';
 
+import chalk from 'chalk';
 import type { CollectedDependencies } from 'monopack-dependency-collector';
 
 type Result =

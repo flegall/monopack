@@ -44,6 +44,7 @@ export function run() {
 
   main(args)
     .then(result => {
+      // eslint-disable-next-line promise/always-return
       if (!result.success) {
         process.exit(result.exitCode);
       }

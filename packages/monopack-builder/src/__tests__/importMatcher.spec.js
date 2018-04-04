@@ -1,5 +1,6 @@
 // @flow
 import { expect } from 'chai';
+
 import { importMatcher } from '../importMatcher';
 
 describe('importMatcher', () => {
@@ -112,7 +113,7 @@ describe('importMatcher', () => {
     });
   });
 
-  it('a scoped third party library must be imported and a dependency should be provided', () => {
+  it('a scoped third party library module must be imported and a dependency should be provided', () => {
     const mainJs = '/home/repo/main.js';
     const context = '/home/repo';
 

@@ -7,11 +7,11 @@ import Bluebird from 'bluebird';
 import fsCopyFile from 'fs-copy-file';
 import chalk from 'chalk';
 import tmp from 'tmp-promise';
-
 import { build, type MonopackBuilderParams } from 'monopack-builder';
 import DependencyCollector from 'monopack-dependency-collector';
 import { executeChildProcess, YARN_COMMAND } from 'monopack-process';
 import { getMonopackConfig } from 'monopack-config';
+
 import displayCollectedDependencies from './display-collected-dependencies';
 
 const writeFile: (

@@ -347,8 +347,10 @@ describe('monopack build', () => {
         });
     });
 
+    // eslint-disable-next-line jest/no-disabled-tests
     xit('should build a js file to a temp directory', async () => {});
 
+    // eslint-disable-next-line jest/no-disabled-tests
     xit('should build a js file, watch for file changes and rebuild on file changes', async () => {});
   });
 });

@@ -44,6 +44,8 @@ export async function build({
     )),
   ];
 
+  // (webpack does not expose promise-friendly api)
+  // eslint-disable-next-line promise/avoid-new
   return new Promise((resolve, reject) => {
     const baseBabelConfig = {
       presets: [

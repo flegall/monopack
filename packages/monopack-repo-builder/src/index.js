@@ -4,7 +4,6 @@ import path from 'path';
 
 import Bluebird from 'bluebird';
 import tmp from 'tmp-promise';
-
 import {
   executeChildProcessOrFail,
   type ExecuteChildResult,
