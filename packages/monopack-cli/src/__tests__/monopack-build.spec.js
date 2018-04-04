@@ -9,7 +9,7 @@ import { aMonorepo, aPackage } from 'monopack-repo-builder';
 import { main } from '../main';
 
 // $FlowIgnore
-jest.setTimeout(30000);
+jest.setTimeout(60000);
 
 describe('monopack build', () => {
   describe('validation', () => {
