@@ -42,8 +42,14 @@ export function run() {
     currentWorkingDirectory: process.cwd(),
   };
 
-  main(args).catch(error => {
-    console.log(error);
-    process.exit(1);
-  });
+  main(args)
+    .then(result => {
+      if (!result.success) {
+        process.exit(result.exitCode);
+      }
+    })
+    .catch(error => {
+      console.log(error);
+      process.exit(1);
+    });
 }

@@ -67,6 +67,27 @@ export async function main({
       ' ' +
       '\n'
   );
+  if (command === 'run') {
+    print(
+      '=>> ' + chalk.inverse('run command is not implemented yet !') + '\n'
+    );
+    return { success: false, exitCode: -1 };
+  }
+
+  if (command === 'debug') {
+    print(
+      '=>> ' + chalk.inverse('debug command is not implemented yet !') + '\n'
+    );
+    return { success: false, exitCode: -1 };
+  }
+
+  if (watch) {
+    print(
+      '=>> ' + chalk.inverse('--watch toggle is not implemented yet !') + '\n'
+    );
+    return { success: false, exitCode: -1 };
+  }
+
   const monopackConfig = getMonopackConfig(mainJsFullPath);
 
   const dependencyCollector = new DependencyCollector(
