@@ -28,7 +28,6 @@ Here is a list of the core packages in this repository with a short description,
 
 | Folder Name                                                               | Purpose                                                                               |
 | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| [cli](./scripts)                                                          | The babel build script                                                                |
 | [monopack-builder](./packages/monopack-builder)                           | The actual javascript builder/bundler code (includes the webpack related code)        |
 | [monopack-cli](./packages/monopack-cli)                                   | The main CLI code                                                                     |
 | [monopack-config](./packages/monopack-config)                             | The config file parser                                                                |
@@ -62,7 +61,7 @@ All packages are build from the top of the repo
 | `test`        | Run all tests                        |
 | `eslint`      | Run eslint                           |
 | `flow`        | Run flow                             |
-| `copyReadmes` | Copy top README.me to all packages  |
+| `copyReadmes` | Copy top README.me to all packages   |
 | `release`     | Publish a new version to NPM         |
 
 ### Coding Style
