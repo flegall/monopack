@@ -145,6 +145,6 @@ function readJsonFile<T>(path: string): T {
 }
 
 function readJsFile<T>(path: string): T {
-  // eslint-disable-next-line no-eval
-  return eval(fs.readFileSync(path, 'utf-8'));
+  // $FlowIgnore
+  return require(path); // eslint-disable-line import/no-dynamic-require
 }
