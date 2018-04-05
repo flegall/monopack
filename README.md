@@ -6,7 +6,65 @@ A JavaScript bundler for node.js monorepo-codebased applications.
 [![Build Status](https://circleci.com/gh/flegall/monopack.svg?style=shield)](https://circleci.com/gh/flegall/monopack)
 [![Build status](https://ci.appveyor.com/api/projects/status/4xrx5hu4cxvyme0c/branch/master?svg=true)](https://ci.appveyor.com/project/flegall/monopack/branch/master)
 
-![Quality](https://img.shields.io/badge/quality-vaporware-yellow.svg) [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+![Quality](https://img.shields.io/badge/quality-alpha-tomato.svg) [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+
+## Usage
+
+### Installation
+
+It can be installed globally and locally
+
+#### Global installation
+
+Using yarn
+
+    yarn global add monopack
+
+Or npm
+
+    npm install -g monopack
+
+You can then use it with
+
+    $ monopack
+
+#### Local installation
+
+Using yarn
+
+    yarn add -D monopack
+
+Or npm
+
+    npm install --save-dev monopack
+
+You can then use it on your project
+
+With yarn
+
+    $ yarn run monopack
+
+With npm
+
+    ./node_modules/.bin/monopack
+
+### CLI
+
+    monopack <command>
+
+    Commands:
+      monopack build main  Builds an application
+
+    Options:
+      --help         Show help                                             [boolean]
+      --version      Show version number
+      --out-dir, -d  Output directory (default into a temp dir)             [string]
+
+### Configuration file
+
+You can include an optional configuration file : **monopack.config.js**
+
+_TODO_
 
 ## Why such a tool ?
 
