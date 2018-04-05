@@ -1,13 +1,13 @@
 {
   "name": "monopack-config",
-  "version": "0.0.28",
+  "version": "0.0.31",
   "description": "A JavaScript bundler for node.js monorepo applications",
   "main": "build/index.js",
   "repository": "https://github.com/flegall/monopack",
   "author": "Florent Le Gall <florent.legall@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "monopack-repo-builder": "^0.0.28"
+    "monopack-repo-builder": "^0.0.31"
   },
   "dependencies": {
     "lodash": "4.17.5",
