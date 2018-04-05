@@ -64,7 +64,29 @@ With npm
 
 You can include an optional configuration file : **monopack.config.js**
 
-_TODO_
+This configuration file can be used to :
+
+* Define the monorepo root
+* Override the default babel configuration
+* Override the default webpack configuration
+
+The config file can export 3 entries :
+
+* monorepoRootPath : the relative path to the monorepo root.
+* babelConfigModifier : a function that takes the current configuration and returns the modified configuration.
+* webpackConfigModifier: a function that takes the current configuration and returns the modified configuration.
+
+For example :
+
+```js
+module.exports.monorepoRootPath = '../..';
+module.exports.babelConfigModifier = defaultBabelConfiguration => {
+  return babelConfiguration(defaultBabelConfiguration);
+};
+module.exports.webpackConfigModifier = defaultWebpackConfig => {
+  return webPackConfiguration(defaultWebpackConfig);
+};
+```
 
 ## Why such a tool ?
 
