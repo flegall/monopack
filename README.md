@@ -66,9 +66,11 @@ You can include an optional configuration file : **monopack.config.js**
 
 This configuration file can be used to :
 
-* Define the monorepo root
+* Override the monorepo root
 * Override the default babel configuration
 * Override the default webpack configuration
+
+If you use a configuration file, monopack will define the monorepo root to the directory where the configuration file is found. You can override it with the **monorepoRootPath** field.
 
 The config file can export 3 entries :
 
