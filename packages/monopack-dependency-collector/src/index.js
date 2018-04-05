@@ -63,18 +63,21 @@ export default class DependencyCollector {
         for (let i = 0; i < packages.length; i++) {
           const pkg = packages[i];
           const packageJsonVersion = pkg.dependencies[packageName];
-          const packageAndVersion = `${packageName}@${packageJsonVersion}`;
-
-          let yarnLockMatchingPackage: ?YarnLock;
-          for (let j = i; j < packages.length; j++) {
-            const yarnLock = packages[j].lockFile;
-            if (yarnLock && yarnLock.dependencies[packageAndVersion]) {
-              yarnLockMatchingPackage = yarnLock;
-              break;
-            }
-          }
 
           if (packageJsonVersion) {
+            const packageAndVersion = `${packageName}@${packageJsonVersion}`;
+
+            let yarnLockMatchingPackage: ?YarnLock;
+            for (let j = i; j < packages.length; j++) {
+              const yarnLock = packages[j].lockFile;
+              if (yarnLock && yarnLock.dependencies[packageAndVersion]) {
+                yarnLockMatchingPackage = yarnLock;
+                break;
+              }
+            }
+
+            await this._collectPeerDependencies(pkg.path, packageName);
+
             return {
               type: 'RESOLVED',
               packageName,
@@ -94,6 +97,32 @@ export default class DependencyCollector {
         return { type: 'NOT_RESOLVED', packageName, context };
       })
     );
+  }
+
+  async _collectPeerDependencies(
+    context: string,
+    packageName: string,
+    initialContext: string = context
+  ): Promise<void> {
+    const installedPackageDir = path.join(context, 'node_modules', packageName);
+    const installedPackagePackageJson = await this._getPackageJsonCached(
+      installedPackageDir
+    );
+    if (installedPackagePackageJson) {
+      for (const peerDependency of Object.keys(
+        installedPackagePackageJson.peerDependencies
+      )) {
+        this.collectDependency(peerDependency, initialContext);
+      }
+    } else {
+      if (context !== this.monorepoRoot) {
+        await this._collectPeerDependencies(
+          path.join(context, '..'),
+          packageName,
+          initialContext
+        );
+      }
+    }
   }
 
   async _getPackageJsons(context: string): Promise<PackageJson[]> {
@@ -143,6 +172,7 @@ export default class DependencyCollector {
         path: context,
         dependencies: pkgJson.dependencies || {},
         devDependencies: pkgJson.devDependencies || {},
+        peerDependencies: pkgJson.peerDependencies || {},
         lockFile,
       };
     } else {
@@ -151,7 +181,12 @@ export default class DependencyCollector {
   }
 
   async resolveDependencies(): Promise<CollectedDependencies> {
-    const maybeResolvedDependencies = await Promise.all(this.promises);
+    // Wait for all promises to be resolved (as some promises may be added
+    // when Promise.all() is resolved)
+    let maybeResolvedDependencies = [];
+    while (maybeResolvedDependencies.length !== this.promises.length) {
+      maybeResolvedDependencies = await Promise.all(this.promises);
+    }
 
     const unresolvedDeps: NotResolvedDependency[] = (maybeResolvedDependencies.filter(
       ({ type }) => type === 'NOT_RESOLVED'
@@ -319,6 +354,7 @@ type PackageJson = {
   path: string,
   dependencies: { [string]: string },
   devDependencies: { [string]: string },
+  peerDependencies: { [string]: string },
   lockFile: null | YarnLock,
 };
 
