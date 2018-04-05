@@ -1,6 +1,6 @@
 {
   "name": "monopack-repo-builder",
-  "version": "0.0.31",
+  "version": "0.1.0",
   "description": "A JavaScript bundler for node.js monorepo applications",
   "main": "build/index.js",
   "repository": "https://github.com/flegall/monopack",
@@ -11,6 +11,6 @@
     "tmp-promise": "1.0.4"
   },
   "devDependencies": {
-    "monopack-process": "^0.0.31"
+    "monopack-process": "^0.1.0"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "monopack-cli",
-  "version": "0.0.31",
+  "version": "0.1.0",
   "description": "A JavaScript bundler for node.js monorepo applications",
   "main": "build/index.js",
   "repository": "https://github.com/flegall/monopack",
@@ -12,11 +12,11 @@
     "fs-copy-file": "1.0.2",
     "import-local": "1.0.0",
     "lodash": "4.17.5",
-    "monopack-builder": "^0.0.31",
-    "monopack-config": "^0.0.31",
-    "monopack-dependency-collector": "^0.0.31",
-    "monopack-process": "^0.0.31",
-    "monopack-repo-builder": "^0.0.31",
+    "monopack-builder": "^0.1.0",
+    "monopack-config": "^0.1.0",
+    "monopack-dependency-collector": "^0.1.0",
+    "monopack-process": "^0.1.0",
+    "monopack-repo-builder": "^0.1.0",
     "source-map-support": "0.5.4",
     "tmp-promise": "1.0.4",
     "yargs": "11.0.0"
@@ -25,6 +25,6 @@
     "monopack": "./bin/monopack.js"
   },
   "devDependencies": {
-    "monopack-repo-builder": "^0.0.31"
+    "monopack-repo-builder": "^0.1.0"
   }
 }
