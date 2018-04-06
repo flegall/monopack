@@ -68,6 +68,7 @@ export async function build({
         path: outputDirectory,
         filename: 'main.js',
       },
+      target: 'node',
       mode: 'development',
       devtool: 'source-map',
       module: {
