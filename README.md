@@ -149,7 +149,7 @@ Monopack will collect:
 
 All the dependencies are collected, a package.json with the collected dependencies will be compiled.
 
-Your project's yarn.lock fill will be copied if it exists.
+Your project's yarn.lock will be copied if it exists.
 If you are using multiple yarn.lock files, only the top-most one will be copied.
 
 The dependencies collection is **deterministic** only if you have a single yarn.lock file.
