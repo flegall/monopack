@@ -10,6 +10,8 @@
     "babel-core": "6.26.0",
     "babel-loader": "7.1.4",
     "babel-preset-env": "1.6.1",
+    "babel-preset-flow": "6.23.0",
+    "babel-preset-stage-2": "6.24.1",
     "glob": "7.1.2",
     "glob-promise": "3.4.0",
     "lodash": "4.17.5",

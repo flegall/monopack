@@ -8,7 +8,28 @@ A JavaScript bundler for node.js monorepo-codebased applications.
 
 ![Quality](https://img.shields.io/badge/quality-alpha-tomato.svg) [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 
+This tool comes to fill a gap for node.js developpers who :
+
+* are building node.js applications (serverless functions, micro-services, monolithic servers or client applications)
+* are using a monorepo codebase.
+* are performing continuous integration/deployment.
+
+Monopack aims to build **a static deterministic deliverable bundle** from your application's entrypoint **main.js**.
+
+It will build:
+
+* **a single main.js** file that bundles all the imported sources from the monorepo.
+* **package.json and yarn.lock** files including **only** the used third-party dependencies.
+* the **node_modules directory** for these dependencies.
+
 ## Usage
+
+### Requirements
+
+* Node.js >= 6.10
+* Yarn >= 1.3.2 :
+  * Yarn is required to be present for installing the produced dependencies.
+  * It is not mandatory for your project to use it, but bear in mind that the dependencies collection will be deterministic only if your projet uses Yarn.
 
 ### Installation
 
@@ -60,17 +81,43 @@ With npm
       --version      Show version number
       --out-dir, -d  Output directory (default into a temp dir)             [string]
 
+### Default configuration
+
+By default monopack will use babel 6 to compile your code into js code that node.js 6.10 understands.
+It supports [flow](https://flow.org) and [stage-2](https://babeljs.io/docs/plugins/preset-stage-2/) features.
+
+```js
+const baseBabelConfig = {
+  presets: [
+    [
+      require.resolve('babel-preset-env'),
+      {
+        targets: {
+          node: '6.10',
+        },
+      },
+    ],
+    require.resolve('babel-preset-flow'),
+    require.resolve('babel-preset-stage-2'),
+  ],
+};
+```
+
+Monopack will use webpack 4 to produce the bundle.
+The bundle is produced in 'development' in order not to obfuscate the code.
+Source maps are included.
+
 ### Configuration file
 
 You can include an optional configuration file : **monopack.config.js**
 
 This configuration file can be used to :
 
-* Override the monorepo root
+* Define the monorepo root
 * Override the default babel configuration
 * Override the default webpack configuration
 
-If you use a configuration file, monopack will define the monorepo root to the directory where the configuration file is found. You can override it with the **monorepoRootPath** field.
+If you use a configuration file, monopack will use its path as the monorepo root. You can override it with the **monorepoRootPath** field.
 
 The config file can export 3 entries :
 
@@ -90,21 +137,28 @@ module.exports.webpackConfigModifier = defaultWebpackConfig => {
 };
 ```
 
+I encourage you not to modify the webpack configuration, as I intend to keep in track with latest webpack versions, having a custom webpack configuration will be difficult to update on your side.
+If you have specific needs that require a customization please [open an issue](https://github.com/flegall/monopack/issues/new)
+
+### Dependencies handling
+
+Monopack will collect:
+
+* all used dependencies (dependencies actually **imported** or **required()**).
+* all peer dependencies of your used dependencies.
+
+All the dependencies are collected, a package.json with the collected dependencies will be compiled.
+
+Your project's yarn.lock fill will be copied if it exists.
+If you are using multiple yarn.lock files, only the top-most one will be copied.
+
+The dependencies collection is **deterministic** only if you have a single yarn.lock file.
+In order to achieve that you can :
+
+* Use [yarn's workspaces](https://yarnpkg.com/lang/en/docs/workspaces/)
+* Declare your dependencies in a single package.json file.
+
 ## Why such a tool ?
-
-This tool comes to fill a gap for node.js developpers who :
-
-* are building node.js applications (serverless functions, micro-services, monolithic servers or client applications)
-* are using a monorepo codebase.
-* are performing continuous integration/deployment.
-
-Monopack aims to build **a static deterministic deliverable bundle** from your application's entrypoint **main.js**.
-
-It will build:
-
-* **a single main.js** file that bundles all the imported sources from the monorepo.
-* **package.json and yarn.lock** files including **only** the used third-party dependencies.
-* **optionally**: the **node_modules directory** for these dependencies.
 
 As far as I know such a tool does not exist so far.
 
@@ -162,42 +216,10 @@ You could bring your whole monorepo in your application release :
   * You could use [Webpack](https://webpack.js.org/) to bundle your main.js entrypoint and rely on [Node externals](https://www.npmjs.com/package/webpack-node-externals) to avoid packaging the node_modules in webpack. Actually that's what [Backpack](https://github.com/jaredpalmer/backpack) does.
     * This will generate a single main.js file that bundles all the imported sources from the mono-repo.
 
-## Design ideas
+## Contributing
 
-### Build
+See [CONTRIBUTING](CONTRIBUTING.md)
 
-* Build the main.js bundle using [Webpack](https://webpack.js.org/)
-  * By default, it should compile with babel and provide source maps.
-* Collect all the used external dependencies during the webpack build process.
-  * For each dependency required, get its exact dependency from package.json & yarn.lock files.
-  * If several version of the same dependency are found accross the mono-repo, report it as an error and ask the developper to fix it
-    * This is not easily fixable.
-      * Monopack first intend is to have a static js bundle.
-      * We could perform code splitting and creating a bundle for each monorepo module, but frankly this is too much much in my opinion.
-* Generate a package.json including all required external dependencies.
-* Copy the mono-repo yarn.lock dependency
-* (Optionally) Install the node_modules dependencies
+## Roadmap
 
-Note :
-
-* This will be deterministic if and only if yarn workspaces are used !
-  * Otherwise the mono-repo yarn.lock file will not include all dependencies.
-
-### Watch
-
-* Provide a way to run/debug the application using webpack's watch mode.
-
-### Deliverable
-
-It should be deliverable as a CLI tool:
-
-* That can be installed globally
-* That uses the local installed versions if found.
-
-### Configuration files
-
-A configuration file could be optionally used :
-
-* It will a javascript file
-* It will allow overriding the babel Configuration and the webpack Configuration
-* One configuration file could be used for the whole mono-repo.
+See [issues labelled as enhancement](https://github.com/flegall/monopack/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement)

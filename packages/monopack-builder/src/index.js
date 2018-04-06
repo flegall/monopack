@@ -57,6 +57,8 @@ export async function build({
             },
           },
         ],
+        require.resolve('babel-preset-flow'),
+        require.resolve('babel-preset-stage-2'),
       ],
     };
     const modifiedBabelConfig = babelConfigModifier(baseBabelConfig);
