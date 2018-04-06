@@ -196,7 +196,7 @@ That's the purpose of monopack !
 
 ### Some alternatives
 
-You can used versions and make [LernaJS](https://lernajs.io/) manage versions :
+You can usedversions and make [LernaJS](https://lernajs.io/) manage versions :
 
 * You would:
   * bundle each of your monorepo internal dependencies as a Lerna package (optionally, you can bundle the package with babel or webpack),
@@ -211,10 +211,19 @@ You could bring your whole monorepo in your application release :
 * This will work, but it's not optimal:
   * it will include all your source and will require all your monorepo node_modules, it will increase your deployment time & cost. On one of my previous job, we relied on this, we ended up bundling react-native in each of our node.js's microservice's docker image :(
 * If you are compiling your javascript code (using flow, typescript, or unsupported ES features: you still have to compile your code :
+
   * You could use [babel-node](https://babeljs.io/docs/usage/cli/#babel-node) to execute your main.js file. Babel-node will compile it on the fly.
+
     * This works, but it's not optimal, it requires a lot more memory in order to compile, startup time is increased, and as stated on [babel-node](https://babeljs.io/docs/usage/cli/#babel-node) : _"You should not be using babel-node in production"_
+
+  * You could use [Webpack](https://webpack.js.org/) to bundle your main.js entrypoint and bundle all your used dependencies like you would do with web bundles.
+
+    * Theorically this will work, however in practice it doesn't work, as some node.js modules are not designed to work like this :
+      * Some modules rely on non-constant require() calls, so they won't be bundled
+      * Some modules actually load some config files at runtime time using \_\_filename or \_\_dirname, and therefore the bundle will only work on the machine they were build.
+
   * You could use [Webpack](https://webpack.js.org/) to bundle your main.js entrypoint and rely on [Node externals](https://www.npmjs.com/package/webpack-node-externals) to avoid packaging the node_modules in webpack. Actually that's what [Backpack](https://github.com/jaredpalmer/backpack) does.
-    * This will generate a single main.js file that bundles all the imported sources from the mono-repo.
+    * This will generate a single main.js file that includes only the sources that are imported. This is what monopack does, but you will still have to install all your monorepo dependencies.
 
 ## Contributing
 
