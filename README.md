@@ -104,7 +104,7 @@ const baseBabelConfig = {
 ```
 
 Monopack will use webpack 4 to produce the bundle.
-The bundle is produced in 'development' in order not to obfuscate the code.
+The bundle is produced in 'development' mode in order not to obfuscate the code.
 Source maps are included.
 
 ### Configuration file
