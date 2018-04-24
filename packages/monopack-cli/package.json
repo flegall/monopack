@@ -11,7 +11,7 @@
     "chalk": "2.3.2",
     "fs-copy-file": "1.0.2",
     "import-local": "1.0.0",
-    "lodash": "4.17.5",
+    "lodash": "4.17.10",
     "monopack-builder": "^0.1.2",
     "monopack-config": "^0.1.2",
     "monopack-dependency-collector": "^0.1.2",
