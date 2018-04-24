@@ -10,7 +10,7 @@
     "monopack-repo-builder": "^0.1.2"
   },
   "dependencies": {
-    "lodash": "4.17.5",
+    "lodash": "4.17.10",
     "tcomb-validation": "3.4.1"
   }
 }

@@ -14,7 +14,7 @@
     "babel-preset-stage-2": "6.24.1",
     "glob": "7.1.2",
     "glob-promise": "3.4.0",
-    "lodash": "4.17.5",
+    "lodash": "4.17.10",
     "webpack": "4.6.0"
   }
 }
