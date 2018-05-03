@@ -92,6 +92,15 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
+"@cloudcmd/copy-file@^1.1.0":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@cloudcmd/copy-file/-/copy-file-1.1.1.tgz#59749cb865c7bbc748a5642b21b089704e699121"
+  dependencies:
+    es6-promisify "^6.0.0"
+    pipe-io "^3.0.0"
+    wraptile "^2.0.0"
+    zames "^2.0.0"
+
 "@types/events@*":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@types/events/-/events-1.2.0.tgz#81a6731ce4df43619e5c8c945383b3e62a89ea86"
@@ -1933,6 +1942,10 @@ currently-unhandled@^0.4.1:
   dependencies:
     array-find-index "^1.0.1"
 
+currify@^2.0.0:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/currify/-/currify-2.0.6.tgz#86064386778e315c043382d53ba278efc6a9ef87"
+
 cyclist@~0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-0.2.2.tgz#1b33792e11e914a2fd6d6ed6447464444e5fa640"
@@ -2228,6 +2241,10 @@ es-to-primitive@^1.1.1:
     is-callable "^1.1.1"
     is-date-object "^1.0.1"
     is-symbol "^1.0.1"
+
+es6-promisify@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/es6-promisify/-/es6-promisify-6.0.0.tgz#b526a75eaa5ca600e960bf3d5ad98c40d75c7203"
 
 escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
   version "1.0.5"
@@ -2750,11 +2767,11 @@ from2@^2.1.0:
     inherits "^2.0.1"
     readable-stream "^2.0.0"
 
-fs-copy-file@1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/fs-copy-file/-/fs-copy-file-1.0.2.tgz#2a340b80b50eeb925c75637ad01ade02c0bb1a6d"
+fs-copy-file@2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/fs-copy-file/-/fs-copy-file-2.1.2.tgz#a9360c8b0e34b58239a8d38a922dab539caf1ca3"
   dependencies:
-    pipe-io "^2.0.5"
+    "@cloudcmd/copy-file" "^1.1.0"
 
 fs-extra@^4.0.1:
   version "4.0.3"
@@ -5196,9 +5213,9 @@ pinkie@^2.0.0:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/pinkie/-/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
 
-pipe-io@^2.0.5:
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/pipe-io/-/pipe-io-2.0.5.tgz#faa30e51fdb00cc40bb6e4404d8b9e134c1f1f47"
+pipe-io@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/pipe-io/-/pipe-io-3.0.1.tgz#c56bd1400d9b7895cbcda17cf39cc1e88d46ab9d"
 
 pkg-dir@^1.0.0:
   version "1.0.0"
@@ -6741,6 +6758,10 @@ wrappy@1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
 
+wraptile@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/wraptile/-/wraptile-2.0.0.tgz#fc893b8c3b10113ce219234ee6f17b5b48654c8a"
+
 write-file-atomic@^2.0.0, write-file-atomic@^2.1.0, write-file-atomic@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/write-file-atomic/-/write-file-atomic-2.3.0.tgz#1ff61575c2e2a4e8e510d6fa4e243cce183999ab"
@@ -6904,3 +6925,10 @@ yargs@~3.10.0:
     cliui "^2.1.0"
     decamelize "^1.0.0"
     window-size "0.1.0"
+
+zames@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/zames/-/zames-2.0.0.tgz#2d274df02a78cd9cc6f164b0eb5e54700dc83336"
+  dependencies:
+    currify "^2.0.0"
+    es6-promisify "^6.0.0"
