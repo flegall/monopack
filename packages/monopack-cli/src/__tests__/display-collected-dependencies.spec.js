@@ -1,6 +1,4 @@
 // @flow
-import { expect } from 'chai';
-
 import displayCollectedDependencies from '../display-collected-dependencies';
 
 describe('displayCollectedDependencies', () => {
@@ -21,11 +19,11 @@ describe('displayCollectedDependencies', () => {
     const result = displayCollectedDependencies(collectedDependencies);
 
     // then
-    expect(result.exitCode).to.equal(0);
+    expect(result.exitCode).toBe(0);
     if (result.exitCode === 0) {
-      expect(result.dependencies).to.deep.equal({ lodash: '4.17.5' });
-      expect(result.yarnLockFileToCopy).to.equal('yarn.lock');
-      expect(result.output).to.have.string(
+      expect(result.dependencies).toEqual({ lodash: '4.17.5' });
+      expect(result.yarnLockFileToCopy).toBe('yarn.lock');
+      expect(result.output).toContain(
         '=>> monopack has resolved all dependencies, build will be deterministic'
       );
     }
@@ -48,11 +46,11 @@ describe('displayCollectedDependencies', () => {
     const result = displayCollectedDependencies(collectedDependencies);
 
     // then
-    expect(result.exitCode).to.equal(0);
+    expect(result.exitCode).toBe(0);
     if (result.exitCode === 0) {
-      expect(result.dependencies).to.deep.equal({ lodash: '4.17.5' });
-      expect(result.yarnLockFileToCopy).to.equal(null);
-      expect(result.output).to.have.string(
+      expect(result.dependencies).toEqual({ lodash: '4.17.5' });
+      expect(result.yarnLockFileToCopy).toBe(null);
+      expect(result.output).toContain(
         '=>> monopack has resolved all dependencies, build will be deterministic'
       );
     }
@@ -75,11 +73,11 @@ describe('displayCollectedDependencies', () => {
     const result = displayCollectedDependencies(collectedDependencies);
 
     // then
-    expect(result.exitCode).to.equal(0);
+    expect(result.exitCode).toBe(0);
     if (result.exitCode === 0) {
-      expect(result.dependencies).to.deep.equal({ lodash: '4.17.5' });
-      expect(result.yarnLockFileToCopy).to.equal('yarn.lock');
-      expect(result.output).to.have.string(
+      expect(result.dependencies).toEqual({ lodash: '4.17.5' });
+      expect(result.yarnLockFileToCopy).toBe('yarn.lock');
+      expect(result.output).toContain(
         '=>> monopack has resolved all dependencies, however build will not be deterministic as multiple yarn.lock files have been found'
       );
     }
@@ -101,11 +99,11 @@ describe('displayCollectedDependencies', () => {
     const result = displayCollectedDependencies(collectedDependencies);
 
     // then
-    expect(result.exitCode).to.equal(0);
+    expect(result.exitCode).toBe(0);
     if (result.exitCode === 0) {
-      expect(result.dependencies).to.deep.equal({ lodash: '4.17.5' });
-      expect(result.yarnLockFileToCopy).to.equal(null);
-      expect(result.output).to.have.string(
+      expect(result.dependencies).toEqual({ lodash: '4.17.5' });
+      expect(result.yarnLockFileToCopy).toBe(null);
+      expect(result.output).toContain(
         '=>> monopack has resolved all dependencies, however build will not be deterministic as no yarn.lock files have been found'
       );
     }
@@ -127,10 +125,10 @@ describe('displayCollectedDependencies', () => {
     const result = displayCollectedDependencies(collectedDependencies);
 
     // then
-    expect(result.exitCode).to.equal(1);
+    expect(result.exitCode).toBe(1);
     if (result.exitCode === 1) {
-      expect(result.output).to.have.string('=>> Undeclared dependencies');
-      expect(result.output).to.have.string('    lodash from /home/context');
+      expect(result.output).toContain('=>> Undeclared dependencies');
+      expect(result.output).toContain('    lodash from /home/context');
     }
   });
 
@@ -150,14 +148,14 @@ describe('displayCollectedDependencies', () => {
     const result = displayCollectedDependencies(collectedDependencies);
 
     // then
-    expect(result.exitCode).to.equal(2);
+    expect(result.exitCode).toBe(2);
     if (result.exitCode === 2) {
-      expect(result.output).to.have.string('=>> Conflicting dependencies');
-      expect(result.output).to.have.string('    Conflict #1');
-      expect(result.output).to.have.string(
+      expect(result.output).toContain('=>> Conflicting dependencies');
+      expect(result.output).toContain('    Conflict #1');
+      expect(result.output).toContain(
         '      lodash@4.0.17 from /home/project/context1'
       );
-      expect(result.output).to.have.string(
+      expect(result.output).toContain(
         '      lodash@4.0.18 from /home/project/context2'
       );
     }

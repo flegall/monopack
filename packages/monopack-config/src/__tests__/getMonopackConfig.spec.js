@@ -1,10 +1,8 @@
 // @flow
-import { expect } from 'chai';
 import { aMonorepo, aPackage } from 'monopack-repo-builder';
 
 import { getMonopackConfig } from '..';
 
-// $FlowIgnore
 jest.setTimeout(30000);
 
 describe('getMonopackConfig() - monorepo root resolution', () => {
@@ -20,10 +18,10 @@ describe('getMonopackConfig() - monorepo root resolution', () => {
         const config = getMonopackConfig(subPackagePath + '/main.js');
 
         // then
-        expect(config.monorepoRootPath).to.equal(root);
+        expect(config.monorepoRootPath).toBe(root);
         const ref = {}; // Verify that the config is not modified
-        expect(config.babelConfigModifier(ref)).to.equal(ref);
-        expect(config.webpackConfigModifier(ref)).to.equal(ref);
+        expect(config.babelConfigModifier(ref)).toBe(ref);
+        expect(config.webpackConfigModifier(ref)).toBe(ref);
       });
   });
 
@@ -42,10 +40,10 @@ describe('getMonopackConfig() - monorepo root resolution', () => {
         const config = getMonopackConfig(subPackagePath + '/main.js');
 
         // then
-        expect(config.monorepoRootPath).to.equal(root);
+        expect(config.monorepoRootPath).toBe(root);
         const ref = {}; // Verify that the config is not modified
-        expect(config.babelConfigModifier(ref)).to.equal(ref);
-        expect(config.webpackConfigModifier(ref)).to.equal(ref);
+        expect(config.babelConfigModifier(ref)).toBe(ref);
+        expect(config.webpackConfigModifier(ref)).toBe(ref);
       });
   });
 
@@ -60,10 +58,10 @@ describe('getMonopackConfig() - monorepo root resolution', () => {
         const config = getMonopackConfig(subPackagePath + '/main.js');
 
         // then
-        expect(config.monorepoRootPath).to.equal(root);
+        expect(config.monorepoRootPath).toBe(root);
         const ref = {}; // Verify that the config is not modified
-        expect(config.babelConfigModifier(ref)).to.equal(ref);
-        expect(config.webpackConfigModifier(ref)).to.equal(ref);
+        expect(config.babelConfigModifier(ref)).toBe(ref);
+        expect(config.webpackConfigModifier(ref)).toBe(ref);
       });
   });
 
@@ -79,10 +77,10 @@ describe('getMonopackConfig() - monorepo root resolution', () => {
         const config = getMonopackConfig(subPackagePath + '/main.js');
 
         // then
-        expect(config.monorepoRootPath).to.equal(root);
+        expect(config.monorepoRootPath).toBe(root);
         const ref = {}; // Verify that the config is not modified
-        expect(config.babelConfigModifier(ref)).to.equal(ref);
-        expect(config.webpackConfigModifier(ref)).to.equal(ref);
+        expect(config.babelConfigModifier(ref)).toBe(ref);
+        expect(config.webpackConfigModifier(ref)).toBe(ref);
       });
   });
 
@@ -96,10 +94,10 @@ describe('getMonopackConfig() - monorepo root resolution', () => {
         const config = getMonopackConfig(subPackagePath + '/main.js');
 
         // then
-        expect(config.monorepoRootPath).to.equal(root);
+        expect(config.monorepoRootPath).toBe(root);
         const ref = {}; // Verify that the config is not modified
-        expect(config.babelConfigModifier(ref)).to.equal(ref);
-        expect(config.webpackConfigModifier(ref)).to.equal(ref);
+        expect(config.babelConfigModifier(ref)).toBe(ref);
+        expect(config.webpackConfigModifier(ref)).toBe(ref);
       });
   });
 
@@ -113,10 +111,10 @@ describe('getMonopackConfig() - monorepo root resolution', () => {
         const config = getMonopackConfig(subPackagePath + '/main.js');
 
         // then
-        expect(config.monorepoRootPath).to.equal(root);
+        expect(config.monorepoRootPath).toBe(root);
         const ref = {}; // Verify that the config is not modified
-        expect(config.babelConfigModifier(ref)).to.equal(ref);
-        expect(config.webpackConfigModifier(ref)).to.equal(ref);
+        expect(config.babelConfigModifier(ref)).toBe(ref);
+        expect(config.webpackConfigModifier(ref)).toBe(ref);
       });
   });
 
@@ -131,10 +129,10 @@ describe('getMonopackConfig() - monorepo root resolution', () => {
         const config = getMonopackConfig(subPackagePath + '/main.js');
 
         // then
-        expect(config.monorepoRootPath).to.equal(root);
+        expect(config.monorepoRootPath).toBe(root);
         const ref = {}; // Verify that the config is not modified
-        expect(config.babelConfigModifier(ref)).to.equal(ref);
-        expect(config.webpackConfigModifier(ref)).to.equal(ref);
+        expect(config.babelConfigModifier(ref)).toBe(ref);
+        expect(config.webpackConfigModifier(ref)).toBe(ref);
       });
   });
 
@@ -148,10 +146,10 @@ describe('getMonopackConfig() - monorepo root resolution', () => {
         const config = getMonopackConfig(subPackagePath + '/main.js');
 
         // then
-        expect(config.monorepoRootPath).to.equal(root);
+        expect(config.monorepoRootPath).toBe(root);
         const ref = {}; // Verify that the config is not modified
-        expect(config.babelConfigModifier(ref)).to.equal(ref);
-        expect(config.webpackConfigModifier(ref)).to.equal(ref);
+        expect(config.babelConfigModifier(ref)).toBe(ref);
+        expect(config.webpackConfigModifier(ref)).toBe(ref);
       });
   });
 });
@@ -172,9 +170,9 @@ describe('getMonopackConfig() - config file validation', () => {
         }
 
         // then
-        expect(error).to.not.be.undefined;
+        expect(error).toBeDefined();
         if (error) {
-          expect(error.message).to.have.string(
+          expect(error.message).toContain(
             '"Invalid value 1 supplied to /monorepoRootPath: String | Nil'
           );
         }
@@ -196,9 +194,9 @@ describe('getMonopackConfig() - config file validation', () => {
         }
 
         // then
-        expect(error).to.not.be.undefined;
+        expect(error).toBeDefined();
         if (error) {
-          expect(error.message).to.have.string(
+          expect(error.message).toContain(
             '"Invalid value 1 supplied to /webpackConfigModifier: Function | Nil'
           );
         }
@@ -220,9 +218,9 @@ describe('getMonopackConfig() - config file validation', () => {
         }
 
         // then
-        expect(error).to.not.be.undefined;
+        expect(error).toBeDefined();
         if (error) {
-          expect(error.message).to.have.string(
+          expect(error.message).toContain(
             '"Invalid value 1 supplied to /babelConfigModifier: Function | Nil'
           );
         }

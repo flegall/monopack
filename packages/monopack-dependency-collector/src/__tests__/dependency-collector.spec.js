@@ -3,15 +3,11 @@ import fs from 'fs';
 import path from 'path';
 
 import Bluebird from 'bluebird';
-import chai, { expect } from 'chai';
 import { aMonorepo, aPackage } from 'monopack-repo-builder';
 
 import DependencyCollector from '../index';
 
-// $FlowIgnore
 jest.setTimeout(60000);
-
-chai.config.truncateThreshold = 0;
 
 describe('dependency-collector', () => {
   it('should collect a top-level dependency installed with yarn from the monorepo root', async () => {
@@ -29,7 +25,7 @@ describe('dependency-collector', () => {
 
         // then
         const result = await collector.resolveDependencies();
-        expect(result).to.deep.equal({
+        expect(result).toEqual({
           type: 'SUCCESS_FULLY_DETERMINISTIC',
           yarnLockFileToCopy: path.join(root, 'yarn.lock'),
           dependencies: [
@@ -61,7 +57,7 @@ describe('dependency-collector', () => {
 
         // then
         const result = await collector.resolveDependencies();
-        expect(result).to.deep.equal({
+        expect(result).toEqual({
           type: 'SUCCESS_FULLY_DETERMINISTIC',
           yarnLockFileToCopy: path.join(root, 'yarn.lock'),
           dependencies: [
@@ -96,7 +92,7 @@ describe('dependency-collector', () => {
 
         // then
         const result = await collector.resolveDependencies();
-        expect(result).to.deep.equal({
+        expect(result).toEqual({
           type: 'SUCCESS_FULLY_DETERMINISTIC',
           yarnLockFileToCopy: path.join(root, 'yarn.lock'),
           dependencies: [
@@ -124,7 +120,7 @@ describe('dependency-collector', () => {
 
         // then
         const result = await collector.resolveDependencies();
-        expect(result).to.deep.equal({
+        expect(result).toEqual({
           type: 'FAILURE_UNDECLARED_DEPENDENCIES',
           undeclaredDependencies: [{ dependency: 'lodash', context: root }],
         });
@@ -162,7 +158,7 @@ describe('dependency-collector', () => {
 
         // then
         const result = await collector.resolveDependencies();
-        expect(result).to.deep.equal({
+        expect(result).toEqual({
           type: 'SUCCESS_FULLY_DETERMINISTIC',
           yarnLockFileToCopy: path.join(root, 'yarn.lock'),
           dependencies: [
@@ -206,7 +202,7 @@ describe('dependency-collector', () => {
 
         // then
         const result = await collector.resolveDependencies();
-        expect(result).to.deep.equal({
+        expect(result).toEqual({
           type: 'FAILURE_NEEDS_DEPENDENCY_CONFLICT_RESOLUTION',
           conflicts: {
             lodash: [
@@ -242,7 +238,7 @@ describe('dependency-collector', () => {
 
         // then
         const result = await collector.resolveDependencies();
-        expect(result).to.deep.equal({
+        expect(result).toEqual({
           type: 'SUCCESS_NOT_DETERMINISTIC_NO_YARN_LOCKS',
           dependencies: [
             {
@@ -285,7 +281,7 @@ describe('dependency-collector', () => {
 
         // then
         const result = await collector.resolveDependencies();
-        expect(result).to.deep.equal({
+        expect(result).toEqual({
           type: 'FAILURE_NEEDS_DEPENDENCY_CONFLICT_RESOLUTION',
           conflicts: {
             lodash: [
@@ -334,7 +330,7 @@ describe('dependency-collector', () => {
 
         // then
         const result = await collector.resolveDependencies();
-        expect(result).to.deep.equal({
+        expect(result).toEqual({
           type: 'SUCCESS_NOT_DETERMINISTIC_MULTIPLE_YARN_LOCKS',
           yarnLockFileToCopy: path.join(root, 'packages', 'sub1', 'yarn.lock'),
           dependencies: [
@@ -378,7 +374,7 @@ describe('dependency-collector', () => {
 
         // then
         const result = await collector.resolveDependencies();
-        expect(result).to.deep.equal({
+        expect(result).toEqual({
           type: 'FAILURE_NEEDS_DEPENDENCY_CONFLICT_RESOLUTION',
           conflicts: {
             lodash: [

@@ -1,14 +1,12 @@
 // @flow
 import path from 'path';
 
-import { expect } from 'chai';
 import { executeChildProcess } from 'monopack-process';
 import type { ExitOrSignal } from 'monopack-process';
 import { aMonorepo, aPackage } from 'monopack-repo-builder';
 
 import { main } from '../main';
 
-// $FlowIgnore
 jest.setTimeout(60000);
 
 describe('monopack build', () => {
@@ -27,10 +25,10 @@ describe('monopack build', () => {
           }
 
           // then
-          expect(error).not.to.be.null;
+          expect(error).not.toBeNull();
           if (error) {
-            expect(error.message).to.have.string('Compilation failed');
-            expect(error.message).to.have.string('entry file was not found');
+            expect(error.message).toContain('Compilation failed');
+            expect(error.message).toContain('entry file was not found');
           }
         });
     });
@@ -53,12 +51,12 @@ describe('monopack build', () => {
           } = await buildAndRun(root, 'main.js');
 
           // then
-          expect(compilationOutput).to.include(
+          expect(compilationOutput).toContain(
             'monopack successfully packaged your app'
           );
-          expect(result).to.deep.equal({ type: 'EXIT', exitCode: 0 });
-          expect(stdout).to.equal('ok\n');
-          expect(stderr).to.equal('');
+          expect(result).toEqual({ type: 'EXIT', exitCode: 0 });
+          expect(stdout).toBe('ok\n');
+          expect(stderr).toBe('');
         });
     });
 
@@ -92,12 +90,12 @@ describe('monopack build', () => {
           } = await buildAndRun(root, 'main.js');
 
           // then
-          expect(compilationOutput).to.include(
+          expect(compilationOutput).toContain(
             'monopack successfully packaged your app'
           );
-          expect(stdout).to.equal('');
-          expect(result).to.deep.equal({ type: 'EXIT', exitCode: 1 });
-          expect(stderr).to.have.string('main.js:9:21');
+          expect(stdout).toBe('');
+          expect(result).toEqual({ type: 'EXIT', exitCode: 1 });
+          expect(stderr).toContain('main.js:9:21');
         });
     });
 
@@ -130,12 +128,12 @@ describe('monopack build', () => {
           } = await buildAndRun(root, 'main.js');
 
           // then
-          expect(compilationOutput).to.include(
+          expect(compilationOutput).toContain(
             'monopack successfully packaged your app'
           );
-          expect(result).to.deep.equal({ type: 'EXIT', exitCode: 0 });
-          expect(stdout).to.equal('ok\n');
-          expect(stderr).to.equal('');
+          expect(result).toEqual({ type: 'EXIT', exitCode: 0 });
+          expect(stdout).toBe('ok\n');
+          expect(stderr).toBe('');
         });
     });
 
@@ -188,12 +186,12 @@ describe('monopack build', () => {
           } = await buildAndRun(root, 'main.js');
 
           // then
-          expect(compilationOutput).to.include(
+          expect(compilationOutput).toContain(
             'monopack successfully packaged your app'
           );
-          expect(result).to.deep.equal({ type: 'EXIT', exitCode: 0 });
-          expect(stdout).to.equal('10\n');
-          expect(stderr).to.equal('');
+          expect(result).toEqual({ type: 'EXIT', exitCode: 0 });
+          expect(stdout).toBe('10\n');
+          expect(stderr).toBe('');
         });
     });
 
@@ -237,12 +235,12 @@ describe('monopack build', () => {
           } = await buildAndRun(root, './packages/test-mp-main/main.js');
 
           // then
-          expect(compilationOutput).to.include(
+          expect(compilationOutput).toContain(
             'monopack successfully packaged your app'
           );
-          expect(stderr).to.equal('');
-          expect(result).to.deep.equal({ type: 'EXIT', exitCode: 0 });
-          expect(stdout).to.equal('ok\n');
+          expect(stderr).toBe('');
+          expect(result).toEqual({ type: 'EXIT', exitCode: 0 });
+          expect(stdout).toBe('ok\n');
         });
     });
 
@@ -286,12 +284,12 @@ describe('monopack build', () => {
           } = await buildAndRun(root, './packages/test-mp-main/main.js');
 
           // then
-          expect(compilationOutput).to.include(
+          expect(compilationOutput).toContain(
             'monopack successfully packaged your app'
           );
-          expect(stderr).to.equal('');
-          expect(result).to.deep.equal({ type: 'EXIT', exitCode: 0 });
-          expect(stdout).to.equal('ok\n');
+          expect(stderr).toBe('');
+          expect(result).toEqual({ type: 'EXIT', exitCode: 0 });
+          expect(stdout).toBe('ok\n');
         });
     });
 
@@ -312,9 +310,9 @@ describe('monopack build', () => {
           const { result, stdout, stderr } = await buildAndRun(root, 'main.js');
 
           // then
-          expect(stderr).to.equal('');
-          expect(stdout).to.equal('false\n');
-          expect(result).to.deep.equal({ type: 'EXIT', exitCode: 0 });
+          expect(stderr).toBe('');
+          expect(stdout).toBe('false\n');
+          expect(result).toEqual({ type: 'EXIT', exitCode: 0 });
         });
     });
 
@@ -341,9 +339,9 @@ describe('monopack build', () => {
           );
 
           // then
-          expect(stderr).to.equal('');
-          expect(stdout).to.equal('4.17.5\n');
-          expect(result).to.deep.equal({ type: 'EXIT', exitCode: 0 });
+          expect(stderr).toBe('');
+          expect(stdout).toBe('4.17.5\n');
+          expect(result).toEqual({ type: 'EXIT', exitCode: 0 });
         });
     });
 

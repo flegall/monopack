@@ -1,6 +1,4 @@
 // @flow
-import { expect } from 'chai';
-
 import { main } from '../main';
 
 describe('monopack disabled commands', () => {
@@ -17,11 +15,11 @@ describe('monopack disabled commands', () => {
       outputDirectory: '.',
     });
 
-    expect(result).to.deep.equal({
+    expect(result).toEqual({
       success: false,
       exitCode: -1,
     });
-    expect(buffer).to.have.string('--watch toggle is not implemented yet !');
+    expect(buffer).toContain('--watch toggle is not implemented yet !');
   });
 
   it('run should return -1 with error message', async () => {
@@ -37,11 +35,11 @@ describe('monopack disabled commands', () => {
       outputDirectory: '.',
     });
 
-    expect(result).to.deep.equal({
+    expect(result).toEqual({
       success: false,
       exitCode: -1,
     });
-    expect(buffer).to.have.string('run command is not implemented yet !');
+    expect(buffer).toContain('run command is not implemented yet !');
   });
 
   it('debug should return -1 with error message', async () => {
@@ -57,10 +55,10 @@ describe('monopack disabled commands', () => {
       outputDirectory: '.',
     });
 
-    expect(result).to.deep.equal({
+    expect(result).toEqual({
       success: false,
       exitCode: -1,
     });
-    expect(buffer).to.have.string('debug command is not implemented yet !');
+    expect(buffer).toContain('debug command is not implemented yet !');
   });
 });

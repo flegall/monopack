@@ -1,8 +1,6 @@
 // @flow
-import { expect } from 'chai';
 import { executeChildProcess } from 'monopack-process';
 
-// $FlowIgnore
 jest.setTimeout(30000);
 
 describe('monopack cli validation', () => {
@@ -13,10 +11,10 @@ describe('monopack cli validation', () => {
       { cwd: __dirname }
     );
 
-    expect(result).to.deep.equal({ type: 'EXIT', exitCode: 1 });
-    expect(stderr).to.equal(`${helpMessage}You need to enter a command
+    expect(result).toEqual({ type: 'EXIT', exitCode: 1 });
+    expect(stderr).toBe(`${helpMessage}You need to enter a command
 `);
-    expect(stdout).to.equal('');
+    expect(stdout).toBe('');
   });
 
   it('when invoking with an unknown command, it should return an error and display help', async () => {
@@ -26,10 +24,10 @@ describe('monopack cli validation', () => {
       { cwd: __dirname }
     );
 
-    expect(result).to.deep.equal({ type: 'EXIT', exitCode: 1 });
-    expect(stderr).to.equal(`${helpMessage}Unknown argument: unkownCommand
+    expect(result).toEqual({ type: 'EXIT', exitCode: 1 });
+    expect(stderr).toBe(`${helpMessage}Unknown argument: unkownCommand
 `);
-    expect(stdout).to.equal('');
+    expect(stdout).toBe('');
   });
 
   it('when invoking with --help, it should return no error and display help', async () => {
@@ -39,9 +37,9 @@ describe('monopack cli validation', () => {
       { cwd: __dirname }
     );
 
-    expect(result).to.deep.equal({ type: 'EXIT', exitCode: 0 });
-    expect(stderr).to.equal('');
-    expect(stdout).to.equal(helpMessage);
+    expect(result).toEqual({ type: 'EXIT', exitCode: 0 });
+    expect(stderr).toBe('');
+    expect(stdout).toBe(helpMessage);
   });
 
   it('when invoking with --help and a command, it should return no error and display help for that command', async () => {
@@ -51,9 +49,9 @@ describe('monopack cli validation', () => {
       { cwd: __dirname }
     );
 
-    expect(result).to.deep.equal({ type: 'EXIT', exitCode: 0 });
-    expect(stderr).to.equal('');
-    expect(stdout).to.equal(buildCommandHelp);
+    expect(result).toEqual({ type: 'EXIT', exitCode: 0 });
+    expect(stderr).toBe('');
+    expect(stdout).toBe(buildCommandHelp);
   });
 
   it('when invoking with a command and no main file, it should return an error and display help for that command', async () => {
@@ -63,11 +61,12 @@ describe('monopack cli validation', () => {
       { cwd: __dirname }
     );
 
-    expect(result).to.deep.equal({ type: 'EXIT', exitCode: 1 });
-    expect(stdout).to.equal('');
-    expect(stderr).to
-      .equal(`${buildCommandHelp}Not enough non-option arguments: got 0, need at least 1
-`);
+    expect(result).toEqual({ type: 'EXIT', exitCode: 1 });
+    expect(stdout).toBe('');
+    expect(stderr).toBe(
+      `${buildCommandHelp}Not enough non-option arguments: got 0, need at least 1
+`
+    );
   });
 
   it('when invoking with --version it should return no error and display the package version', async () => {
@@ -77,9 +76,9 @@ describe('monopack cli validation', () => {
       { cwd: __dirname }
     );
 
-    expect(result).to.deep.equal({ type: 'EXIT', exitCode: 0 });
-    expect(stdout).to.equal(require('../../package.json').version + '\n');
-    expect(stderr).to.equal('');
+    expect(result).toEqual({ type: 'EXIT', exitCode: 0 });
+    expect(stdout).toBe(require('../../package.json').version + '\n');
+    expect(stderr).toBe('');
   });
 
   it('when invoking with a command, a main file and -d without target it should return an error and display help for the command', async () => {
@@ -89,11 +88,12 @@ describe('monopack cli validation', () => {
       { cwd: __dirname }
     );
 
-    expect(result).to.deep.equal({ type: 'EXIT', exitCode: 1 });
-    expect(stderr).to
-      .equal(`${buildCommandHelp}Not enough non-option arguments: got 0, need at least 1
-`);
-    expect(stdout).to.equal('');
+    expect(result).toEqual({ type: 'EXIT', exitCode: 1 });
+    expect(stderr).toBe(
+      `${buildCommandHelp}Not enough non-option arguments: got 0, need at least 1
+`
+    );
+    expect(stdout).toBe('');
   });
 });
 

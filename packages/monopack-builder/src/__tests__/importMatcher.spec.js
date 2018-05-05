@@ -1,6 +1,4 @@
 // @flow
-import { expect } from 'chai';
-
 import { importMatcher } from '../importMatcher';
 
 describe('importMatcher', () => {
@@ -10,7 +8,7 @@ describe('importMatcher', () => {
 
     const match = importMatcher(mainJs, context, mainJs, []);
 
-    expect(match).to.deep.equal({ type: 'INLINE' });
+    expect(match).toEqual({ type: 'INLINE' });
   });
 
   it('a local file mainJs file must be inlined', () => {
@@ -19,7 +17,7 @@ describe('importMatcher', () => {
 
     const match = importMatcher('./module.js', context, mainJs, []);
 
-    expect(match).to.deep.equal({ type: 'INLINE' });
+    expect(match).toEqual({ type: 'INLINE' });
   });
 
   it('a monorepo package must be inlined', () => {
@@ -30,7 +28,7 @@ describe('importMatcher', () => {
       'my-super-lib',
     ]);
 
-    expect(match).to.deep.equal({ type: 'INLINE' });
+    expect(match).toEqual({ type: 'INLINE' });
   });
 
   it('a module within a monorepo package must be inlined', () => {
@@ -41,7 +39,7 @@ describe('importMatcher', () => {
       'my-super-lib',
     ]);
 
-    expect(match).to.deep.equal({ type: 'INLINE' });
+    expect(match).toEqual({ type: 'INLINE' });
   });
 
   it('a request to a nodejs package must be imported and no dependency should be provided', () => {
@@ -50,7 +48,7 @@ describe('importMatcher', () => {
 
     const match = importMatcher('path', context, mainJs, []);
 
-    expect(match).to.deep.equal({ type: 'IMPORT' });
+    expect(match).toEqual({ type: 'IMPORT' });
   });
 
   it('a module within nodejs package must be imported and no dependency should be provided', () => {
@@ -59,7 +57,7 @@ describe('importMatcher', () => {
 
     const match = importMatcher('path/module', context, mainJs, []);
 
-    expect(match).to.deep.equal({ type: 'IMPORT' });
+    expect(match).toEqual({ type: 'IMPORT' });
   });
 
   it('a third party library must be imported and a dependency should be provided', () => {
@@ -70,7 +68,7 @@ describe('importMatcher', () => {
       'my-super-lib',
     ]);
 
-    expect(match).to.deep.equal({
+    expect(match).toEqual({
       type: 'IMPORT',
       externalDependency: {
         packageName: 'third-party',
@@ -87,7 +85,7 @@ describe('importMatcher', () => {
       'my-super-lib',
     ]);
 
-    expect(match).to.deep.equal({
+    expect(match).toEqual({
       type: 'IMPORT',
       externalDependency: {
         packageName: 'third-party',
@@ -104,7 +102,7 @@ describe('importMatcher', () => {
       'my-super-lib',
     ]);
 
-    expect(match).to.deep.equal({
+    expect(match).toEqual({
       type: 'IMPORT',
       externalDependency: {
         packageName: '@scope/third-party',
@@ -121,7 +119,7 @@ describe('importMatcher', () => {
       'my-super-lib',
     ]);
 
-    expect(match).to.deep.equal({
+    expect(match).toEqual({
       type: 'IMPORT',
       externalDependency: {
         packageName: '@scope/third-party',

@@ -1,15 +1,11 @@
 // @flow
 import path from 'path';
 
-import chai, { expect } from 'chai';
 import { aMonorepo, aPackage } from 'monopack-repo-builder';
 
 import DependencyCollector from '../index';
 
-// $FlowIgnore
 jest.setTimeout(60000);
-
-chai.config.truncateThreshold = 0;
 
 describe('dependency-collector peer dependencies', () => {
   it('should collect top-level installed peer dependencies', async () => {
@@ -30,7 +26,7 @@ describe('dependency-collector peer dependencies', () => {
 
         // then
         const result = await collector.resolveDependencies();
-        expect(result).to.deep.equal({
+        expect(result).toEqual({
           type: 'SUCCESS_FULLY_DETERMINISTIC',
           yarnLockFileToCopy: path.join(root, 'yarn.lock'),
           dependencies: [
@@ -64,7 +60,7 @@ describe('dependency-collector peer dependencies', () => {
 
         // then
         const result = await collector.resolveDependencies();
-        expect(result).to.deep.equal({
+        expect(result).toEqual({
           type: 'FAILURE_UNDECLARED_DEPENDENCIES',
           undeclaredDependencies: [
             {
@@ -101,7 +97,7 @@ describe('dependency-collector peer dependencies', () => {
 
         // then
         const result = await collector.resolveDependencies();
-        expect(result).to.deep.equal({
+        expect(result).toEqual({
           type: 'SUCCESS_FULLY_DETERMINISTIC',
           yarnLockFileToCopy: path.join(root, 'yarn.lock'),
           dependencies: [
@@ -142,7 +138,7 @@ describe('dependency-collector peer dependencies', () => {
 
         // then
         const result = await collector.resolveDependencies();
-        expect(result).to.deep.equal({
+        expect(result).toEqual({
           type: 'FAILURE_UNDECLARED_DEPENDENCIES',
           undeclaredDependencies: [
             {
