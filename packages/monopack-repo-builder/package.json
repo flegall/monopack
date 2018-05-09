@@ -11,6 +11,6 @@
     "tmp-promise": "1.0.4"
   },
   "devDependencies": {
-    "monopack-process": "^0.1.2"
+    "monopack-process": "0.1.2"
   }
 }
