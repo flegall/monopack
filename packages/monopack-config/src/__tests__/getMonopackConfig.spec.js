@@ -154,6 +154,50 @@ describe('getMonopackConfig() - monorepo root resolution', () => {
   });
 });
 
+describe('getMonopackConfig() - installPackagesAfterBuild option', () => {
+  it('when no installPackagesAfterBuild option is provided, the default value should be true', async () => {
+    // given
+    await aMonorepo()
+      .named('root')
+      .withConfigFile(`module.exports = {};`)
+      .execute(async ({ root }) => {
+        // when
+        const config = getMonopackConfig(root + '/main.js');
+
+        // then
+        expect(config.installPackagesAfterBuild).toBe(true);
+      });
+  });
+
+  it('when an installPackagesAfterBuild option is provided to true, the value should be true', async () => {
+    // given
+    await aMonorepo()
+      .named('root')
+      .withConfigFile(`module.exports = {installPackagesAfterBuild: true};`)
+      .execute(async ({ root }) => {
+        // when
+        const config = getMonopackConfig(root + '/main.js');
+
+        // then
+        expect(config.installPackagesAfterBuild).toBe(true);
+      });
+  });
+
+  it('when an installPackagesAfterBuild option is provided to false, the value should be false', async () => {
+    // given
+    await aMonorepo()
+      .named('root')
+      .withConfigFile(`module.exports = {installPackagesAfterBuild: false};`)
+      .execute(async ({ root }) => {
+        // when
+        const config = getMonopackConfig(root + '/main.js');
+
+        // then
+        expect(config.installPackagesAfterBuild).toBe(false);
+      });
+  });
+});
+
 describe('getMonopackConfig() - config file validation', () => {
   it(`when an invalid value for 'monorepoRootPath' is given, it should be rejected`, async () => {
     // given
@@ -198,6 +242,30 @@ describe('getMonopackConfig() - config file validation', () => {
         if (error) {
           expect(error.message).toContain(
             '"Invalid value 1 supplied to /webpackConfigModifier: Function | Nil'
+          );
+        }
+      });
+  });
+
+  it(`when an invalid value for 'installPackagesAfterBuild' is given, it should be rejected`, async () => {
+    // given
+    await aMonorepo()
+      .named('root')
+      .withConfigFile(`module.exports = {installPackagesAfterBuild: 1};`)
+      .execute(async ({ root }) => {
+        // when
+        let error;
+        try {
+          getMonopackConfig(root + '/main.js');
+        } catch (e) {
+          error = e;
+        }
+
+        // then
+        expect(error).toBeDefined();
+        if (error) {
+          expect(error.message).toContain(
+            '"Invalid value 1 supplied to /installPackagesAfterBuild: Boolean | Nil'
           );
         }
       });

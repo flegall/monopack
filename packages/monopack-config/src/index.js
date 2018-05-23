@@ -5,11 +5,12 @@ import path from 'path';
 import _ from 'lodash';
 import t from 'tcomb-validation';
 
-export type MonopackConfig = {
+export type MonopackConfig = {|
   +monorepoRootPath: string,
+  +installPackagesAfterBuild: boolean,
   +webpackConfigModifier: Object => Object,
   +babelConfigModifier: Object => Object,
-};
+|};
 
 export function getMonopackConfig(mainFilePath: string): MonopackConfig {
   const directory = path.dirname(mainFilePath);
@@ -24,19 +25,22 @@ export function getMonopackConfig(mainFilePath: string): MonopackConfig {
       monorepoRootPath: lookupMonorepoRoot(mainFilePath),
       webpackConfigModifier: identity,
       babelConfigModifier: identity,
+      installPackagesAfterBuild: true,
     };
   }
 }
 
-type ConfigFile = {
+type ConfigFile = {|
   +monorepoRootPath?: string,
   +webpackConfigModifier?: Object => Object,
   +babelConfigModifier?: Object => Object,
-};
+  +installPackagesAfterBuild?: boolean,
+|};
 const ConfigFileTCombType = t.struct({
   monorepoRootPath: t.union([t.String, t.Nil]),
   webpackConfigModifier: t.union([t.Function, t.Nil]),
   babelConfigModifier: t.union([t.Function, t.Nil]),
+  installPackagesAfterBuild: t.union([t.Boolean, t.Nil]),
 });
 
 function buildConfigFromConfigFile(configFile: string): MonopackConfig {
@@ -59,6 +63,10 @@ function buildConfigFromConfigFile(configFile: string): MonopackConfig {
       : lookupMonorepoRoot(configFile),
     webpackConfigModifier: config.webpackConfigModifier || identity,
     babelConfigModifier: config.babelConfigModifier || identity,
+    installPackagesAfterBuild:
+      config.installPackagesAfterBuild !== undefined
+        ? config['installPackagesAfterBuild']
+        : true,
   };
 }
 
