@@ -12,20 +12,26 @@ export type MonopackConfig = {|
   +babelConfigModifier: Object => Object,
 |};
 
-export function getMonopackConfig(mainFilePath: string): MonopackConfig {
+export function getMonopackConfig(
+  mainFilePath: string,
+  noPackagesInstallation: boolean
+): MonopackConfig {
   const directory = path.dirname(mainFilePath);
   const monopackConfigFile = lookupFileInParentDirs(
     directory,
     'monopack.config.js'
   );
   if (monopackConfigFile) {
-    return buildConfigFromConfigFile(monopackConfigFile);
+    return buildConfigFromConfigFile(
+      monopackConfigFile,
+      noPackagesInstallation
+    );
   } else {
     return {
       monorepoRootPath: lookupMonorepoRoot(mainFilePath),
       webpackConfigModifier: identity,
       babelConfigModifier: identity,
-      installPackagesAfterBuild: true,
+      installPackagesAfterBuild: !noPackagesInstallation,
     };
   }
 }
@@ -43,7 +49,10 @@ const ConfigFileTCombType = t.struct({
   installPackagesAfterBuild: t.union([t.Boolean, t.Nil]),
 });
 
-function buildConfigFromConfigFile(configFile: string): MonopackConfig {
+function buildConfigFromConfigFile(
+  configFile: string,
+  noPackagesInstallation: boolean
+): MonopackConfig {
   const config: ConfigFile = readJsFile(configFile);
   const result = t.validate(config, ConfigFileTCombType);
   if (!result.isValid()) {
@@ -63,10 +72,15 @@ function buildConfigFromConfigFile(configFile: string): MonopackConfig {
       : lookupMonorepoRoot(configFile),
     webpackConfigModifier: config.webpackConfigModifier || identity,
     babelConfigModifier: config.babelConfigModifier || identity,
-    installPackagesAfterBuild:
-      config.installPackagesAfterBuild !== undefined
-        ? config['installPackagesAfterBuild']
-        : true,
+    installPackagesAfterBuild: (() => {
+      if (noPackagesInstallation) {
+        return false;
+      } else {
+        return config.installPackagesAfterBuild !== undefined
+          ? config['installPackagesAfterBuild']
+          : true;
+      }
+    })(),
   };
 }
 

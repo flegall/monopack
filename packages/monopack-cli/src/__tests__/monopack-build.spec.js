@@ -389,6 +389,7 @@ async function build(
     mainJs,
     currentWorkingDirectory: root,
     command: 'build',
+    noPackagesInstallation: false,
   });
   if (result.success) {
     const buildDirectory = result.outputDirectory;

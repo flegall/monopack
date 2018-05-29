@@ -1,7 +1,7 @@
 // @flow
 import { executeChildProcess } from 'monopack-process';
 
-jest.setTimeout(30000);
+jest.setTimeout(60000);
 
 describe('monopack cli validation', () => {
   it('when invoking without arguments, it should return an error and display help', async () => {
@@ -98,10 +98,13 @@ describe('monopack cli validation', () => {
 });
 
 const optionsHelp = `Options:
-  --help         Show help                                             [boolean]
-  --version      Show version number                                   [boolean]
-  --watch, -w    Enable watch mode                    [boolean] [default: false]
-  --out-dir, -d  Output directory (default into a temp dir)             [string]
+  --help                          Show help                            [boolean]
+  --version                       Show version number                  [boolean]
+  --watch, -w                     Enable watch mode   [boolean] [default: false]
+  --out-dir, -d                   Output directory (default into a temp dir)
+                                                                        [string]
+  --no-packages-installation, -n  Do not install packages after build
+                                                      [boolean] [default: false]
 
 `;
 

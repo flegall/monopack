@@ -28,6 +28,12 @@ export function run() {
       describe: 'Output directory (default into a temp dir)',
       nargs: 1,
     })
+    .option('no-packages-installation', {
+      alias: 'n',
+      default: false,
+      type: 'boolean',
+      describe: 'Do not install packages after build',
+    })
     .strict();
 
   const mainJs = argv.main;
@@ -40,6 +46,7 @@ export function run() {
       process.stdout.write(text);
     },
     currentWorkingDirectory: process.cwd(),
+    noPackagesInstallation: !!argv['no-packages-installation'],
   };
 
   main(args)
