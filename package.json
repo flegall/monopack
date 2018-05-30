@@ -32,7 +32,7 @@
     "lint-staged": "7.1.2",
     "micromatch": "3.1.10",
     "mkdirp": "0.5.1",
-    "prettier": "1.13.2",
+    "prettier": "1.13.3",
     "string-length": "2.0.0"
   },
   "scripts": {
