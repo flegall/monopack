@@ -13,7 +13,7 @@ describe('monopack disabled commands', () => {
       mainJs: 'main.js',
       currentWorkingDirectory: '.',
       outputDirectory: '.',
-      noPackagesInstallation: false,
+      installPackages: null,
     });
 
     expect(result).toEqual({
@@ -34,7 +34,7 @@ describe('monopack disabled commands', () => {
       mainJs: 'main.js',
       currentWorkingDirectory: '.',
       outputDirectory: '.',
-      noPackagesInstallation: false,
+      installPackages: null,
     });
 
     expect(result).toEqual({
@@ -55,7 +55,7 @@ describe('monopack disabled commands', () => {
       mainJs: 'main.js',
       currentWorkingDirectory: '.',
       outputDirectory: '.',
-      noPackagesInstallation: false,
+      installPackages: null,
     });
 
     expect(result).toEqual({

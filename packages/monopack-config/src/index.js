@@ -14,7 +14,7 @@ export type MonopackConfig = {|
 
 export function getMonopackConfig(
   mainFilePath: string,
-  noPackagesInstallation: boolean
+  installPackages: boolean | null
 ): MonopackConfig {
   const directory = path.dirname(mainFilePath);
   const monopackConfigFile = lookupFileInParentDirs(
@@ -22,16 +22,14 @@ export function getMonopackConfig(
     'monopack.config.js'
   );
   if (monopackConfigFile) {
-    return buildConfigFromConfigFile(
-      monopackConfigFile,
-      noPackagesInstallation
-    );
+    return buildConfigFromConfigFile(monopackConfigFile, installPackages);
   } else {
     return {
       monorepoRootPath: lookupMonorepoRoot(mainFilePath),
       webpackConfigModifier: identity,
       babelConfigModifier: identity,
-      installPackagesAfterBuild: !noPackagesInstallation,
+      installPackagesAfterBuild:
+        installPackages !== null ? installPackages : true,
     };
   }
 }
@@ -51,7 +49,7 @@ const ConfigFileTCombType = t.struct({
 
 function buildConfigFromConfigFile(
   configFile: string,
-  noPackagesInstallation: boolean
+  installPackages: boolean | null
 ): MonopackConfig {
   const config: ConfigFile = readJsFile(configFile);
   const result = t.validate(config, ConfigFileTCombType);
@@ -73,8 +71,8 @@ function buildConfigFromConfigFile(
     webpackConfigModifier: config.webpackConfigModifier || identity,
     babelConfigModifier: config.babelConfigModifier || identity,
     installPackagesAfterBuild: (() => {
-      if (noPackagesInstallation) {
-        return false;
+      if (installPackages !== null) {
+        return installPackages;
       } else {
         return config.installPackagesAfterBuild !== undefined
           ? config['installPackagesAfterBuild']

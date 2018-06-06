@@ -34,9 +34,29 @@ export function run() {
       type: 'boolean',
       describe: 'Do not install packages after build',
     })
+    .option('install-packages', {
+      alias: 'i',
+      default: false,
+      type: 'boolean',
+      describe: 'Install packages after build',
+    })
     .strict();
 
   const mainJs = argv.main;
+  const installPackages = (() => {
+    if (argv['install-packages'] && argv['no-packages-installation']) {
+      throw new Error(
+        '--install-packages && --no-packages-installation are mutually exclusive'
+      );
+    }
+    if (argv['install-packages']) {
+      return true;
+    }
+    if (argv['no-packages-installation']) {
+      return false;
+    }
+    return null;
+  })();
   const args: MonopackArgs = {
     command: argv._[0],
     mainJs,
@@ -46,7 +66,7 @@ export function run() {
       process.stdout.write(text);
     },
     currentWorkingDirectory: process.cwd(),
-    noPackagesInstallation: !!argv['no-packages-installation'],
+    installPackages,
   };
 
   main(args)

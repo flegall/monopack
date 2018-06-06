@@ -28,7 +28,7 @@ export type MonopackArgs = {
   command: 'build' | 'run' | 'debug',
   mainJs: string,
   outputDirectory: string | null,
-  noPackagesInstallation: boolean,
+  installPackages: boolean | null,
   watch: boolean,
   print: string => void,
   currentWorkingDirectory: string,
@@ -50,7 +50,7 @@ export async function main({
   outputDirectory,
   print,
   currentWorkingDirectory,
-  noPackagesInstallation,
+  installPackages,
 }: MonopackArgs): Promise<MonopackResult> {
   const version = require('../package.json').version;
   const mainJsFullPath = path.join(currentWorkingDirectory, mainJs);
@@ -67,7 +67,11 @@ export async function main({
       ' ' +
       (outputDirectory ? chalk.blue(`--out-dir ${outputDirectory}`) : '') +
       ' ' +
-      (noPackagesInstallation ? chalk.blue('--no-packages-installation') : '') +
+      (installPackages === true ? chalk.blue('--install-packages)') : '') +
+      ' ' +
+      (installPackages === false
+        ? chalk.blue('--no-packages-installation')
+        : '') +
       '\n'
   );
   if (command === 'run') {
@@ -91,10 +95,7 @@ export async function main({
     return { success: false, exitCode: -1 };
   }
 
-  const monopackConfig = getMonopackConfig(
-    mainJsFullPath,
-    noPackagesInstallation
-  );
+  const monopackConfig = getMonopackConfig(mainJsFullPath, installPackages);
 
   const dependencyCollector = new DependencyCollector(
     monopackConfig.monorepoRootPath

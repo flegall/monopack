@@ -105,6 +105,8 @@ const optionsHelp = `Options:
                                                                         [string]
   --no-packages-installation, -n  Do not install packages after build
                                                       [boolean] [default: false]
+  --install-packages, -i          Install packages after build
+                                                      [boolean] [default: false]
 
 `;
 
