@@ -1,9 +1,9 @@
 <!-- You can erase any parts of this template not applicable to your Issue. -->
 
-* Operating System:
-* NodeJS version:
-* Yarn version:
-* Monopack version:
+- Operating System:
+- NodeJS version:
+- Yarn version:
+- Monopack version:
 
 ### Is this a Feature or Bug?
 

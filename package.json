@@ -45,8 +45,7 @@
     "preselfBuild": "yarn build",
     "selfBuild": "yarn monopack build ./packages/monopack/src/run-cli.js",
     "eslint": "eslint . --cache",
-    "format":
-      "prettier --write \"**/*.js\" \"**/*.json\" \"**/*.css\" \"**/*.md\"",
+    "format": "prettier --write \"**/*.js\" \"**/*.json\" \"**/*.css\" \"**/*.md\"",
     "copyReadmes": "yarn lerna exec cp ../../README.md .",
     "precommit": "lint-staged && yarn run flow && yarn test",
     "prerelease": "yarn run eslint && yarn run flow && yarn test",
@@ -54,10 +53,15 @@
   },
   "lint-staged": {
     "linters": {
-      "*.{js,json,css,md}": ["prettier --write", "git add"],
+      "*.{js,json,css,md}": [
+        "prettier --write",
+        "git add"
+      ],
       "*.js": "eslint --cache"
     },
     "concurrent": false
   },
-  "workspaces": ["packages/*"]
+  "workspaces": [
+    "packages/*"
+  ]
 }

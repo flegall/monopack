@@ -4,13 +4,13 @@ Thanks for taking the time to contribute! :smile:
 
 **You can contribute in many ways:**
 
-* Design/code reviews (if you have time for it, I'd love that to have another point of view on the code, especially the parts that are too complicated to understand so I could focus effort on rewriting / simplifying those parts).
-* Code contribution on features/bugs. [Please thoroughly read our writing code guide](#writing-code).
-* Advises on features (questionning the planned features for v1.0 and later)
+- Design/code reviews (if you have time for it, I'd love that to have another point of view on the code, especially the parts that are too complicated to understand so I could focus effort on rewriting / simplifying those parts).
+- Code contribution on features/bugs. [Please thoroughly read our writing code guide](#writing-code).
+- Advises on features (questionning the planned features for v1.0 and later)
   code examples.
-* Promotion on twitter, conferences and so on.
-* [Report bugs]https://github.com/flegall/monopack/issues/new) by opening an issue.
-* [Request features](https://github.com/flegall/monopack/issues/new) by opening an issue.
+- Promotion on twitter, conferences and so on.
+- [Report bugs]https://github.com/flegall/monopack/issues/new) by opening an issue.
+- [Request features](https://github.com/flegall/monopack/issues/new) by opening an issue.
 
 ## Code of Conduct
 
