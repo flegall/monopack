@@ -177,24 +177,26 @@ export async function main({
     );
   }
 
-  print(
-    chalk.white(
-      `=>> monopack will install dependencies into ${
-        builderParams.outputDirectory
-      }`
-    ) + '\n'
-  );
-  const execution = await executeChildProcess(YARN_COMMAND, [], {
-    cwd: builderParams.outputDirectory,
-    outPrint: data => print(chalk.magentaBright(data)),
-    errPrint: data => print(chalk.red(data)),
-  });
-  if (!_.isEqual(execution.result, { type: 'EXIT', exitCode: 0 })) {
-    print(chalk.red('=>> Yarn could not be executed') + '\n');
-    print(JSON.stringify(execution, null, 2) + '\n');
-    throw new Error(
-      'Yarn could not be executed' + JSON.stringify(execution, null, 2)
+  if (monopackConfig.installPackagesAfterBuild) {
+    print(
+      chalk.white(
+        `=>> monopack will install dependencies into ${
+          builderParams.outputDirectory
+        }`
+      ) + '\n'
     );
+    const execution = await executeChildProcess(YARN_COMMAND, [], {
+      cwd: builderParams.outputDirectory,
+      outPrint: data => print(chalk.magentaBright(data)),
+      errPrint: data => print(chalk.red(data)),
+    });
+    if (!_.isEqual(execution.result, { type: 'EXIT', exitCode: 0 })) {
+      print(chalk.red('=>> Yarn could not be executed') + '\n');
+      print(JSON.stringify(execution, null, 2) + '\n');
+      throw new Error(
+        'Yarn could not be executed' + JSON.stringify(execution, null, 2)
+      );
+    }
   }
 
   print(
