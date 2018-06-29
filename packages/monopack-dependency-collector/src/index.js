@@ -7,6 +7,54 @@ import { Semaphore } from 'await-semaphore';
 import Bluebird from 'bluebird';
 import * as lockfile from '@yarnpkg/lockfile';
 
+type YarnLock = {
+  path: string,
+  dependencies: {
+    [string]: {
+      version: string,
+    },
+  },
+};
+
+type PackageJson = {
+  path: string,
+  dependencies: { [string]: string },
+  devDependencies: { [string]: string },
+  peerDependencies: { [string]: string },
+  lockFile: null | YarnLock,
+};
+
+type FullyResolvedDependency = {
+  type: 'RESOLVED',
+  packageName: string,
+  context: string,
+  declaredVersion: string,
+  resolvedVersion: string,
+  yarnLockPath: string,
+};
+type NotFullyResolvedDependency = {
+  type: 'RESOLVED',
+  packageName: string,
+  context: string,
+  declaredVersion: string,
+  resolvedVersion: null,
+  yarnLockPath: null,
+};
+type ResolvedDependency = {
+  type: 'RESOLVED',
+  packageName: string,
+  context: string,
+  declaredVersion: string,
+  resolvedVersion: string | null,
+  yarnLockPath: string | null,
+};
+type NotResolvedDependency = {
+  type: 'NOT_RESOLVED',
+  packageName: string,
+  context: string,
+};
+type MaybeResolvedDependency = ResolvedDependency | NotResolvedDependency;
+
 export type CollectedDependencies =
   | {
       type: 'SUCCESS_FULLY_DETERMINISTIC',
@@ -341,53 +389,6 @@ export default class DependencyCollector {
     };
   }
 }
-
-type YarnLock = {
-  path: string,
-  dependencies: {
-    [string]: {
-      version: string,
-    },
-  },
-};
-type PackageJson = {
-  path: string,
-  dependencies: { [string]: string },
-  devDependencies: { [string]: string },
-  peerDependencies: { [string]: string },
-  lockFile: null | YarnLock,
-};
-
-type FullyResolvedDependency = {
-  type: 'RESOLVED',
-  packageName: string,
-  context: string,
-  declaredVersion: string,
-  resolvedVersion: string,
-  yarnLockPath: string,
-};
-type NotFullyResolvedDependency = {
-  type: 'RESOLVED',
-  packageName: string,
-  context: string,
-  declaredVersion: string,
-  resolvedVersion: null,
-  yarnLockPath: null,
-};
-type ResolvedDependency = {
-  type: 'RESOLVED',
-  packageName: string,
-  context: string,
-  declaredVersion: string,
-  resolvedVersion: string | null,
-  yarnLockPath: string | null,
-};
-type NotResolvedDependency = {
-  type: 'NOT_RESOLVED',
-  packageName: string,
-  context: string,
-};
-type MaybeResolvedDependency = ResolvedDependency | NotResolvedDependency;
 
 type Conflicts = {
   [packageName: string]: { packageVersion: string, context: string }[],
