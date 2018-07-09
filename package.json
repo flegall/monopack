@@ -16,7 +16,7 @@
     "eslint": "5.1.0",
     "eslint-config-prettier": "2.9.0",
     "eslint-config-standard": "12.0.0-alpha.0",
-    "eslint-plugin-flowtype": "2.49.3",
+    "eslint-plugin-flowtype": "2.50.0",
     "eslint-plugin-import": "2.13.0",
     "eslint-plugin-jest": "21.17.0",
     "eslint-plugin-node": "6.0.1",
