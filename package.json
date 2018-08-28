@@ -33,7 +33,7 @@
     "micromatch": "3.1.10",
     "mkdirp": "0.5.1",
     "prettier": "1.14.2",
-    "rimraf": "^2.6.2",
+    "rimraf": "2.6.2",
     "string-length": "2.0.0"
   },
   "scripts": {
