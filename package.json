@@ -6,7 +6,7 @@
   "private": true,
   "devDependencies": {
     "babel-core": "6.26.3",
-    "babel-eslint": "8.2.6",
+    "babel-eslint": "9.0.0",
     "babel-jest": "23.4.0",
     "babel-plugin-transform-class-properties": "6.24.1",
     "babel-preset-env": "1.7.0",
@@ -33,9 +33,11 @@
     "micromatch": "3.1.10",
     "mkdirp": "0.5.1",
     "prettier": "1.14.2",
+    "rimraf": "^2.6.2",
     "string-length": "2.0.0"
   },
   "scripts": {
+    "clean": "yarn lerna clean -y && rimraf node_modules",
     "postinstall": "yarn build",
     "build": "node scripts/build.js",
     "watch": "node scripts/watch.js",
