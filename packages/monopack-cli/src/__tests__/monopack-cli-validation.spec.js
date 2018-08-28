@@ -12,7 +12,8 @@ describe('monopack cli validation', () => {
     );
 
     expect(result).toEqual({ type: 'EXIT', exitCode: 1 });
-    expect(stderr).toBe(`${helpMessage}You need to enter a command
+    expect(stderr).toBe(`${helpMessage}
+You need to enter a command
 `);
     expect(stdout).toBe('');
   });
@@ -25,7 +26,8 @@ describe('monopack cli validation', () => {
     );
 
     expect(result).toEqual({ type: 'EXIT', exitCode: 1 });
-    expect(stderr).toBe(`${helpMessage}Unknown argument: unkownCommand
+    expect(stderr).toBe(`${helpMessage}
+Unknown argument: unkownCommand
 `);
     expect(stdout).toBe('');
   });
@@ -64,7 +66,8 @@ describe('monopack cli validation', () => {
     expect(result).toEqual({ type: 'EXIT', exitCode: 1 });
     expect(stdout).toBe('');
     expect(stderr).toBe(
-      `${buildCommandHelp}Not enough non-option arguments: got 0, need at least 1
+      `${buildCommandHelp}
+Not enough non-option arguments: got 0, need at least 1
 `
     );
   });
@@ -90,7 +93,8 @@ describe('monopack cli validation', () => {
 
     expect(result).toEqual({ type: 'EXIT', exitCode: 1 });
     expect(stderr).toBe(
-      `${buildCommandHelp}Not enough non-option arguments: got 0, need at least 1
+      `${buildCommandHelp}
+Not enough non-option arguments: got 0, need at least 1
 `
     );
     expect(stdout).toBe('');
@@ -107,7 +111,6 @@ const optionsHelp = `Options:
                                                       [boolean] [default: false]
   --install-packages, -i          Install packages after build
                                                       [boolean] [default: false]
-
 `;
 
 const buildCommandHelp = `monopack.js build main
