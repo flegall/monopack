@@ -99,7 +99,7 @@ describe('monopack build', () => {
         });
     });
 
-    it('should build a js file written with es features at the top of the monorepo', async () => {
+    it('should build a js file written with stage-2 features at the top of the monorepo', async () => {
       // given
       await aMonorepo()
         .named('root')
@@ -107,15 +107,11 @@ describe('monopack build', () => {
         .withSource(
           'main.js',
           `
-            async function ok() {
-              return 'ok';
+            function logBudget() {
+              const budget = 1_000_000_000_000;
+              console.log(budget);
             }
-            async function run() {
-              return await ok();
-            }
-            run()
-              .then(result => console.log(result))
-              .catch(error => console.log(error));
+            logBudget();
         `
         )
         .execute(async ({ root }) => {
@@ -132,48 +128,53 @@ describe('monopack build', () => {
             'monopack successfully packaged your app'
           );
           expect(result).toEqual({ type: 'EXIT', exitCode: 0 });
-          expect(stdout).toBe('ok\n');
+          expect(stdout).toBe('1000000000000\n');
           expect(stderr).toBe('');
         });
     });
 
-    it('should build a js file written using custom babel config at the top of the monorepo', async () => {
+    it('should build a js file written using custom babel config enabling do-expressions at the top of the monorepo', async () => {
       // given
       await aMonorepo()
         .named('root')
         .withConfigFile(
           `module.exports = {
-          babelConfigModifier: () => ({
-            presets: [
-              [
-                'env',
-                {
-                  targets: {
-                    node: '6.10',
+            babelConfigModifier: () => ({
+              presets: [
+                [
+                  '@babel/preset-env',
+                  {
+                    targets: {
+                      node: '8.11.3',
+                    },
+                    modules: false,
                   },
-                  modules: false,
-                },
+                ],
+                '@babel/preset-flow',
               ],
-              'flow',
-            ],
-          }),
-        };`
+              "plugins": [require.resolve("@babel/plugin-proposal-do-expressions")]
+            }),
+          };`
         )
         .withDevDependencies({
-          'babel-core': '^6.26.0',
-          'babel-loader': '^7.1.2',
-          'babel-preset-env': '^1.6.1',
-          'babel-preset-flow': '^6.23.0',
+          '@babel/core': '^7.0.0',
+          'babel-loader': '^8.0.0',
+          '@babel/preset-env': '^7.0.0',
+          '@babel/preset-flow': '^7.0.0',
+          '@babel/plugin-proposal-do-expressions': '^7.0.0',
         })
         .withSource(
           'main.js',
           `
-            // @flow
-            type Something = number;
-            function doSomething(something: Something): Something {
-              return something + something;
-            }
-            console.log(doSomething(5));
+            const x = 11;
+            const a = do {
+              if (x > 10) {
+                'big';
+              } else {
+                'small';
+              }
+            };
+            console.log(a);
         `
         )
         .execute(async ({ root }) => {
@@ -190,7 +191,7 @@ describe('monopack build', () => {
             'monopack successfully packaged your app'
           );
           expect(result).toEqual({ type: 'EXIT', exitCode: 0 });
-          expect(stdout).toBe('10\n');
+          expect(stdout).toBe('big\n');
           expect(stderr).toBe('');
         });
     });

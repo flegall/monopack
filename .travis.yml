@@ -1,9 +1,8 @@
 language: node_js
 
 node_js:
-  - "6"
-  - "8"
-  - "9"
+  - '8'
+  - '10'
 
 sudo: false
 
@@ -14,8 +13,8 @@ before_install:
 cache:
   yarn: true
   directories:
-    - ".eslintcache"
-    - "node_modules"
+    - '.eslintcache'
+    - 'node_modules'
 
 script:
   - yarn flow

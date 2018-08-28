@@ -50,15 +50,25 @@ export async function build({
     const baseBabelConfig = {
       presets: [
         [
-          require.resolve('babel-preset-env'),
+          '@babel/preset-env',
           {
             targets: {
-              node: '6.10',
+              node: '8.11.3',
             },
           },
         ],
-        require.resolve('babel-preset-flow'),
-        require.resolve('babel-preset-stage-2'),
+        '@babel/preset-flow',
+      ],
+      plugins: [
+        ['@babel/plugin-proposal-decorators', { legacy: true }],
+        '@babel/plugin-proposal-function-sent',
+        '@babel/plugin-proposal-export-namespace-from',
+        '@babel/plugin-proposal-numeric-separator',
+        '@babel/plugin-proposal-throw-expressions',
+        '@babel/plugin-syntax-dynamic-import',
+        '@babel/plugin-syntax-import-meta',
+        ['@babel/plugin-proposal-class-properties', { loose: false }],
+        '@babel/plugin-proposal-json-strings',
       ],
     };
     const modifiedBabelConfig = babelConfigModifier(baseBabelConfig);

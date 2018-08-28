@@ -10,7 +10,7 @@ const path = require('path');
 
 const glob = require('glob');
 const mkdirp = require('mkdirp');
-const babel = require('babel-core');
+const babel = require('@babel/core');
 const chalk = require('chalk');
 const micromatch = require('micromatch');
 const stringLength = require('string-length');
@@ -28,7 +28,7 @@ const transformOptions = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '..', '.babelrc'), 'utf8')
 );
 transformOptions.babelrc = false;
-transformOptions.sourceMaps = 'true';
+transformOptions.sourceMaps = true;
 
 const adjustToTerminalWidth = str => {
   const columns = process.stdout.columns || 80;
