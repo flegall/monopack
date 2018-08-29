@@ -7,91 +7,91 @@ import { Semaphore } from 'await-semaphore';
 import Bluebird from 'bluebird';
 import * as lockfile from '@yarnpkg/lockfile';
 
-type YarnLock = {
-  path: string,
-  dependencies: {
-    [string]: {
-      version: string,
-    },
-  },
-};
+type YarnLock = {|
+  +path: string,
+  +dependencies: {|
+    +[string]: {|
+      +version: string,
+    |},
+  |},
+|};
 
-type PackageJson = {
-  path: string,
-  dependencies: { [string]: string },
-  devDependencies: { [string]: string },
-  peerDependencies: { [string]: string },
-  lockFile: null | YarnLock,
-};
+type PackageJson = {|
+  +path: string,
+  +dependencies: { +[string]: string },
+  +devDependencies: { +[string]: string },
+  +peerDependencies: { +[string]: string },
+  +lockFile: null | YarnLock,
+|};
 
-type FullyResolvedDependency = {
-  type: 'RESOLVED',
-  packageName: string,
-  context: string,
-  declaredVersion: string,
-  resolvedVersion: string,
-  yarnLockPath: string,
-};
-type NotFullyResolvedDependency = {
-  type: 'RESOLVED',
-  packageName: string,
-  context: string,
-  declaredVersion: string,
-  resolvedVersion: null,
-  yarnLockPath: null,
-};
-type ResolvedDependency = {
-  type: 'RESOLVED',
-  packageName: string,
-  context: string,
-  declaredVersion: string,
-  resolvedVersion: string | null,
-  yarnLockPath: string | null,
-};
-type NotResolvedDependency = {
-  type: 'NOT_RESOLVED',
-  packageName: string,
-  context: string,
-};
+type FullyResolvedDependency = {|
+  +type: 'RESOLVED',
+  +packageName: string,
+  +context: string,
+  +declaredVersion: string,
+  +resolvedVersion: string,
+  +yarnLockPath: string,
+|};
+type NotFullyResolvedDependency = {|
+  +type: 'RESOLVED',
+  +packageName: string,
+  +context: string,
+  +declaredVersion: string,
+  +resolvedVersion: null,
+  +yarnLockPath: null,
+|};
+type ResolvedDependency = {|
+  +type: 'RESOLVED',
+  +packageName: string,
+  +context: string,
+  +declaredVersion: string,
+  +resolvedVersion: string | null,
+  +yarnLockPath: string | null,
+|};
+type NotResolvedDependency = {|
+  +type: 'NOT_RESOLVED',
+  +packageName: string,
+  +context: string,
+|};
 type MaybeResolvedDependency = ResolvedDependency | NotResolvedDependency;
 
 export type CollectedDependencies =
-  | {
-      type: 'SUCCESS_FULLY_DETERMINISTIC',
-      yarnLockFileToCopy: string | null,
-      dependencies: {
+  | {|
+      +type: 'SUCCESS_FULLY_DETERMINISTIC',
+      +yarnLockFileToCopy: string | null,
+      +dependencies: {
         packageName: string,
         version: string,
       }[],
-    }
-  | {
-      type: 'FAILURE_NEEDS_DEPENDENCY_CONFLICT_RESOLUTION',
-      conflicts: {
-        [packageName: string]: { packageVersion: string, context: string }[],
+    |}
+  | {|
+      +type: 'FAILURE_NEEDS_DEPENDENCY_CONFLICT_RESOLUTION',
+      +conflicts: {
+        +[packageName: string]: { packageVersion: string, context: string }[],
       },
-    }
-  | {
-      type: 'FAILURE_UNDECLARED_DEPENDENCIES',
-      undeclaredDependencies: {
-        dependency: string,
-        context: string,
-      }[],
-    }
-  | {
-      type: 'SUCCESS_NOT_DETERMINISTIC_MULTIPLE_YARN_LOCKS',
-      yarnLockFileToCopy: string,
-      dependencies: {
+    |}
+  | {|
+      +type: 'FAILURE_UNDECLARED_DEPENDENCIES',
+      +undeclaredDependencies: {|
+        +dependency: string,
+        +context: string,
+      |}[],
+    |}
+  | {|
+      +type: 'SUCCESS_NOT_DETERMINISTIC_MULTIPLE_YARN_LOCKS',
+      +yarnLockFileToCopy: string,
+      +dependencies: {
         packageName: string,
         version: string,
       }[],
-    }
-  | {
-      type: 'SUCCESS_NOT_DETERMINISTIC_NO_YARN_LOCKS',
-      dependencies: {
+    |}
+  | {|
+      +type: 'SUCCESS_NOT_DETERMINISTIC_NO_YARN_LOCKS',
+      +dependencies: {
         packageName: string,
         version: string,
       }[],
-    };
+    |};
 
 export default class DependencyCollector {
   monorepoRoot: string;

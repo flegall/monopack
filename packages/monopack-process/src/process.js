@@ -4,7 +4,7 @@ import type { ChildProcess } from 'child_process';
 
 const { execFile } = childProcess;
 
-type ExecuteChildProcessOptions = {
+type ExecuteChildProcessOptions = {|
   cwd?: string,
   env?: Object,
   encoding?: string,
@@ -15,15 +15,15 @@ type ExecuteChildProcessOptions = {
   gid?: number,
   outPrint?: string => void,
   errPrint?: string => void,
-};
+|};
 export type ExitOrSignal =
-  | { type: 'EXIT', exitCode: number }
-  | { type: 'SIGNAL', signal: string };
-export type ExecuteChildResult = {
-  result: ExitOrSignal,
-  stdout: string,
-  stderr: string,
-};
+  | {| +type: 'EXIT', +exitCode: number |}
+  | {| +type: 'SIGNAL', +signal: string |};
+export type ExecuteChildResult = {|
+  +result: ExitOrSignal,
+  +stdout: string,
+  +stderr: string,
+|};
 
 export async function executeChildProcessOrFail(
   file: string,

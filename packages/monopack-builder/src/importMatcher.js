@@ -1,12 +1,12 @@
 // @flow
 
-type ExternalDependency = {
+type ExternalDependency = {|
   +packageName: string,
   +context: string,
-};
+|};
 type ImportMatch =
-  | { +type: 'INLINE' }
-  | { +type: 'IMPORT', +externalDependency?: ExternalDependency };
+  | {| +type: 'INLINE' |}
+  | {| +type: 'IMPORT', +externalDependency?: ExternalDependency |};
 
 export function importMatcher(
   request: string,

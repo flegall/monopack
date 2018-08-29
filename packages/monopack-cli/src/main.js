@@ -24,7 +24,7 @@ const copyFile: (string, string) => Promise<void> = Bluebird.promisify(
   fsCopyFile
 );
 
-export type MonopackArgs = {
+export type MonopackArgs = {|
   command: 'build' | 'run' | 'debug',
   mainJs: string,
   outputDirectory: string | null,
@@ -32,16 +32,16 @@ export type MonopackArgs = {
   watch: boolean,
   print: string => void,
   currentWorkingDirectory: string,
-};
+|};
 export type MonopackResult =
-  | {
+  | {|
       success: true,
       outputDirectory: string,
-    }
-  | {
+    |}
+  | {|
       success: false,
       exitCode: number,
-    };
+    |};
 
 export async function main({
   command,

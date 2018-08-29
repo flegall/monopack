@@ -4,16 +4,16 @@ import chalk from 'chalk';
 import type { CollectedDependencies } from 'monopack-dependency-collector';
 
 type Result =
-  | {
+  | {|
       exitCode: 0,
       output: string,
       dependencies: { [string]: string },
       yarnLockFileToCopy: string | null,
-    }
-  | {
+    |}
+  | {|
       exitCode: 1 | 2,
       output: string,
-    };
+    |};
 export default function displayCollectedDependencies(
   collectedDependencies: CollectedDependencies
 ): Result {
