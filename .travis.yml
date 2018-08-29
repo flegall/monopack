@@ -17,6 +17,4 @@ cache:
     - 'node_modules'
 
 script:
-  - yarn flow
   - yarn test
-  - yarn eslint
