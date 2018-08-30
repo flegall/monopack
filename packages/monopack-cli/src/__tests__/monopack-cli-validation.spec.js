@@ -110,7 +110,18 @@ const optionsHelp = `Options:
   --no-packages-installation, -n  Do not install packages after build
                                                       [boolean] [default: false]
   --install-packages, -i          Install packages after build
-                                                      [boolean] [default: false]
+                                                       [boolean] [default: true]
+  --with-extra-module, -m         Adds an extra module to the dependencies.
+                                  It can be useful for dynamically required
+                                  dependencies that monopack cannot detect
+                                  (e.g.: an sql driver).
+
+                                  It expects the package name without the
+                                  version. (e.g: 'mysql' not 'mysql@2.16.0).
+
+                                  Make sure to install it in the same package as
+                                  the main file, otherwise another version might
+                                  be picked up.                         [string]
 `;
 
 const buildCommandHelp = `monopack.js build main

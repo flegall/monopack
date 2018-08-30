@@ -36,9 +36,20 @@ export function run() {
     })
     .option('install-packages', {
       alias: 'i',
-      default: false,
+      default: true,
       type: 'boolean',
       describe: 'Install packages after build',
+    })
+    .option('with-extra-module', {
+      alias: 'm',
+      type: 'string',
+      describe: `Adds an extra module to the dependencies.
+        It can be useful for dynamically required dependencies that monopack cannot detect (e.g.: an sql driver).
+
+        It expects the package name without the version. (e.g: 'mysql' not 'mysql@2.16.0).
+
+        Make sure to install it in the same package as the main file, otherwise another version might be picked up.`,
+      nargs: 1,
     })
     .strict();
 

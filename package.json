@@ -59,7 +59,9 @@
     "copyReadmes": "yarn lerna exec cp ../../README.md .",
     "precommit": "lint-staged && yarn run flow && yarn test",
     "prerelease": "yarn run eslint && yarn run flow && yarn test",
-    "release": "yarn lerna publish"
+    "release": "yarn lerna publish",
+    "premonopack": "yarn build",
+    "monopack": "./node_modules/.bin/monopack"
   },
   "lint-staged": {
     "linters": {
