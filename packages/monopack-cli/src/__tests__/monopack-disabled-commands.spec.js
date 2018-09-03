@@ -14,6 +14,7 @@ describe('monopack disabled commands', () => {
       currentWorkingDirectory: '.',
       outputDirectory: '.',
       installPackages: null,
+      extraModules: [],
     });
 
     expect(result).toEqual({
@@ -35,6 +36,7 @@ describe('monopack disabled commands', () => {
       currentWorkingDirectory: '.',
       outputDirectory: '.',
       installPackages: null,
+      extraModules: [],
     });
 
     expect(result).toEqual({
@@ -56,6 +58,7 @@ describe('monopack disabled commands', () => {
       currentWorkingDirectory: '.',
       outputDirectory: '.',
       installPackages: null,
+      extraModules: [],
     });
 
     expect(result).toEqual({

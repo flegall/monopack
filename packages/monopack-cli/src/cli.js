@@ -1,5 +1,6 @@
 // @flow
 import 'source-map-support/register';
+import _ from 'lodash';
 import yargs from 'yargs';
 
 import { main, type MonopackArgs } from './main';
@@ -47,6 +48,7 @@ export function run() {
         It can be useful for dynamically required dependencies that monopack cannot detect (e.g.: an sql driver).
 
         It expects the package name without the version. (e.g: 'mysql' not 'mysql@2.16.0).
+        It can be use multiple times "monopack build main.js -m mysql -m postgresql" in order to provide multiple dependencies.
 
         Make sure to install it in the same package as the main file, otherwise another version might be picked up.`,
       nargs: 1,
@@ -68,6 +70,19 @@ export function run() {
     }
     return null;
   })();
+  const extraModules: $ReadOnlyArray<string> = (() => {
+    const {
+      withExtraModule,
+    }: { withExtraModule?: string | $ReadOnlyArray<string> } = argv;
+    if (!withExtraModule) {
+      return [];
+    }
+    if (_.isArray(withExtraModule)) {
+      return ((withExtraModule: any): $ReadOnlyArray<string>);
+    } else {
+      return [((withExtraModule: any): string)];
+    }
+  })();
   const args: MonopackArgs = {
     command: argv._[0],
     mainJs,
@@ -78,6 +93,7 @@ export function run() {
     },
     currentWorkingDirectory: process.cwd(),
     installPackages,
+    extraModules,
   };
 
   main(args)

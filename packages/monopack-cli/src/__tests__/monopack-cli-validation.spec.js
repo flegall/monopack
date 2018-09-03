@@ -118,6 +118,9 @@ const optionsHelp = `Options:
 
                                   It expects the package name without the
                                   version. (e.g: 'mysql' not 'mysql@2.16.0).
+                                  It can be use multiple times "monopack build
+                                  main.js -m mysql -m postgresql" in order to
+                                  provide multiple dependencies.
 
                                   Make sure to install it in the same package as
                                   the main file, otherwise another version might

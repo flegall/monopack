@@ -1,4 +1,5 @@
 // @flow
+import fs from 'fs';
 import path from 'path';
 
 import { executeChildProcess } from 'monopack-process';
@@ -346,6 +347,32 @@ describe('monopack build', () => {
         });
     });
 
+    it('should build a js file using a dynamically imported third-party package', async () => {
+      // given
+      await aMonorepo()
+        .named('root')
+        .withEmptyConfigFile()
+        .withDependencies({ lodash: '4.17.5' })
+        .withSource(
+          'main.js',
+          `
+            console.log('ok');
+          `
+        )
+        .execute(async ({ root }) => {
+          // when
+          const { buildDirectory } = await build(root, 'main.js', null, [
+            'lodash',
+          ]);
+
+          // then
+          const packageJson = JSON.parse(
+            fs.readFileSync(path.join(buildDirectory, 'package.json'), 'utf8')
+          );
+          expect(packageJson.dependencies.lodash).toBe('4.17.5');
+        });
+    });
+
     // eslint-disable-next-line jest/no-disabled-tests
     xit('should build a js file to a temp directory', async () => {});
 
@@ -375,7 +402,8 @@ async function buildAndRun(
 async function build(
   root: string,
   mainJs: string,
-  outputDirectory: string | null = './build'
+  outputDirectory: string | null = './build',
+  extraModules: $ReadOnlyArray<string> = []
 ): Promise<{
   compilationOutput: string,
   buildDirectory: string,
@@ -391,6 +419,7 @@ async function build(
     currentWorkingDirectory: root,
     command: 'build',
     installPackages: null,
+    extraModules,
   });
   if (result.success) {
     const buildDirectory = result.outputDirectory;

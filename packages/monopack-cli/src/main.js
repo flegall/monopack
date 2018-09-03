@@ -32,6 +32,7 @@ export type MonopackArgs = {|
   watch: boolean,
   print: string => void,
   currentWorkingDirectory: string,
+  extraModules: $ReadOnlyArray<string>,
 |};
 export type MonopackResult =
   | {|
@@ -51,6 +52,7 @@ export async function main({
   print,
   currentWorkingDirectory,
   installPackages,
+  extraModules,
 }: MonopackArgs): Promise<MonopackResult> {
   const version = require('../package.json').version;
   const mainJsFullPath = path.join(currentWorkingDirectory, mainJs);
@@ -128,6 +130,13 @@ export async function main({
       ' ' +
       '\n'
   );
+
+  extraModules.forEach(extraModule => {
+    dependencyCollector.collectDependency(
+      extraModule,
+      path.dirname(mainJsFullPath)
+    );
+  });
 
   await build(builderParams);
 
