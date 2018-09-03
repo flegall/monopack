@@ -95,7 +95,7 @@ export async function main({
     return { success: false, exitCode: -1 };
   }
 
-  const monopackConfig = getMonopackConfig(mainJsFullPath, installPackages);
+  const monopackConfig = getMonopackConfig(mainJsFullPath, installPackages, []);
 
   const dependencyCollector = new DependencyCollector(
     monopackConfig.monorepoRootPath

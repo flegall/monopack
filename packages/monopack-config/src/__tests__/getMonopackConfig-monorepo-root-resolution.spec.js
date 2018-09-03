@@ -15,7 +15,11 @@ describe('getMonopackConfig() - monorepo root resolution', () => {
       .withPackages(aPackage().named('child'))
       .execute(async ({ root, packages: [subPackagePath] }) => {
         // when
-        const config = getMonopackConfig(subPackagePath + '/main.js', false);
+        const config = getMonopackConfig(
+          subPackagePath + '/main.js',
+          false,
+          []
+        );
 
         // then
         expect(config.monorepoRootPath).toBe(root);
@@ -37,7 +41,11 @@ describe('getMonopackConfig() - monorepo root resolution', () => {
       )
       .execute(async ({ root, packages: [subPackagePath] }) => {
         // when
-        const config = getMonopackConfig(subPackagePath + '/main.js', false);
+        const config = getMonopackConfig(
+          subPackagePath + '/main.js',
+          false,
+          []
+        );
 
         // then
         expect(config.monorepoRootPath).toBe(root);
@@ -55,7 +63,11 @@ describe('getMonopackConfig() - monorepo root resolution', () => {
       .withPackages(aPackage().withEmptyConfigFile())
       .execute(async ({ root, packages: [subPackagePath] }) => {
         // when
-        const config = getMonopackConfig(subPackagePath + '/main.js', false);
+        const config = getMonopackConfig(
+          subPackagePath + '/main.js',
+          false,
+          []
+        );
 
         // then
         expect(config.monorepoRootPath).toBe(root);
@@ -74,7 +86,11 @@ describe('getMonopackConfig() - monorepo root resolution', () => {
       .withPackages(aPackage().withEmptyConfigFile())
       .execute(async ({ root, packages: [subPackagePath] }) => {
         // when
-        const config = getMonopackConfig(subPackagePath + '/main.js', false);
+        const config = getMonopackConfig(
+          subPackagePath + '/main.js',
+          false,
+          []
+        );
 
         // then
         expect(config.monorepoRootPath).toBe(root);
@@ -91,7 +107,11 @@ describe('getMonopackConfig() - monorepo root resolution', () => {
       .withPackages(aPackage().withEmptyConfigFile())
       .execute(async ({ root, packages: [subPackagePath] }) => {
         // when
-        const config = getMonopackConfig(subPackagePath + '/main.js', false);
+        const config = getMonopackConfig(
+          subPackagePath + '/main.js',
+          false,
+          []
+        );
 
         // then
         expect(config.monorepoRootPath).toBe(root);
@@ -108,7 +128,11 @@ describe('getMonopackConfig() - monorepo root resolution', () => {
       .withPackages(aPackage())
       .execute(async ({ root, packages: [subPackagePath] }) => {
         // when
-        const config = getMonopackConfig(subPackagePath + '/main.js', false);
+        const config = getMonopackConfig(
+          subPackagePath + '/main.js',
+          false,
+          []
+        );
 
         // then
         expect(config.monorepoRootPath).toBe(root);
@@ -126,7 +150,11 @@ describe('getMonopackConfig() - monorepo root resolution', () => {
       .withPackages(aPackage())
       .execute(async ({ root, packages: [subPackagePath] }) => {
         // when
-        const config = getMonopackConfig(subPackagePath + '/main.js', false);
+        const config = getMonopackConfig(
+          subPackagePath + '/main.js',
+          false,
+          []
+        );
 
         // then
         expect(config.monorepoRootPath).toBe(root);
@@ -143,7 +171,11 @@ describe('getMonopackConfig() - monorepo root resolution', () => {
       .withPackages(aPackage())
       .execute(async ({ root, packages: [subPackagePath] }) => {
         // when
-        const config = getMonopackConfig(subPackagePath + '/main.js', false);
+        const config = getMonopackConfig(
+          subPackagePath + '/main.js',
+          false,
+          []
+        );
 
         // then
         expect(config.monorepoRootPath).toBe(root);

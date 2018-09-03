@@ -13,7 +13,7 @@ describe('getMonopackConfig() - installPackagesAfterBuild option', () => {
       .withConfigFile(`module.exports = {};`)
       .execute(async ({ root }) => {
         // when
-        const config = getMonopackConfig(root + '/main.js', null);
+        const config = getMonopackConfig(root + '/main.js', null, []);
 
         // then
         expect(config.installPackagesAfterBuild).toBe(true);
@@ -29,7 +29,7 @@ describe('getMonopackConfig() - installPackagesAfterBuild option', () => {
       .withConfigFile(`module.exports = {};`)
       .execute(async ({ root }) => {
         // when
-        const config = getMonopackConfig(root + '/main.js', false);
+        const config = getMonopackConfig(root + '/main.js', false, []);
 
         // then
         expect(config.installPackagesAfterBuild).toBe(false);
@@ -45,7 +45,7 @@ describe('getMonopackConfig() - installPackagesAfterBuild option', () => {
       .withConfigFile(`module.exports = {};`)
       .execute(async ({ root }) => {
         // when
-        const config = getMonopackConfig(root + '/main.js', true);
+        const config = getMonopackConfig(root + '/main.js', true, []);
 
         // then
         expect(config.installPackagesAfterBuild).toBe(true);
@@ -59,7 +59,7 @@ describe('getMonopackConfig() - installPackagesAfterBuild option', () => {
       .withConfigFile(`module.exports = {installPackagesAfterBuild: true};`)
       .execute(async ({ root }) => {
         // when
-        const config = getMonopackConfig(root + '/main.js', null);
+        const config = getMonopackConfig(root + '/main.js', null, []);
 
         // then
         expect(config.installPackagesAfterBuild).toBe(true);
@@ -75,7 +75,7 @@ describe('getMonopackConfig() - installPackagesAfterBuild option', () => {
       .withConfigFile(`module.exports = {installPackagesAfterBuild: true};`)
       .execute(async ({ root }) => {
         // when
-        const config = getMonopackConfig(root + '/main.js', false);
+        const config = getMonopackConfig(root + '/main.js', false, []);
 
         // then
         expect(config.installPackagesAfterBuild).toBe(false);
@@ -89,7 +89,7 @@ describe('getMonopackConfig() - installPackagesAfterBuild option', () => {
       .withConfigFile(`module.exports = {installPackagesAfterBuild: false};`)
       .execute(async ({ root }) => {
         // when
-        const config = getMonopackConfig(root + '/main.js', null);
+        const config = getMonopackConfig(root + '/main.js', null, []);
 
         // then
         expect(config.installPackagesAfterBuild).toBe(false);
@@ -105,7 +105,7 @@ describe('getMonopackConfig() - installPackagesAfterBuild option', () => {
       .withConfigFile(`module.exports = {installPackagesAfterBuild: false};`)
       .execute(async ({ root }) => {
         // when
-        const config = getMonopackConfig(root + '/main.js', false);
+        const config = getMonopackConfig(root + '/main.js', false, []);
 
         // then
         expect(config.installPackagesAfterBuild).toBe(false);
@@ -121,7 +121,7 @@ describe('getMonopackConfig() - installPackagesAfterBuild option', () => {
       .withConfigFile(`module.exports = {installPackagesAfterBuild: false};`)
       .execute(async ({ root }) => {
         // when
-        const config = getMonopackConfig(root + '/main.js', true);
+        const config = getMonopackConfig(root + '/main.js', true, []);
 
         // then
         expect(config.installPackagesAfterBuild).toBe(true);

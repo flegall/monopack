@@ -10,11 +10,13 @@ export type MonopackConfig = {|
   +installPackagesAfterBuild: boolean,
   +webpackConfigModifier: Object => Object,
   +babelConfigModifier: Object => Object,
+  +extraModules: $ReadOnlyArray<string>,
 |};
 
 export function getMonopackConfig(
   mainFilePath: string,
-  installPackages: boolean | null
+  installPackages: boolean | null,
+  extraModules: $ReadOnlyArray<string>
 ): MonopackConfig {
   const directory = path.dirname(mainFilePath);
   const monopackConfigFile = lookupFileInParentDirs(
@@ -22,7 +24,11 @@ export function getMonopackConfig(
     'monopack.config.js'
   );
   if (monopackConfigFile) {
-    return buildConfigFromConfigFile(monopackConfigFile, installPackages);
+    return buildConfigFromConfigFile(
+      monopackConfigFile,
+      installPackages,
+      extraModules
+    );
   } else {
     return {
       monorepoRootPath: lookupMonorepoRoot(mainFilePath),
@@ -30,6 +36,7 @@ export function getMonopackConfig(
       babelConfigModifier: identity,
       installPackagesAfterBuild:
         installPackages !== null ? installPackages : true,
+      extraModules: [],
     };
   }
 }
@@ -39,20 +46,23 @@ type ConfigFile = {|
   +webpackConfigModifier?: Object => Object,
   +babelConfigModifier?: Object => Object,
   +installPackagesAfterBuild?: boolean,
+  +extraModules?: $ReadOnlyArray<string>,
 |};
 const ConfigFileTCombType = t.struct({
   monorepoRootPath: t.union([t.String, t.Nil]),
   webpackConfigModifier: t.union([t.Function, t.Nil]),
   babelConfigModifier: t.union([t.Function, t.Nil]),
   installPackagesAfterBuild: t.union([t.Boolean, t.Nil]),
+  extraModules: t.union([t.list(t.String), t.Nil]),
 });
 
 function buildConfigFromConfigFile(
   configFile: string,
-  installPackages: boolean | null
+  installPackages: boolean | null,
+  extraModules: $ReadOnlyArray<string>
 ): MonopackConfig {
   const config: ConfigFile = readJsFile(configFile);
-  const result = t.validate(config, ConfigFileTCombType);
+  const result = t.validate(config, ConfigFileTCombType, { strict: true });
   if (!result.isValid()) {
     throw new Error(`Invalid file ${configFile}
       The following errors have been found : ${JSON.stringify(
@@ -79,6 +89,7 @@ function buildConfigFromConfigFile(
           : true;
       }
     })(),
+    extraModules: [...(config.extraModules || []), ...(extraModules || [])],
   };
 }
 
