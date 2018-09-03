@@ -23,6 +23,6 @@
     "glob": "7.1.3",
     "glob-promise": "3.4.0",
     "lodash": "4.17.10",
-    "webpack": "4.17.1"
+    "webpack": "4.17.2"
   }
 }
