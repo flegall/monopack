@@ -8,7 +8,7 @@ import webpack from 'webpack';
 
 import { importMatcher } from './importMatcher';
 
-export type MonopackBuilderParams = {
+export type MonopackBuilderParams = {|
   +monorepoRootPath: string,
   +webpackConfigModifier: Object => Object,
   +babelConfigModifier: Object => Object,
@@ -16,7 +16,7 @@ export type MonopackBuilderParams = {
   +outputDirectory: string,
   +print: string => void,
   +collectDependency: (context: string, dependencyName: string) => void,
-};
+|};
 
 export async function build({
   monorepoRootPath,
