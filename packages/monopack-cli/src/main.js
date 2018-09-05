@@ -102,7 +102,7 @@ export async function main({
     installPackages,
     extraModules,
     outputDirectory: outputDirectory
-      ? path.join(currentWorkingDirectory, outputDirectory)
+      ? path.resolve(currentWorkingDirectory, outputDirectory)
       : null,
   });
 

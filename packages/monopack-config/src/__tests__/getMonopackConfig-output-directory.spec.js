@@ -1,11 +1,19 @@
 // @flow
+import fs from 'fs';
 import path from 'path';
 
+import Bluebird from 'bluebird';
 import { aMonorepo } from 'monopack-repo-builder';
 
 import { getMonopackConfig } from '..';
 
 jest.setTimeout(60000);
+
+const writeFile: (
+  string | Buffer | number,
+  string | Buffer | Uint8Array,
+  Object | string | void
+) => Promise<void> = Bluebird.promisify(fs.writeFile);
 
 describe('getMonopackConfig() - outputDirectory option', () => {
   it(`when no config file is present
@@ -57,6 +65,29 @@ describe('getMonopackConfig() - outputDirectory option', () => {
       .named('root')
       .withConfigFile(`module.exports = {outputDirectory: './output'};`)
       .execute(async ({ root }) => {
+        // when
+        const config = getMonopackConfig({
+          mainFilePath: root + '/main.js',
+          installPackages: null,
+          extraModules: [],
+          outputDirectory: null,
+        });
+        // then
+        expect(config.outputDirectory).toEqual(path.join(root, './output'));
+      });
+  });
+
+  it(`when an absolute outputDirectory option is provided in the config file 
+    and no outputDirectory is provided in the cli, 
+    the value should be the absolute path provided in the config file`, async () => {
+    // given
+    await aMonorepo()
+      .named('root')
+      .execute(async ({ root }) => {
+        await writeFile(
+          path.join(root, '/monopack.config.js'),
+          `module.exports = {outputDirectory: '${root}/output'};`
+        );
         // when
         const config = getMonopackConfig({
           mainFilePath: root + '/main.js',

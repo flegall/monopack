@@ -238,7 +238,7 @@ describe('monopack build', () => {
       });
   });
 
-  it('should build a js file to a custom directory', async () => {
+  it('should build a js file to a custom relative directory', async () => {
     // given
     await aMonorepo()
       .named('root')
@@ -253,6 +253,30 @@ describe('monopack build', () => {
         // when
         const { buildDirectory } = await build(root, 'main.js', {
           outputDirectory: './an_output_build_directory',
+        });
+
+        // then
+        expect(buildDirectory).toBe(
+          path.join(root, 'an_output_build_directory')
+        );
+      });
+  });
+
+  it('should build a js file to a custom absolute directory', async () => {
+    // given
+    await aMonorepo()
+      .named('root')
+      .withEmptyConfigFile()
+      .withSource(
+        'main.js',
+        `
+          console.log('OK');
+        `
+      )
+      .execute(async ({ root }) => {
+        // when
+        const { buildDirectory } = await build(root, 'main.js', {
+          outputDirectory: path.join(root, 'an_output_build_directory'),
         });
 
         // then
