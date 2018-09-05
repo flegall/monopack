@@ -15,7 +15,12 @@ describe('getMonopackConfig() - config file validation', () => {
         // when
         let error;
         try {
-          getMonopackConfig(root + '/main.js', false, []);
+          getMonopackConfig({
+            mainFilePath: root + '/main.js',
+            installPackages: false,
+            extraModules: [],
+            outputDirectory: null,
+          });
         } catch (e) {
           error = e;
         }
@@ -30,6 +35,35 @@ describe('getMonopackConfig() - config file validation', () => {
       });
   });
 
+  it(`when an invalid value for 'outputDirectory' is given, it should be rejected`, async () => {
+    // given
+    await aMonorepo()
+      .named('root')
+      .withConfigFile(`module.exports = {outputDirectory: 1};`)
+      .execute(async ({ root }) => {
+        // when
+        let error;
+        try {
+          getMonopackConfig({
+            mainFilePath: root + '/main.js',
+            installPackages: false,
+            extraModules: [],
+            outputDirectory: null,
+          });
+        } catch (e) {
+          error = e;
+        }
+
+        // then
+        expect(error).toBeDefined();
+        if (error) {
+          expect(error.message).toContain(
+            'Invalid value 1 supplied to /outputDirectory: String | Nil'
+          );
+        }
+      });
+  });
+
   it(`when an invalid value for 'webpackConfigModifier' is given, it should be rejected`, async () => {
     // given
     await aMonorepo()
@@ -39,7 +73,12 @@ describe('getMonopackConfig() - config file validation', () => {
         // when
         let error;
         try {
-          getMonopackConfig(root + '/main.js', false, []);
+          getMonopackConfig({
+            mainFilePath: root + '/main.js',
+            installPackages: false,
+            extraModules: [],
+            outputDirectory: null,
+          });
         } catch (e) {
           error = e;
         }
@@ -63,7 +102,12 @@ describe('getMonopackConfig() - config file validation', () => {
         // when
         let error;
         try {
-          getMonopackConfig(root + '/main.js', false, []);
+          getMonopackConfig({
+            mainFilePath: root + '/main.js',
+            installPackages: false,
+            extraModules: [],
+            outputDirectory: null,
+          });
         } catch (e) {
           error = e;
         }
@@ -87,7 +131,12 @@ describe('getMonopackConfig() - config file validation', () => {
         // when
         let error;
         try {
-          getMonopackConfig(root + '/main.js', false, []);
+          getMonopackConfig({
+            mainFilePath: root + '/main.js',
+            installPackages: false,
+            extraModules: [],
+            outputDirectory: null,
+          });
         } catch (e) {
           error = e;
         }
@@ -111,7 +160,12 @@ describe('getMonopackConfig() - config file validation', () => {
         // when
         let error;
         try {
-          getMonopackConfig(root + '/main.js', false, []);
+          getMonopackConfig({
+            mainFilePath: root + '/main.js',
+            installPackages: false,
+            extraModules: [],
+            outputDirectory: null,
+          });
         } catch (e) {
           error = e;
         }
@@ -135,7 +189,12 @@ describe('getMonopackConfig() - config file validation', () => {
         // when
         let error;
         try {
-          getMonopackConfig(root + '/main.js', false, []);
+          getMonopackConfig({
+            mainFilePath: root + '/main.js',
+            installPackages: false,
+            extraModules: [],
+            outputDirectory: null,
+          });
         } catch (e) {
           error = e;
         }

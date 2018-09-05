@@ -97,18 +97,25 @@ export async function main({
     return { success: false, exitCode: -1 };
   }
 
-  const monopackConfig = getMonopackConfig(mainJsFullPath, installPackages, []);
+  const monopackConfig = getMonopackConfig({
+    mainFilePath: mainJsFullPath,
+    installPackages,
+    extraModules,
+    outputDirectory: outputDirectory
+      ? path.join(currentWorkingDirectory, outputDirectory)
+      : null,
+  });
 
   const dependencyCollector = new DependencyCollector(
     monopackConfig.monorepoRootPath
   );
 
   const builderParams: MonopackBuilderParams = {
-    ...monopackConfig,
+    babelConfigModifier: monopackConfig.babelConfigModifier,
+    monorepoRootPath: monopackConfig.monorepoRootPath,
+    webpackConfigModifier: monopackConfig.webpackConfigModifier,
     mainJs: mainJsFullPath,
-    outputDirectory: outputDirectory
-      ? path.join(currentWorkingDirectory, outputDirectory)
-      : (await tmp.dir()).path,
+    outputDirectory: monopackConfig.outputDirectory || (await tmp.dir()).path,
     print,
     collectDependency: (packageName, context) => {
       dependencyCollector.collectDependency(packageName, context);

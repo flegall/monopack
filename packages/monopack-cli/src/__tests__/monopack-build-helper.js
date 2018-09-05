@@ -9,24 +9,32 @@ export async function buildAndRun(
   mainJs: string
 ): Promise<{
   compilationOutput: string,
+  buildDirectory: string,
   result: ExitOrSignal,
   stdout: string,
   stderr: string,
 }> {
-  const { compilationOutput } = await build(root, mainJs);
+  const { compilationOutput, buildDirectory } = await build(root, mainJs);
   const { result, stdout, stderr } = await executeChildProcess(
     'node',
     ['./build/main.js'],
     { cwd: root }
   );
-  return { compilationOutput, result, stdout, stderr };
+  return { compilationOutput, buildDirectory, result, stdout, stderr };
 }
 
 export async function build(
   root: string,
   mainJs: string,
-  outputDirectory: string | null = './build',
-  extraModules: $ReadOnlyArray<string> = []
+  {
+    outputDirectory,
+    extraModules = [],
+    installPackages,
+  }: {
+    +outputDirectory?: null | string,
+    +extraModules?: $ReadOnlyArray<string>,
+    +installPackages?: null | boolean,
+  } = {}
 ): Promise<{
   compilationOutput: string,
   buildDirectory: string,
@@ -37,11 +45,12 @@ export async function build(
     print: content => {
       compilationOutput = compilationOutput + content;
     },
-    outputDirectory,
+    outputDirectory:
+      outputDirectory !== undefined ? outputDirectory : './build',
     mainJs,
     currentWorkingDirectory: root,
     command: 'build',
-    installPackages: null,
+    installPackages: installPackages !== undefined ? installPackages : null,
     extraModules,
   });
   if (result.success) {

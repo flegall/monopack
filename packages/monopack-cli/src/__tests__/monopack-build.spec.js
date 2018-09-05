@@ -1,7 +1,10 @@
 // @flow
+import fs from 'fs';
+import path from 'path';
+
 import { aMonorepo, aPackage } from 'monopack-repo-builder';
 
-import { buildAndRun } from './monopack-build-helper';
+import { build, buildAndRun } from './monopack-build-helper';
 
 jest.setTimeout(60000);
 
@@ -14,10 +17,13 @@ describe('monopack build', () => {
       .withSource('main.js', `console.log('ok');`)
       .execute(async ({ root }) => {
         // when
-        const { compilationOutput, result, stdout, stderr } = await buildAndRun(
-          root,
-          'main.js'
-        );
+        const {
+          compilationOutput,
+          buildDirectory,
+          result,
+          stdout,
+          stderr,
+        } = await buildAndRun(root, 'main.js');
 
         // then
         expect(compilationOutput).toContain(
@@ -26,6 +32,9 @@ describe('monopack build', () => {
         expect(result).toEqual({ type: 'EXIT', exitCode: 0 });
         expect(stdout).toBe('ok\n');
         expect(stderr).toBe('');
+        expect(fs.existsSync(path.join(buildDirectory, 'node_modules'))).toBe(
+          true
+        );
       });
   });
 
@@ -226,6 +235,30 @@ describe('monopack build', () => {
         expect(stderr).toBe('');
         expect(stdout).toBe('false\n');
         expect(result).toEqual({ type: 'EXIT', exitCode: 0 });
+      });
+  });
+
+  it('should build a js file to a custom directory', async () => {
+    // given
+    await aMonorepo()
+      .named('root')
+      .withEmptyConfigFile()
+      .withSource(
+        'main.js',
+        `
+          console.log('OK');
+        `
+      )
+      .execute(async ({ root }) => {
+        // when
+        const { buildDirectory } = await build(root, 'main.js', {
+          outputDirectory: './an_output_build_directory',
+        });
+
+        // then
+        expect(buildDirectory).toBe(
+          path.join(root, 'an_output_build_directory')
+        );
       });
   });
 

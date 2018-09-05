@@ -1,14 +1,16 @@
 // @flow
+import path from 'path';
+
 import { aMonorepo } from 'monopack-repo-builder';
 
 import { getMonopackConfig } from '..';
 
 jest.setTimeout(60000);
 
-describe('getMonopackConfig() - extraModules option', () => {
+describe('getMonopackConfig() - outputDirectory option', () => {
   it(`when no config file is present
-    and no extraModules is provided in the cli, 
-    the default value should be []`, async () => {
+    and no outputDirectory is provided in the cli, 
+    the default value should be null`, async () => {
     // given
     await aMonorepo()
       .named('root')
@@ -22,13 +24,13 @@ describe('getMonopackConfig() - extraModules option', () => {
         });
 
         // then
-        expect(config.extraModules).toEqual([]);
+        expect(config.outputDirectory).toEqual(null);
       });
   });
 
-  it(`when no extraModules option is provided in the config file 
-    and no extraModules is provided in the cli, 
-    the default value should be []`, async () => {
+  it(`when no outputDirectory option is provided in the config file 
+    and no outputDirectory is provided in the cli, 
+    the default value should be null`, async () => {
     // given
     await aMonorepo()
       .named('root')
@@ -43,17 +45,17 @@ describe('getMonopackConfig() - extraModules option', () => {
         });
 
         // then
-        expect(config.extraModules).toEqual([]);
+        expect(config.outputDirectory).toEqual(null);
       });
   });
 
-  it(`when an extraModules option is provided in the config file 
-    and no extraModules is provided in the cli, 
-    the value should be the one provided in the config files`, async () => {
+  it(`when an outputDirectory option is provided in the config file 
+    and no outputDirectory is provided in the cli, 
+    the value should be the one provided in the config file`, async () => {
     // given
     await aMonorepo()
       .named('root')
-      .withConfigFile(`module.exports = {extraModules: ['lodash']};`)
+      .withConfigFile(`module.exports = {outputDirectory: './output'};`)
       .execute(async ({ root }) => {
         // when
         const config = getMonopackConfig({
@@ -62,14 +64,13 @@ describe('getMonopackConfig() - extraModules option', () => {
           extraModules: [],
           outputDirectory: null,
         });
-
         // then
-        expect(config.extraModules).toEqual(['lodash']);
+        expect(config.outputDirectory).toEqual(path.join(root, './output'));
       });
   });
 
-  it(`when no extraModules option is provided in the config file 
-    and an extraModules is provided in the cli, 
+  it(`when no outputDirectory option is provided in the config file 
+    and an outputDirectory is provided in the cli, 
     the value should be the one provided in the cli`, async () => {
     // given
     await aMonorepo()
@@ -80,17 +81,16 @@ describe('getMonopackConfig() - extraModules option', () => {
         const config = getMonopackConfig({
           mainFilePath: root + '/main.js',
           installPackages: null,
-          extraModules: ['lodash'],
-          outputDirectory: null,
+          extraModules: [],
+          outputDirectory: '/path/to/output/directory',
         });
-
         // then
-        expect(config.extraModules).toEqual(['lodash']);
+        expect(config.outputDirectory).toEqual('/path/to/output/directory');
       });
   });
 
   it(`when no config file is provided
-    and an extraModules is provided in the cli, 
+    and an outputDirectory is provided in the cli, 
     the value should be the one provided in the cli`, async () => {
     // given
     await aMonorepo()
@@ -100,33 +100,31 @@ describe('getMonopackConfig() - extraModules option', () => {
         const config = getMonopackConfig({
           mainFilePath: root + '/main.js',
           installPackages: null,
-          extraModules: ['lodash'],
-          outputDirectory: null,
+          extraModules: [],
+          outputDirectory: '/path/to/output/directory',
         });
-
         // then
-        expect(config.extraModules).toEqual(['lodash']);
+        expect(config.outputDirectory).toEqual('/path/to/output/directory');
       });
   });
 
-  it(`when an extraModules option is provided in the config file 
-    and an extraModules is provided in the cli, 
-    the two values should be merged`, async () => {
+  it(`when an outputDirectory option is provided in the config file 
+    and an outputDirectory is provided in the cli, 
+    the value should be the one provided in the cli`, async () => {
     // given
     await aMonorepo()
       .named('root')
-      .withConfigFile(`module.exports = {extraModules: ['ramda']};`)
+      .withConfigFile(`module.exports = {outputDirectory: './output'};`)
       .execute(async ({ root }) => {
         // when
         const config = getMonopackConfig({
           mainFilePath: root + '/main.js',
           installPackages: null,
-          extraModules: ['lodash'],
-          outputDirectory: null,
+          extraModules: [],
+          outputDirectory: '/path/to/output/directory',
         });
-
         // then
-        expect(config.extraModules).toEqual(['ramda', 'lodash']);
+        expect(config.outputDirectory).toEqual('/path/to/output/directory');
       });
   });
 });

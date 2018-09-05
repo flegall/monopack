@@ -25,7 +25,7 @@ describe('monopack build - third party packages', () => {
       )
       .execute(async ({ root }) => {
         // when
-        const { buildDirectory } = await build(root, 'main.js', null);
+        const { buildDirectory } = await build(root, 'main.js', {});
         const { result, stdout, stderr } = await executeChildProcess(
           'node',
           [path.join(buildDirectory, 'main.js')],
@@ -36,6 +36,42 @@ describe('monopack build - third party packages', () => {
         expect(stderr).toBe('');
         expect(stdout).toBe('4.17.5\n');
         expect(result).toEqual({ type: 'EXIT', exitCode: 0 });
+        expect(fs.existsSync(path.join(buildDirectory, 'node_modules'))).toBe(
+          true
+        );
+      });
+  });
+
+  it('should build a js file without installing packages', async () => {
+    // given
+    await aMonorepo()
+      .named('root')
+      .withEmptyConfigFile()
+      .withDependencies({ lodash: '4.17.5' })
+      .withSource(
+        'main.js',
+        `
+            import _ from 'lodash';
+            console.log(_.VERSION);
+          `
+      )
+      .execute(async ({ root }) => {
+        // when
+        const { compilationOutput, buildDirectory } = await build(
+          root,
+          'main.js',
+          {
+            installPackages: false,
+          }
+        );
+
+        // then
+        expect(compilationOutput).toContain(
+          'monopack successfully packaged your app'
+        );
+        expect(fs.existsSync(path.join(buildDirectory, 'node_modules'))).toBe(
+          false
+        );
       });
   });
 
@@ -53,15 +89,18 @@ describe('monopack build - third party packages', () => {
       )
       .execute(async ({ root }) => {
         // when
-        const { buildDirectory } = await build(root, 'main.js', null, [
-          'lodash',
-        ]);
+        const { buildDirectory } = await build(root, 'main.js', {
+          extraModules: ['lodash'],
+        });
 
         // then
         const packageJson = JSON.parse(
           fs.readFileSync(path.join(buildDirectory, 'package.json'), 'utf8')
         );
         expect(packageJson.dependencies.lodash).toBe('4.17.5');
+        expect(
+          fs.existsSync(path.join(buildDirectory, 'node_modules', 'lodash'))
+        ).toBe(true);
       });
   });
 });

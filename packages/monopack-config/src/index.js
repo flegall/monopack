@@ -7,17 +7,24 @@ import t from 'tcomb-validation';
 
 export type MonopackConfig = {|
   +monorepoRootPath: string,
+  +outputDirectory: string | null,
   +installPackagesAfterBuild: boolean,
   +webpackConfigModifier: Object => Object,
   +babelConfigModifier: Object => Object,
   +extraModules: $ReadOnlyArray<string>,
 |};
 
-export function getMonopackConfig(
+export function getMonopackConfig({
+  mainFilePath,
+  installPackages,
+  extraModules,
+  outputDirectory,
+}: {
   mainFilePath: string,
   installPackages: boolean | null,
-  extraModules: $ReadOnlyArray<string>
-): MonopackConfig {
+  extraModules: $ReadOnlyArray<string>,
+  outputDirectory: string | null,
+}): MonopackConfig {
   const directory = path.dirname(mainFilePath);
   const monopackConfigFile = lookupFileInParentDirs(
     directory,
@@ -27,22 +34,25 @@ export function getMonopackConfig(
     return buildConfigFromConfigFile(
       monopackConfigFile,
       installPackages,
-      extraModules
+      extraModules,
+      outputDirectory
     );
   } else {
     return {
       monorepoRootPath: lookupMonorepoRoot(mainFilePath),
+      outputDirectory: outputDirectory || null,
       webpackConfigModifier: identity,
       babelConfigModifier: identity,
       installPackagesAfterBuild:
         installPackages !== null ? installPackages : true,
-      extraModules: [],
+      extraModules,
     };
   }
 }
 
 type ConfigFile = {|
   +monorepoRootPath?: string,
+  +outputDirectory?: string,
   +webpackConfigModifier?: Object => Object,
   +babelConfigModifier?: Object => Object,
   +installPackagesAfterBuild?: boolean,
@@ -50,6 +60,7 @@ type ConfigFile = {|
 |};
 const ConfigFileTCombType = t.struct({
   monorepoRootPath: t.union([t.String, t.Nil]),
+  outputDirectory: t.union([t.String, t.Nil]),
   webpackConfigModifier: t.union([t.Function, t.Nil]),
   babelConfigModifier: t.union([t.Function, t.Nil]),
   installPackagesAfterBuild: t.union([t.Boolean, t.Nil]),
@@ -59,7 +70,8 @@ const ConfigFileTCombType = t.struct({
 function buildConfigFromConfigFile(
   configFile: string,
   installPackages: boolean | null,
-  extraModules: $ReadOnlyArray<string>
+  extraModules: $ReadOnlyArray<string>,
+  outputDirectory: string | null
 ): MonopackConfig {
   const config: ConfigFile = readJsFile(configFile);
   const result = t.validate(config, ConfigFileTCombType, { strict: true });
@@ -72,12 +84,20 @@ function buildConfigFromConfigFile(
       )}`);
   }
 
-  const { monorepoRootPath } = config;
+  const {
+    monorepoRootPath,
+    outputDirectory: outputDirectoryFromConfig,
+  } = config;
 
   return {
     monorepoRootPath: monorepoRootPath
       ? path.resolve(path.dirname(configFile), monorepoRootPath)
       : lookupMonorepoRoot(configFile),
+    outputDirectory:
+      outputDirectory ||
+      (outputDirectoryFromConfig
+        ? path.resolve(path.dirname(configFile), outputDirectoryFromConfig)
+        : null),
     webpackConfigModifier: config.webpackConfigModifier || identity,
     babelConfigModifier: config.babelConfigModifier || identity,
     installPackagesAfterBuild: (() => {
