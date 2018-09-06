@@ -86,7 +86,9 @@ describe('getMonopackConfig() - outputDirectory option', () => {
       .execute(async ({ root }) => {
         await writeFile(
           path.join(root, '/monopack.config.js'),
-          `module.exports = {outputDirectory: '${root}/output'};`
+          `module.exports = ${JSON.stringify({
+            outputDirectory: path.join(root, './output'),
+          })}`
         );
         // when
         const config = getMonopackConfig({
