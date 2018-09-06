@@ -18,4 +18,4 @@ cache:
     - 'node_modules'
 
 script:
-  - yarn test
+  - yarn test -w 1
