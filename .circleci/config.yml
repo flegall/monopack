@@ -8,6 +8,26 @@ jobs:
   build-base: &build-base
     working_directory: ~/repo
 
+  build-node-v6:
+    <<: *build-base
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:8@sha256:470cd144e7b28c702b70e7f0589dbe26ada34669ac0546628983ab57526ea183
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v6-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
+            # fallback to using the latest cache if no exact match is found
+            - v6-dependencies-
+
+      - run: yarn install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v6-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
+      - run: yarn test -w 1
+
   build-node-v8:
     <<: *build-base
     docker:
@@ -52,5 +72,6 @@ workflows:
   version: 2
   node-multi-build:
     jobs:
+      - build-node-v6
       - build-node-v8
       - build-node-v10

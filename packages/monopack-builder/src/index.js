@@ -53,7 +53,7 @@ export async function build({
           '@babel/preset-env',
           {
             targets: {
-              node: '8.11.3',
+              node: '6.14.4',
             },
           },
         ],

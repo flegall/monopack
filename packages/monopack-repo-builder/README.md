@@ -26,7 +26,7 @@ It will build:
 
 ### Requirements
 
-- Node.js >= 8.11.3
+- Node.js >= 6.14.4
 - Yarn >= 1.3.2 :
   - Yarn is required to be present for installing the produced dependencies.
   - It is not mandatory for your project to use it, but bear in mind that the dependencies collection will be deterministic only if your projet uses Yarn.
@@ -83,7 +83,7 @@ With npm
 
 ### Default configuration
 
-By default monopack will use babel 7 to compile your code into js code that node.js 8.11.3 understands.
+By default monopack will use babel 7 to compile your code into js code that node.js 6.14.4 understands.
 It supports [flow](https://flow.org) and [stage-2](https://babeljs.io/docs/plugins/preset-stage-2/) features.
 
 ```js
@@ -93,7 +93,7 @@ const baseBabelConfig = {
       '@babel/preset-env',
       {
         targets: {
-          node: '8.11.3',
+          node: '6.14.4',
         },
       },
     ],
