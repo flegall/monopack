@@ -2,9 +2,16 @@
 #
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
+workflows:
+  version: 2
+  node-multi-build:
+    jobs:
+      - build-node-v8
+      - build-node-v10
+
 version: 2
 jobs:
-  build:
+  build-base: &build-base
     docker:
       # specify the version you desire here
       - image: circleci/node:8@sha256:470cd144e7b28c702b70e7f0589dbe26ada34669ac0546628983ab57526ea183
@@ -35,3 +42,24 @@ jobs:
 
       # run tests!
       - run: yarn test -w 1
+
+  build-node-v8:
+    <<: *node-base
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:8@sha256:470cd144e7b28c702b70e7f0589dbe26ada34669ac0546628983ab57526ea183
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
+
+  build-node-v10:
+    <<: *node-base
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:10
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
