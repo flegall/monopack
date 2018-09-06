@@ -5,11 +5,8 @@
 version: 2
 
 jobs:
-  build-base: &build-base
-    working_directory: ~/repo
-
   build-node-v6:
-    <<: *build-base
+    working_directory: ~/repo
     docker:
       # specify the version you desire here
       - image: circleci/node:8@sha256:470cd144e7b28c702b70e7f0589dbe26ada34669ac0546628983ab57526ea183
@@ -29,7 +26,7 @@ jobs:
       - run: yarn test -w 1
 
   build-node-v8:
-    <<: *build-base
+    working_directory: ~/repo
     docker:
       # specify the version you desire here
       - image: circleci/node:8@sha256:470cd144e7b28c702b70e7f0589dbe26ada34669ac0546628983ab57526ea183
@@ -49,7 +46,7 @@ jobs:
       - run: yarn test -w 1
 
   build-node-v10:
-    <<: *build-base
+    working_directory: ~/repo
     docker:
       # specify the version you desire here
       - image: circleci/node:10
