@@ -19,7 +19,7 @@ cache:
   - "%LOCALAPPDATA%\\Yarn"
 
 test_script:
-  - yarn test --color
+  - yarn test --color -w 1
 
 # Don't actually build.
 build: off
