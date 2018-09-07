@@ -26,13 +26,13 @@ export function getMonopackConfig({
   outputDirectory: string | null,
 }): MonopackConfig {
   const directory = path.dirname(mainFilePath);
-  const monopackConfigFile = lookupFileInParentDirs(
+  const monopackConfigFiles = lookupFilesInParentDirsTopToBottom(
     directory,
     'monopack.config.js'
   );
-  if (monopackConfigFile) {
-    return buildConfigFromConfigFile(
-      monopackConfigFile,
+  if (monopackConfigFiles.length > 0) {
+    return buildConfigFromConfigFiles(
+      monopackConfigFiles,
       installPackages,
       extraModules,
       outputDirectory
@@ -67,49 +67,72 @@ const ConfigFileTCombType = t.struct({
   extraModules: t.union([t.list(t.String), t.Nil]),
 });
 
-function buildConfigFromConfigFile(
-  configFile: string,
+function buildConfigFromConfigFiles(
+  configFiles: string[],
   installPackages: boolean | null,
   extraModules: $ReadOnlyArray<string>,
   outputDirectory: string | null
 ): MonopackConfig {
-  const config: ConfigFile = readJsFile(configFile);
-  const result = t.validate(config, ConfigFileTCombType, { strict: true });
-  if (!result.isValid()) {
-    throw new Error(`Invalid file ${configFile}
+  const configs: $ReadOnlyArray<ConfigFile> = configFiles.map(configFile => {
+    const config: ConfigFile = readJsFile(configFile);
+    const result = t.validate(config, ConfigFileTCombType, { strict: true });
+    if (!result.isValid()) {
+      throw new Error(`Invalid file ${configFile}
       The following errors have been found : ${JSON.stringify(
         result.errors,
         null,
         2
       )}`);
-  }
+    }
+    return config;
+  });
+
+  const mergedConfig: ConfigFile = configs.reduce((parent, child) => ({
+    ...parent,
+    ...child,
+  }));
 
   const {
     monorepoRootPath,
     outputDirectory: outputDirectoryFromConfig,
-  } = config;
+  } = mergedConfig;
 
+  const lastConfigFileDefiningMonorepoRootPath = configFiles.reduce(
+    (parent, child, index) => (configs[index].monorepoRootPath ? child : parent)
+  );
+  const lastConfigFileDefiningOutputDirectory = configFiles.reduce(
+    (parent, child, index) => (configs[index].outputDirectory ? child : parent)
+  );
   return {
     monorepoRootPath: monorepoRootPath
-      ? path.resolve(path.dirname(configFile), monorepoRootPath)
-      : lookupMonorepoRoot(configFile),
+      ? path.resolve(
+          path.dirname(lastConfigFileDefiningMonorepoRootPath),
+          monorepoRootPath
+        )
+      : lookupMonorepoRoot(lastConfigFileDefiningMonorepoRootPath),
     outputDirectory:
       outputDirectory ||
       (outputDirectoryFromConfig
-        ? path.resolve(path.dirname(configFile), outputDirectoryFromConfig)
+        ? path.resolve(
+            path.dirname(lastConfigFileDefiningOutputDirectory),
+            outputDirectoryFromConfig
+          )
         : null),
-    webpackConfigModifier: config.webpackConfigModifier || identity,
-    babelConfigModifier: config.babelConfigModifier || identity,
+    webpackConfigModifier: mergedConfig.webpackConfigModifier || identity,
+    babelConfigModifier: mergedConfig.babelConfigModifier || identity,
     installPackagesAfterBuild: (() => {
       if (installPackages !== null) {
         return installPackages;
       } else {
-        return config.installPackagesAfterBuild !== undefined
-          ? config['installPackagesAfterBuild']
+        return mergedConfig.installPackagesAfterBuild !== undefined
+          ? mergedConfig.installPackagesAfterBuild
           : true;
       }
     })(),
-    extraModules: [...(config.extraModules || []), ...(extraModules || [])],
+    extraModules: [
+      ...(mergedConfig.extraModules || []),
+      ...(extraModules || []),
+    ],
   };
 }
 
@@ -147,6 +170,27 @@ function lookupFileInParentDirs(directory: string, filename: string): ?string {
     return undefined;
   } else {
     return lookupFileInParentDirs(parentDir, filename);
+  }
+}
+
+function lookupFilesInParentDirsTopToBottom(
+  directory: string,
+  filename: string
+): string[] {
+  const results = [];
+  const filePath = path.join(directory, filename);
+  if (fs.existsSync(filePath)) {
+    results.push(filePath);
+  }
+
+  const parentDir = path.resolve(directory, '..');
+  if (parentDir === directory) {
+    return results;
+  } else {
+    return [
+      ...lookupFilesInParentDirsTopToBottom(parentDir, filename),
+      ...results,
+    ];
   }
 }
 

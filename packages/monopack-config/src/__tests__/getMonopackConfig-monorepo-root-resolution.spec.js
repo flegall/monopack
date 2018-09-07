@@ -30,33 +30,6 @@ describe('getMonopackConfig() - monorepo root resolution', () => {
       });
   });
 
-  it(`when a local monopack.config.js defining the monorepo root is present,
-    it should use it even if there are top-level config files`, async () => {
-    // given
-    await aMonorepo()
-      .withEmptyConfigFile()
-      .withPackages(
-        aPackage().withConfigFile(
-          `module.exports = {monorepoRootPath: '../..'};`
-        )
-      )
-      .execute(async ({ root, packages: [subPackagePath] }) => {
-        // when
-        const config = getMonopackConfig({
-          mainFilePath: subPackagePath + '/main.js',
-          installPackages: false,
-          extraModules: [],
-          outputDirectory: null,
-        });
-
-        // then
-        expect(config.monorepoRootPath).toBe(root);
-        const ref = {}; // Verify that the config is not modified
-        expect(config.babelConfigModifier(ref)).toBe(ref);
-        expect(config.webpackConfigModifier(ref)).toBe(ref);
-      });
-  });
-
   it(`when a local monopack.config.js not defining the monorepo root is present,
     if there is no lerna.json file upwards,
     if there is package.json with yarn workspaces upwards,
