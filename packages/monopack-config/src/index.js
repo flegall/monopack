@@ -21,12 +21,12 @@ export function getMonopackConfig({
   installPackages,
   extraModules,
   outputDirectory,
-}: {
-  mainFilePath: string,
-  installPackages: boolean | null,
-  extraModules: $ReadOnlyArray<string>,
-  outputDirectory: string | null,
-}): MonopackConfig {
+}: {|
+  +mainFilePath: string,
+  +installPackages: boolean | null,
+  +extraModules: $ReadOnlyArray<string>,
+  +outputDirectory: string | null,
+|}): MonopackConfig {
   const directory = path.dirname(mainFilePath);
   const monopackConfigFiles = lookupFilesInParentDirsTopToBottom(
     directory,
