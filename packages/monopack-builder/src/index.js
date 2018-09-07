@@ -50,25 +50,31 @@ export async function build({
     const baseBabelConfig = {
       presets: [
         [
-          '@babel/preset-env',
+          require.resolve('@babel/preset-env'),
           {
             targets: {
               node: '6.14.4',
             },
           },
         ],
-        '@babel/preset-flow',
+        require.resolve('@babel/preset-flow'),
       ],
       plugins: [
-        ['@babel/plugin-proposal-decorators', { legacy: true }],
-        '@babel/plugin-proposal-function-sent',
-        '@babel/plugin-proposal-export-namespace-from',
-        '@babel/plugin-proposal-numeric-separator',
-        '@babel/plugin-proposal-throw-expressions',
-        '@babel/plugin-syntax-dynamic-import',
-        '@babel/plugin-syntax-import-meta',
-        ['@babel/plugin-proposal-class-properties', { loose: false }],
-        '@babel/plugin-proposal-json-strings',
+        [
+          require.resolve('@babel/plugin-proposal-decorators'),
+          { legacy: true },
+        ],
+        require.resolve('@babel/plugin-proposal-function-sent'),
+        require.resolve('@babel/plugin-proposal-export-namespace-from'),
+        require.resolve('@babel/plugin-proposal-numeric-separator'),
+        require.resolve('@babel/plugin-proposal-throw-expressions'),
+        require.resolve('@babel/plugin-syntax-dynamic-import'),
+        require.resolve('@babel/plugin-syntax-import-meta'),
+        [
+          require.resolve('@babel/plugin-proposal-class-properties'),
+          { loose: false },
+        ],
+        require.resolve('@babel/plugin-proposal-json-strings'),
       ],
     };
     const modifiedBabelConfig = babelConfigModifier(baseBabelConfig);
