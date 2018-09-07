@@ -5,6 +5,7 @@ import path from 'path';
 import _ from 'lodash';
 import glob from 'glob-promise';
 import webpack from 'webpack';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 import { importMatcher } from './importMatcher';
 
@@ -133,6 +134,12 @@ export async function build({
         new webpack.BannerPlugin({
           banner: "require('source-map-support/register');\n",
           raw: true,
+        }),
+        new BundleAnalyzerPlugin({
+          analyzerMode: 'static',
+          openAnalyzer: false,
+          logLevel: 'warn',
+          reportFilename: 'bundle-analyser-report.html',
         }),
       ],
     };
