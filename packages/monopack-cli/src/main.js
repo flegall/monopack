@@ -7,6 +7,7 @@ import Bluebird from 'bluebird';
 import fsCopyFile from 'fs-copy-file';
 import chalk from 'chalk';
 import tmp from 'tmp-promise';
+import sortJson from 'sort-json';
 import { build, type MonopackBuilderParams } from 'monopack-builder';
 import DependencyCollector from 'monopack-dependency-collector';
 import { executeChildProcess, YARN_COMMAND } from 'monopack-process';
@@ -168,12 +169,12 @@ export async function main({
     version: '1.0.0',
     main: 'main.js',
     private: true,
-    dependencies: {
+    dependencies: sortJson({
       'source-map-support': require('../package.json').dependencies[
         'source-map-support'
       ],
       ...dependencies,
-    },
+    }),
     devDependencies: {},
   };
   await writeFile(
