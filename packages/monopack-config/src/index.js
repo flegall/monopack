@@ -12,6 +12,8 @@ export type MonopackConfig = {|
   +webpackConfigModifier: Object => Object,
   +babelConfigModifier: Object => Object,
   +extraModules: $ReadOnlyArray<string>,
+  +modifyPackageJson: Object => Object,
+  +afterBuild: string => void | Promise<void>,
 |};
 
 export function getMonopackConfig({
@@ -46,6 +48,8 @@ export function getMonopackConfig({
       installPackagesAfterBuild:
         installPackages !== null ? installPackages : true,
       extraModules,
+      modifyPackageJson: identity,
+      afterBuild: () => {},
     };
   }
 }
@@ -57,14 +61,18 @@ type ConfigFile = {|
   +babelConfigModifier?: Object => Object,
   +installPackagesAfterBuild?: boolean,
   +extraModules?: $ReadOnlyArray<string>,
+  +modifyPackageJson?: Object => Object,
+  +afterBuild?: string => void | Promise<void>,
 |};
 const ConfigFileTCombType = t.struct({
-  monorepoRootPath: t.union([t.String, t.Nil]),
-  outputDirectory: t.union([t.String, t.Nil]),
-  webpackConfigModifier: t.union([t.Function, t.Nil]),
-  babelConfigModifier: t.union([t.Function, t.Nil]),
-  installPackagesAfterBuild: t.union([t.Boolean, t.Nil]),
-  extraModules: t.union([t.list(t.String), t.Nil]),
+  monorepoRootPath: t.maybe(t.String),
+  outputDirectory: t.maybe(t.String),
+  webpackConfigModifier: t.maybe(t.Function),
+  babelConfigModifier: t.maybe(t.Function),
+  installPackagesAfterBuild: t.maybe(t.Boolean),
+  extraModules: t.maybe(t.list(t.String)),
+  modifyPackageJson: t.maybe(t.Function),
+  afterBuild: t.maybe(t.Function),
 });
 
 function buildConfigFromConfigFiles(
@@ -133,6 +141,8 @@ function buildConfigFromConfigFiles(
       ...(mergedConfig.extraModules || []),
       ...(extraModules || []),
     ],
+    modifyPackageJson: mergedConfig.modifyPackageJson || identity,
+    afterBuild: mergedConfig.afterBuild || (() => {}),
   };
 }
 

@@ -29,7 +29,7 @@ describe('getMonopackConfig() - config file validation', () => {
         expect(error).toBeDefined();
         if (error) {
           expect(error.message).toContain(
-            'Invalid value 1 supplied to /monorepoRootPath: String | Nil'
+            'Invalid value 1 supplied to /monorepoRootPath: String'
           );
         }
       });
@@ -58,7 +58,7 @@ describe('getMonopackConfig() - config file validation', () => {
         expect(error).toBeDefined();
         if (error) {
           expect(error.message).toContain(
-            'Invalid value 1 supplied to /outputDirectory: String | Nil'
+            'Invalid value 1 supplied to /outputDirectory: String'
           );
         }
       });
@@ -87,7 +87,7 @@ describe('getMonopackConfig() - config file validation', () => {
         expect(error).toBeDefined();
         if (error) {
           expect(error.message).toContain(
-            'Invalid value 1 supplied to /webpackConfigModifier: Function | Nil'
+            'Invalid value 1 supplied to /webpackConfigModifier: Function'
           );
         }
       });
@@ -116,7 +116,7 @@ describe('getMonopackConfig() - config file validation', () => {
         expect(error).toBeDefined();
         if (error) {
           expect(error.message).toContain(
-            'Invalid value 1 supplied to /installPackagesAfterBuild: Boolean | Nil'
+            'Invalid value 1 supplied to /installPackagesAfterBuild: Boolean'
           );
         }
       });
@@ -145,7 +145,7 @@ describe('getMonopackConfig() - config file validation', () => {
         expect(error).toBeDefined();
         if (error) {
           expect(error.message).toContain(
-            'Invalid value 1 supplied to /babelConfigModifier: Function | Nil'
+            'Invalid value 1 supplied to /babelConfigModifier: Function'
           );
         }
       });
@@ -174,7 +174,65 @@ describe('getMonopackConfig() - config file validation', () => {
         expect(error).toBeDefined();
         if (error) {
           expect(error.message).toContain(
-            'Invalid value \\"lodash\\" supplied to /extraModules: Array<String> | Nil'
+            'Invalid value \\"lodash\\" supplied to /extraModules: Array<String>'
+          );
+        }
+      });
+  });
+
+  it('when an invalid value for modifyPackageJson is provided, it should be rejected', async () => {
+    // given
+    await aMonorepo()
+      .named('root')
+      .withConfigFile(`module.exports = {modifyPackageJson: 'invalid'};`)
+      .execute(async ({ root }) => {
+        // when
+        let error;
+        try {
+          getMonopackConfig({
+            mainFilePath: root + '/main.js',
+            installPackages: null,
+            extraModules: [],
+            outputDirectory: null,
+          });
+        } catch (e) {
+          error = e;
+        }
+
+        // then
+        expect(error).toBeDefined();
+        if (error) {
+          expect(error.message).toContain(
+            'Invalid value \\"invalid\\" supplied to /modifyPackageJson: Function'
+          );
+        }
+      });
+  });
+
+  it('when an invalid value for afterBuild is provided, it should be rejected', async () => {
+    // given
+    await aMonorepo()
+      .named('root')
+      .withConfigFile(`module.exports = {afterBuild: 'invalid'};`)
+      .execute(async ({ root }) => {
+        // when
+        let error;
+        try {
+          getMonopackConfig({
+            mainFilePath: root + '/main.js',
+            installPackages: null,
+            extraModules: [],
+            outputDirectory: null,
+          });
+        } catch (e) {
+          error = e;
+        }
+
+        // then
+        expect(error).toBeDefined();
+        if (error) {
+          expect(error.message).toContain(
+            'Invalid value \\"invalid\\" supplied to /afterBuild: Function'
           );
         }
       });

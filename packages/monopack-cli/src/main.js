@@ -177,9 +177,12 @@ export async function main({
     }),
     devDependencies: {},
   };
+  const modifiedPackageJsonContent = monopackConfig.modifyPackageJson(
+    packageJsonContent
+  );
   await writeFile(
     path.join(builderParams.outputDirectory, 'package.json'),
-    JSON.stringify(packageJsonContent, null, 2)
+    JSON.stringify(modifiedPackageJsonContent || packageJsonContent, null, 2)
   );
 
   if (yarnLockFileToCopy) {
@@ -214,6 +217,15 @@ export async function main({
         'Yarn could not be executed' + JSON.stringify(execution, null, 2)
       );
     }
+  }
+
+  if (monopackConfig.afterBuild) {
+    print(
+      chalk.white(
+        `=>> monopack will call afterBuild("${builderParams.outputDirectory}")`
+      ) + '\n'
+    );
+    await monopackConfig.afterBuild(builderParams.outputDirectory);
   }
 
   print(
