@@ -5,5 +5,6 @@
   "main": "build/index.js",
   "repository": "https://github.com/flegall/monopack",
   "author": "Florent Le Gall <florent.legall@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "gitHead": "92e32038520ceaf6990eb5ae64fd360513e5e4fc"
 }

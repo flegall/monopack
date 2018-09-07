@@ -11,5 +11,6 @@
   },
   "bin": {
     "monopack": "./bin/monopack.js"
-  }
+  },
+  "gitHead": "92e32038520ceaf6990eb5ae64fd360513e5e4fc"
 }
