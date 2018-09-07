@@ -75,16 +75,38 @@ With npm
 
     Commands:
       monopack build main  Builds an application
+      monopack run main    Runs an application
+      monopack debug main  Runs an application in debug mode
 
     Options:
-      --help         Show help                                             [boolean]
-      --version      Show version number
-      --out-dir, -d  Output directory (default into a temp dir)             [string]
+      --help                          Show help                            [boolean]
+      --version                       Show version number                  [boolean]
+      --watch, -w                     Enable watch mode   [boolean] [default: false]
+      --out-dir, -d                   Output directory (default into a temp dir)
+                                                                            [string]
+      --no-packages-installation, -n  Do not install packages after build
+                                                          [boolean] [default: false]
+      --install-packages, -i          Install packages after build
+                                                           [boolean] [default: true]
+      --with-extra-module, -m         Adds an extra module to the dependencies.
+                                      It can be useful for dynamically required
+                                      dependencies that monopack cannot detect
+                                      (e.g.: an sql driver).
+
+                                      It expects the package name without the
+                                      version. (e.g: 'mysql' not 'mysql@2.16.0).
+                                      It can be use multiple times "monopack build
+                                      main.js -m mysql -m postgresql" in order to
+                                      provide multiple dependencies.
+
+                                      Make sure to install it in the same package as
+                                      the main file, otherwise another version might
+                                      be picked up.                         [string]
 
 ### Default configuration
 
 By default monopack will use babel 7 to compile your code into js code that node.js 6.14.4 understands.
-It supports [flow](https://flow.org) and [stage-2](https://babeljs.io/docs/plugins/preset-stage-2/) features.
+It supports [flow](https://flow.org) and [stage-2](https://github.com/babel/babel/tree/master/packages/babel-preset-stage-2) features.
 
 ```js
 const baseBabelConfig = {
@@ -127,23 +149,40 @@ This configuration file can be used to :
 - Override the default babel configuration
 - Override the default webpack configuration
 
-If you use a configuration file, monopack will use its path as the monorepo root. You can override it with the **monorepoRootPath** field.
+You can use multiple configuration files, have a top-level one that the top of the monorepo and have a more specific one per package. More specific entries will override the ones from the root. If you would like to combine then, you have to require the parent configuration file and implement the merge operation on your own.
 
-The config file can export 3 entries :
+The config file can export the following entries :
 
 - monorepoRootPath : the relative path to the monorepo root.
+- outputDirectory: the relative or absolute path to the output directory (defaults to a temp file).
 - babelConfigModifier : a function that takes the current configuration and returns the modified configuration.
 - webpackConfigModifier: a function that takes the current configuration and returns the modified configuration.
+- installPackagesAfterBuild : a boolean indicating whether packages should be installed after build (default to true).
+- extraModules: an array of extra-module names to bundle (default empty). It can be useful for dynamically required dependencies that monopack cannot detect (e.g.: an sql driver).
+  - It expects the package name without the version. (e.g: 'mysql' not 'mysql@2.16.0).
+  - It can be use multiple times "monopack build main.js -m mysql -m postgresql" in order to provide multiple dependencies.
+  - Make sure to install it in the same package as the main file, otherwise another version might be picked up.
+- modifyPackageJson: a function that takes the produced package json and returns the modified package json object: it can be used to add extra info (engines, version).
+- afterBuild: a function that gets executed when build is complete. It can be used to trigger something after your build has been produced.
+  - This function takes the build directory as parameter.
+  - This function can return a promise that will be awaited.
 
 For example :
 
 ```js
 module.exports.monorepoRootPath = '../..';
+module.exports.outputDirectory = './build';
 module.exports.babelConfigModifier = defaultBabelConfiguration => {
   return babelConfiguration(defaultBabelConfiguration);
 };
 module.exports.webpackConfigModifier = defaultWebpackConfig => {
   return webPackConfiguration(defaultWebpackConfig);
+};
+module.exports.installPackagesAfterBuild = true;
+module.exports.extraModules = ['mysql', 'postgresql'];
+module.exports.modifyPackageJson = pkg => ({ ...pkg, private: false });
+module.exports.afterBuild = async buildDirectory => {
+  return triggerActionAfterBuild(buildDirectory);
 };
 ```
 
