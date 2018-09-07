@@ -219,13 +219,14 @@ export async function main({
     }
   }
 
-  if (monopackConfig.afterBuild) {
+  const { afterBuild } = monopackConfig;
+  if (afterBuild) {
     print(
       chalk.white(
         `=>> monopack will call afterBuild("${builderParams.outputDirectory}")`
       ) + '\n'
     );
-    await monopackConfig.afterBuild(builderParams.outputDirectory);
+    await afterBuild(builderParams.outputDirectory);
   }
 
   print(

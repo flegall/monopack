@@ -13,7 +13,7 @@ export type MonopackConfig = {|
   +babelConfigModifier: Object => Object,
   +extraModules: $ReadOnlyArray<string>,
   +modifyPackageJson: Object => Object,
-  +afterBuild: string => void | Promise<void>,
+  +afterBuild: null | (string => void | Promise<void>),
 |};
 
 export function getMonopackConfig({
@@ -49,7 +49,7 @@ export function getMonopackConfig({
         installPackages !== null ? installPackages : true,
       extraModules,
       modifyPackageJson: identity,
-      afterBuild: () => {},
+      afterBuild: null,
     };
   }
 }
@@ -142,7 +142,7 @@ function buildConfigFromConfigFiles(
       ...(extraModules || []),
     ],
     modifyPackageJson: mergedConfig.modifyPackageJson || identity,
-    afterBuild: mergedConfig.afterBuild || (() => {}),
+    afterBuild: mergedConfig.afterBuild || null,
   };
 }
 

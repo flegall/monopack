@@ -7,7 +7,7 @@ jest.setTimeout(60000);
 
 describe('getMonopackConfig() - afterBuild', () => {
   it(`when no config file is present
-   a dummy function should be provided`, async () => {
+   a null value should be provided`, async () => {
     // given
     await aMonorepo()
       .named('root')
@@ -21,12 +21,13 @@ describe('getMonopackConfig() - afterBuild', () => {
         });
 
         // then
-        expect(config.afterBuild(root)).toBe(undefined);
+        const { afterBuild } = config;
+        expect(afterBuild).toBe(null);
       });
   });
 
   it(`when an empty config file is present
-   an identity function should be provided`, async () => {
+   a null value should be provided`, async () => {
     // given
     await aMonorepo()
       .named('root')
@@ -41,7 +42,8 @@ describe('getMonopackConfig() - afterBuild', () => {
         });
 
         // then
-        expect(config.afterBuild(root)).toBe(undefined);
+        const { afterBuild } = config;
+        expect(afterBuild).toBe(null);
       });
   });
 
@@ -65,7 +67,11 @@ describe('getMonopackConfig() - afterBuild', () => {
         });
 
         // then
-        expect(config.afterBuild(root)).toEqual({ ok: 42 });
+        const { afterBuild } = config;
+        expect(afterBuild).not.toBeNull();
+        if (afterBuild) {
+          expect(afterBuild(root)).toEqual({ ok: 42 });
+        }
       });
   });
 });
