@@ -6,13 +6,8 @@ import yargs from 'yargs';
 import { main, type MonopackArgs } from './main';
 
 export function run() {
-  const commandOption = yargs => {
-    yargs.positional('main', {
-      describe: 'The application entry point source file',
-      type: 'string',
-    });
-  };
-  const { argv } = yargs
+  const { monopackArgs, nodeArgs, runArgs } = splitArgs(process.argv);
+  const { argv } = yargs(monopackArgs)
     .command('build main', 'Builds an application', commandOption)
     .command('run main', 'Runs an application', commandOption)
     .command('debug main', 'Runs an application in debug mode', commandOption)
@@ -91,9 +86,14 @@ export function run() {
     print: text => {
       process.stdout.write(text);
     },
+    printError: text => {
+      process.stderr.write(text);
+    },
     currentWorkingDirectory: process.cwd(),
     installPackages,
     extraModules,
+    nodeArgs,
+    runArgs,
   };
 
   main(args)
@@ -107,4 +107,39 @@ export function run() {
       console.log(error);
       process.exit(1);
     });
+}
+
+function commandOption(yargs) {
+  return yargs.positional('main', {
+    describe: 'The application entry point source file',
+    type: 'string',
+  });
+}
+
+export function splitArgs([_1, _2, ...args]: string[]): {|
+  +monopackArgs: string[],
+  +nodeArgs: string[],
+  +runArgs: string[],
+|} {
+  const firstDoubleColon = args.indexOf('::');
+  if (firstDoubleColon === -1) {
+    return { monopackArgs: args, runArgs: [], nodeArgs: [] };
+  }
+  const monopackArgs = args.slice(0, firstDoubleColon);
+
+  const secondDoubleColon = args.indexOf('::', firstDoubleColon + 1);
+
+  if (secondDoubleColon === -1) {
+    return {
+      monopackArgs,
+      nodeArgs: args.slice(firstDoubleColon + 1),
+      runArgs: [],
+    };
+  }
+
+  return {
+    monopackArgs,
+    nodeArgs: args.slice(firstDoubleColon + 1, secondDoubleColon),
+    runArgs: args.slice(secondDoubleColon + 1),
+  };
 }

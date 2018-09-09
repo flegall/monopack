@@ -5,7 +5,7 @@ import path from 'path';
 import { executeChildProcess } from 'monopack-process';
 import { aMonorepo } from 'monopack-repo-builder';
 
-import { build } from './monopack-build-helper';
+import { monopack } from './monopack-helper';
 
 jest.setTimeout(60000);
 
@@ -25,7 +25,9 @@ describe('monopack build - third party packages', () => {
       )
       .execute(async ({ root }) => {
         // when
-        const { buildDirectory } = await build(root, 'main.js', {});
+        const { buildDirectory } = await monopack(root, 'main.js', {
+          command: 'build',
+        });
         const { result, stdout, stderr } = await executeChildProcess(
           'node',
           [path.join(buildDirectory, 'main.js')],
@@ -57,10 +59,11 @@ describe('monopack build - third party packages', () => {
       )
       .execute(async ({ root }) => {
         // when
-        const { compilationOutput, buildDirectory } = await build(
+        const { compilationOutput, buildDirectory } = await monopack(
           root,
           'main.js',
           {
+            command: 'build',
             installPackages: false,
           }
         );
@@ -89,7 +92,8 @@ describe('monopack build - third party packages', () => {
       )
       .execute(async ({ root }) => {
         // when
-        const { buildDirectory } = await build(root, 'main.js', {
+        const { buildDirectory } = await monopack(root, 'main.js', {
+          command: 'build',
           extraModules: ['lodash'],
         });
 

@@ -1,7 +1,7 @@
 // @flow
 import { aMonorepo } from 'monopack-repo-builder';
 
-import { build } from './monopack-build-helper';
+import { monopack } from './monopack-helper';
 
 jest.setTimeout(60000);
 
@@ -14,7 +14,7 @@ describe('monopack build - validation', () => {
         // when
         let error = null;
         try {
-          await build(root, 'main.js');
+          await monopack(root, 'main.js', { command: 'build' });
         } catch (e) {
           error = e;
         }

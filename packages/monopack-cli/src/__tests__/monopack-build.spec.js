@@ -4,7 +4,7 @@ import path from 'path';
 
 import { aMonorepo, aPackage } from 'monopack-repo-builder';
 
-import { build, buildAndRun } from './monopack-build-helper';
+import { monopack, buildAndRun } from './monopack-helper';
 
 jest.setTimeout(60000);
 
@@ -251,8 +251,9 @@ describe('monopack build', () => {
       )
       .execute(async ({ root }) => {
         // when
-        const { buildDirectory } = await build(root, 'main.js', {
+        const { buildDirectory } = await monopack(root, 'main.js', {
           outputDirectory: './an_output_build_directory',
+          command: 'build',
         });
 
         // then
@@ -275,8 +276,9 @@ describe('monopack build', () => {
       )
       .execute(async ({ root }) => {
         // when
-        const { buildDirectory } = await build(root, 'main.js', {
+        const { buildDirectory } = await monopack(root, 'main.js', {
           outputDirectory: path.join(root, 'an_output_build_directory'),
+          command: 'build',
         });
 
         // then
@@ -286,9 +288,29 @@ describe('monopack build', () => {
       });
   });
 
-  // eslint-disable-next-line jest/no-disabled-tests
-  xit('should build a js file to a temp directory', async () => {});
+  it('should build and not run a js file', async () => {
+    // given
+    await aMonorepo()
+      .named('root')
+      .withEmptyConfigFile()
+      .withSource(
+        'main.js',
+        `
+          const fs = require('fs');
+          const path = require('path')
+          fs.writeFileSync(path.join(process.cwd(), 'output.txt'), 'ok');
+        `
+      )
+      .execute(async ({ root }) => {
+        // when
+        const { buildDirectory } = await monopack(root, 'main.js', {
+          command: 'build',
+        });
 
-  // eslint-disable-next-line jest/no-disabled-tests
-  xit('should build a js file, watch for file changes and rebuild on file changes', async () => {});
+        // then
+        expect(fs.existsSync(path.join(buildDirectory, 'output.txt'))).toBe(
+          false
+        );
+      });
+  });
 });

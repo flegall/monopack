@@ -26,14 +26,17 @@ const copyFile: (string, string) => Promise<void> = Bluebird.promisify(
 );
 
 export type MonopackArgs = {|
-  command: 'build' | 'run' | 'debug',
-  mainJs: string,
-  outputDirectory: string | null,
-  installPackages: boolean | null,
-  watch: boolean,
-  print: string => void,
-  currentWorkingDirectory: string,
-  extraModules: $ReadOnlyArray<string>,
+  +command: 'build' | 'run' | 'debug',
+  +mainJs: string,
+  +outputDirectory: string | null,
+  +installPackages: boolean | null,
+  +watch: boolean,
+  +print: string => void,
+  +printError: string => void,
+  +currentWorkingDirectory: string,
+  +extraModules: $ReadOnlyArray<string>,
+  +runArgs: string[],
+  +nodeArgs: string[],
 |};
 export type MonopackResult =
   | {|
@@ -51,9 +54,11 @@ export async function main({
   watch,
   outputDirectory,
   print,
+  printError,
   currentWorkingDirectory,
   installPackages,
   extraModules,
+  runArgs,
 }: MonopackArgs): Promise<MonopackResult> {
   const version = require('../package.json').version;
   const mainJsFullPath = path.join(currentWorkingDirectory, mainJs);
@@ -77,12 +82,6 @@ export async function main({
         : '') +
       '\n'
   );
-  if (command === 'run') {
-    print(
-      '=>> ' + chalk.inverse('run command is not implemented yet !') + '\n'
-    );
-    return { success: false, exitCode: -1 };
-  }
 
   if (command === 'debug') {
     print(
@@ -236,6 +235,22 @@ export async function main({
       }`
     ) + '\n'
   );
+
+  if (command === 'run') {
+    const execution = await executeChildProcess(
+      'node',
+      ['main.js', ...runArgs],
+      {
+        cwd: builderParams.outputDirectory,
+        outPrint: data => print(chalk.magentaBright(data)),
+        errPrint: data => print(chalk.red(data)),
+      }
+    );
+
+    const success = _.isEqual(execution.result, { type: 'EXIT', exitCode: 0 });
+
+    return { success, outputDirectory: builderParams.outputDirectory };
+  }
 
   return { success: true, outputDirectory: builderParams.outputDirectory };
 }

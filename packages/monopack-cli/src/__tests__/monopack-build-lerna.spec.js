@@ -2,7 +2,7 @@
 
 import { aMonorepo, aPackage } from 'monopack-repo-builder';
 
-import { buildAndRun } from './monopack-build-helper';
+import { buildAndRun } from './monopack-helper';
 
 jest.setTimeout(60000);
 

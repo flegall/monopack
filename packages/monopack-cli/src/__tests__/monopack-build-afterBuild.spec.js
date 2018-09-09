@@ -4,7 +4,7 @@ import path from 'path';
 
 import { aMonorepo } from 'monopack-repo-builder';
 
-import { build } from './monopack-build-helper';
+import { monopack } from './monopack-helper';
 
 jest.setTimeout(60000);
 
@@ -29,7 +29,9 @@ describe('monopack build - afterBuild', () => {
       )
       .execute(async ({ root }) => {
         // when
-        const { buildDirectory } = await build(root, 'main.js', {});
+        const { buildDirectory } = await monopack(root, 'main.js', {
+          command: 'build',
+        });
 
         expect(fs.existsSync(path.join(buildDirectory, 'output.txt'))).toBe(
           true
@@ -70,7 +72,9 @@ describe('monopack build - afterBuild', () => {
       )
       .execute(async ({ root }) => {
         // when
-        const { buildDirectory } = await build(root, 'main.js', {});
+        const { buildDirectory } = await monopack(root, 'main.js', {
+          command: 'build',
+        });
 
         expect(fs.existsSync(path.join(buildDirectory, 'output.txt'))).toBe(
           true

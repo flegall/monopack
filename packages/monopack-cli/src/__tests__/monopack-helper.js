@@ -14,7 +14,9 @@ export async function buildAndRun(
   stdout: string,
   stderr: string,
 }> {
-  const { compilationOutput, buildDirectory } = await build(root, mainJs);
+  const { compilationOutput, buildDirectory } = await monopack(root, mainJs, {
+    command: 'build',
+  });
   const { result, stdout, stderr } = await executeChildProcess(
     'node',
     ['./build/main.js'],
@@ -23,18 +25,22 @@ export async function buildAndRun(
   return { compilationOutput, buildDirectory, result, stdout, stderr };
 }
 
-export async function build(
+export async function monopack(
   root: string,
   mainJs: string,
   {
+    command,
+    runArgs = [],
     outputDirectory,
     extraModules = [],
     installPackages,
   }: {
+    +command: 'build' | 'run',
+    +runArgs?: string[],
     +outputDirectory?: null | string,
     +extraModules?: $ReadOnlyArray<string>,
     +installPackages?: null | boolean,
-  } = {}
+  }
 ): Promise<{
   compilationOutput: string,
   buildDirectory: string,
@@ -45,13 +51,18 @@ export async function build(
     print: content => {
       compilationOutput = compilationOutput + content;
     },
+    printError: content => {
+      compilationOutput = compilationOutput + content;
+    },
     outputDirectory:
       outputDirectory !== undefined ? outputDirectory : './build',
     mainJs,
     currentWorkingDirectory: root,
-    command: 'build',
+    command,
     installPackages: installPackages !== undefined ? installPackages : null,
     extraModules,
+    nodeArgs: [],
+    runArgs,
   });
   if (result.success) {
     const buildDirectory = result.outputDirectory;

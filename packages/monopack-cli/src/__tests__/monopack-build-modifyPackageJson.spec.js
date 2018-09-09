@@ -4,7 +4,7 @@ import path from 'path';
 
 import { aMonorepo } from 'monopack-repo-builder';
 
-import { build } from './monopack-build-helper';
+import { monopack } from './monopack-helper';
 
 jest.setTimeout(60000);
 
@@ -26,7 +26,9 @@ describe('monopack build - modifyPackageJson', () => {
       )
       .execute(async ({ root }) => {
         // when
-        const { buildDirectory } = await build(root, 'main.js', {});
+        const { buildDirectory } = await monopack(root, 'main.js', {
+          command: 'build',
+        });
 
         const packageJson = JSON.parse(
           fs.readFileSync(path.join(buildDirectory, 'package.json'), 'utf8')
@@ -52,7 +54,9 @@ describe('monopack build - modifyPackageJson', () => {
       )
       .execute(async ({ root }) => {
         // when
-        const { buildDirectory } = await build(root, 'main.js', {});
+        const { buildDirectory } = await monopack(root, 'main.js', {
+          command: 'build',
+        });
 
         const packageJson = JSON.parse(
           fs.readFileSync(path.join(buildDirectory, 'package.json'), 'utf8')
