@@ -35,6 +35,7 @@ describe('monopack build', () => {
         expect(fs.existsSync(path.join(buildDirectory, 'node_modules'))).toBe(
           true
         );
+        expect(compilationOutput).not.toContain('monopack will run $ node');
       });
   });
 

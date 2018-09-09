@@ -24,11 +24,16 @@ describe('monopack run', () => {
       )
       .execute(async ({ root }) => {
         // when
-        const { buildDirectory } = await monopack(root, 'main.js', {
-          command: 'run',
-        });
+        const { buildDirectory, compilationOutput } = await monopack(
+          root,
+          'main.js',
+          {
+            command: 'run',
+          }
+        );
 
         // then
+        expect(compilationOutput).toContain('monopack will run $ node main.js');
         expect(fs.existsSync(path.join(buildDirectory, 'output.txt'))).toBe(
           true
         );
@@ -40,7 +45,7 @@ describe('monopack run', () => {
       });
   });
 
-  it('should build and run a js file with arguments', async () => {
+  it('should build and run a js file with run arguments', async () => {
     // given
     await aMonorepo()
       .named('root')
@@ -57,12 +62,19 @@ describe('monopack run', () => {
       )
       .execute(async ({ root }) => {
         // when
-        const { buildDirectory } = await monopack(root, 'main.js', {
-          command: 'run',
-          runArgs: ['hello', 'world'],
-        });
+        const { buildDirectory, compilationOutput } = await monopack(
+          root,
+          'main.js',
+          {
+            command: 'run',
+            runArgs: ['hello', 'world'],
+          }
+        );
 
         // then
+        expect(compilationOutput).toContain(
+          'monopack will run $ node main.js hello world'
+        );
         expect(fs.existsSync(path.join(buildDirectory, 'output.txt'))).toBe(
           true
         );
@@ -71,6 +83,31 @@ describe('monopack run', () => {
           'utf8'
         );
         expect(content).toEqual('["hello","world"]');
+      });
+  });
+
+  it('should build and run a js file with nodejs arguments', async () => {
+    // given
+    await aMonorepo()
+      .named('root')
+      .withEmptyConfigFile()
+      .withSource(
+        'main.js',
+        `
+          console.log('OK');
+        `
+      )
+      .execute(async ({ root }) => {
+        // when
+        const { compilationOutput } = await monopack(root, 'main.js', {
+          command: 'run',
+          nodeArgs: ['--max-old-space-size=128'],
+        });
+
+        // then
+        expect(compilationOutput).toContain(
+          'monopack will run $ node --max-old-space-size=128 main.js'
+        );
       });
   });
 });

@@ -59,6 +59,7 @@ export async function main({
   installPackages,
   extraModules,
   runArgs,
+  nodeArgs,
 }: MonopackArgs): Promise<MonopackResult> {
   const version = require('../package.json').version;
   const mainJsFullPath = path.join(currentWorkingDirectory, mainJs);
@@ -237,9 +238,16 @@ export async function main({
   );
 
   if (command === 'run') {
+    print(
+      chalk.white(
+        `=>> monopack will run $ node${
+          nodeArgs.length > 0 ? ' ' + nodeArgs.join(' ') + ' ' : ' '
+        }main.js ${runArgs.length > 0 ? runArgs.join(' ') : ''}`
+      ) + '\n'
+    );
     const execution = await executeChildProcess(
       'node',
-      ['main.js', ...runArgs],
+      [...nodeArgs, 'main.js', ...runArgs],
       {
         cwd: builderParams.outputDirectory,
         outPrint: data => print(data),

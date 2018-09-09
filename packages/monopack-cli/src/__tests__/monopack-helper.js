@@ -31,12 +31,14 @@ export async function monopack(
   {
     command,
     runArgs = [],
+    nodeArgs = [],
     outputDirectory,
     extraModules = [],
     installPackages,
   }: {
     +command: 'build' | 'run',
     +runArgs?: string[],
+    +nodeArgs?: string[],
     +outputDirectory?: null | string,
     +extraModules?: $ReadOnlyArray<string>,
     +installPackages?: null | boolean,
@@ -61,7 +63,7 @@ export async function monopack(
     command,
     installPackages: installPackages !== undefined ? installPackages : null,
     extraModules,
-    nodeArgs: [],
+    nodeArgs,
     runArgs,
   });
   if (result.success) {
