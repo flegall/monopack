@@ -18,10 +18,11 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v6-dependencies-
 
-      - run: yarn install
+      - run: yarn install --cache-folder ~/.cache/yarn
       - save_cache:
           paths:
             - node_modules
+            - ~/.cache/yarn
           key: v6-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
       - run: yarn test -w 1
 
@@ -38,10 +39,11 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v8-dependencies-
 
-      - run: yarn install
+      - run: yarn install --cache-folder ~/.cache/yarn
       - save_cache:
           paths:
             - node_modules
+            - ~/.cache/yarn
           key: v8-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
       - run: yarn test -w 1
 
@@ -58,10 +60,11 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v10-dependencies-
 
-      - run: yarn install
+      - run: yarn install --cache-folder ~/.cache/yarn
       - save_cache:
           paths:
             - node_modules
+            - ~/.cache/yarn
           key: v10-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
       - run: yarn test -w 1
 
