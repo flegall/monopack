@@ -2,6 +2,14 @@
 import { splitArgs } from '../cli';
 
 describe('cli - splitArgs()', () => {
+  it('should include no args when there are no args:', () => {
+    expect(splitArgs(['node', 'monopack.js'])).toEqual({
+      monopackArgs: [],
+      nodeArgs: [],
+      runArgs: [],
+    });
+  });
+
   it('should include only monopack args when there is no ::', () => {
     expect(
       splitArgs([
@@ -15,22 +23,22 @@ describe('cli - splitArgs()', () => {
       ])
     ).toEqual({
       monopackArgs: ['build', 'main.js', '--arg1', 'value1', '--arg2'],
-      nodeArgs: [],
       runArgs: [],
+      nodeArgs: [],
     });
   });
 
-  it('should split monopack args and node when there is a ::', () => {
+  it('should split monopack args and run args when there is a ::', () => {
     expect(
       splitArgs(['node', 'monopack.js', 'run', 'main.js', '::', '--help'])
     ).toEqual({
       monopackArgs: ['run', 'main.js'],
-      nodeArgs: ['--help'],
-      runArgs: [],
+      runArgs: ['--help'],
+      nodeArgs: [],
     });
   });
 
-  it('should split monopack args node and run args when there are two ::', () => {
+  it('should split monopack args run and ode args when there are two ::', () => {
     expect(
       splitArgs([
         'node',
@@ -44,8 +52,8 @@ describe('cli - splitArgs()', () => {
       ])
     ).toEqual({
       monopackArgs: ['run', 'main.js'],
-      nodeArgs: ['--help'],
-      runArgs: ['--node'],
+      runArgs: ['--help'],
+      nodeArgs: ['--node'],
     });
   });
 });

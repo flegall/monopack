@@ -118,12 +118,12 @@ function commandOption(yargs) {
 
 export function splitArgs([_1, _2, ...args]: string[]): {|
   +monopackArgs: string[],
-  +nodeArgs: string[],
   +runArgs: string[],
+  +nodeArgs: string[],
 |} {
   const firstDoubleColon = args.indexOf('::');
   if (firstDoubleColon === -1) {
-    return { monopackArgs: args, runArgs: [], nodeArgs: [] };
+    return { monopackArgs: args, nodeArgs: [], runArgs: [] };
   }
   const monopackArgs = args.slice(0, firstDoubleColon);
 
@@ -132,14 +132,14 @@ export function splitArgs([_1, _2, ...args]: string[]): {|
   if (secondDoubleColon === -1) {
     return {
       monopackArgs,
-      nodeArgs: args.slice(firstDoubleColon + 1),
-      runArgs: [],
+      runArgs: args.slice(firstDoubleColon + 1),
+      nodeArgs: [],
     };
   }
 
   return {
     monopackArgs,
-    nodeArgs: args.slice(firstDoubleColon + 1, secondDoubleColon),
-    runArgs: args.slice(secondDoubleColon + 1),
+    runArgs: args.slice(firstDoubleColon + 1, secondDoubleColon),
+    nodeArgs: args.slice(secondDoubleColon + 1),
   };
 }

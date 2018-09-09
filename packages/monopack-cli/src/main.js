@@ -242,8 +242,8 @@ export async function main({
       ['main.js', ...runArgs],
       {
         cwd: builderParams.outputDirectory,
-        outPrint: data => print(chalk.magentaBright(data)),
-        errPrint: data => print(chalk.red(data)),
+        outPrint: data => print(data),
+        errPrint: data => print(data),
       }
     );
 
