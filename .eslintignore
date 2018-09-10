@@ -2,3 +2,4 @@
 **/node_modules/**/*.js
 **/custom-flow-typed/**/*.js
 **/flow-typed/**/*.js
+**/coverage/**/*.js

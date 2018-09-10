@@ -4,3 +4,4 @@ lerna-debug.log
 packages/*/build
 .eslintcache
 packages/*/*.tgz
+coverage
