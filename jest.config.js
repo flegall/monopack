@@ -7,4 +7,9 @@ module.exports = {
   moduleNameMapper: {
     '^(monopack-[^/]*)': '<rootDir>/packages/$1/src',
   },
+  collectCoverageFrom: [
+    '**/src/**/*.js',
+    '!**/__tests__/**/*.js',
+    '!**/node_modules/**/*.js',
+  ],
 };
