@@ -35,14 +35,16 @@ export async function monopack(
     outputDirectory,
     extraModules = [],
     installPackages,
-  }: {
-    +command: 'build' | 'run',
+    debugOptions = {},
+  }: {|
+    +command: 'build' | 'run' | 'debug',
     +runArgs?: string[],
     +nodeArgs?: string[],
     +outputDirectory?: null | string,
     +extraModules?: $ReadOnlyArray<string>,
     +installPackages?: null | boolean,
-  }
+    +debugOptions?: {| +debugHostPort?: string, +debugBreak?: true |},
+  |}
 ): Promise<{
   compilationOutput: string,
   buildDirectory: string,
@@ -67,6 +69,7 @@ export async function monopack(
     extraModules,
     nodeArgs,
     runArgs,
+    debugOptions: debugOptions || {},
   });
   const buildDirectory = result.outputDirectory;
   return {

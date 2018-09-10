@@ -48,8 +48,22 @@ export function run() {
         Make sure to install it in the same package as the main file, otherwise another version might be picked up.`,
       nargs: 1,
     })
+    .option('debug-host-port', {
+      type: 'string',
+      describe: `[host:]port setting to pass to node --inspect option.
+      It must be used with the debug command.`,
+      nargs: 1,
+    })
+    .option('debug-break', {
+      type: 'boolean',
+      describe: `Break at start of main script.
+      This option is required when you want to debug something that gets immediately when starting.
+      It triggers the --inspect-brk node option.
+      It must be used with the debug command.`,
+    })
     .strict();
 
+  const command = argv._[0];
   const mainJs = argv.main;
   const installPackages = (() => {
     if (argv['install-packages'] && argv['no-packages-installation']) {
@@ -65,6 +79,26 @@ export function run() {
     }
     return null;
   })();
+
+  const debugOptions = (() => {
+    if (argv['debug-host-port'] && command !== 'debug') {
+      throw new Error('Error: --debug-host-port requires debug command');
+    }
+    if (argv['debug-break'] && command !== 'debug') {
+      throw new Error('Error: --debug-break requires debug command');
+    }
+    if (command !== 'debug') {
+      return {};
+    } else {
+      return {
+        ...(argv['debug-host-port']
+          ? { debugHostPort: argv['debug-host-port'] }
+          : {}),
+        ...(argv['debug-break'] ? { debugBreak: true } : {}),
+      };
+    }
+  })();
+
   const extraModules: $ReadOnlyArray<string> = (() => {
     const {
       withExtraModule,
@@ -79,7 +113,7 @@ export function run() {
     }
   })();
   const args: MonopackArgs = {
-    command: argv._[0],
+    command,
     mainJs,
     outputDirectory: argv['out-dir'] || null,
     watch: argv.watch,
@@ -94,6 +128,7 @@ export function run() {
     extraModules,
     nodeArgs,
     runArgs,
+    debugOptions,
   };
 
   main(args)
@@ -116,10 +151,10 @@ function commandOption(yargs) {
   });
 }
 
-export function splitArgs([_1, _2, ...args]: string[]): {|
-  +monopackArgs: string[],
-  +runArgs: string[],
-  +nodeArgs: string[],
+export function splitArgs([_1, _2, ...args]: $ReadOnlyArray<string>): {|
+  +monopackArgs: $ReadOnlyArray<string>,
+  +runArgs: $ReadOnlyArray<string>,
+  +nodeArgs: $ReadOnlyArray<string>,
 |} {
   const firstDoubleColon = args.indexOf('::');
   if (firstDoubleColon === -1) {
@@ -128,7 +163,6 @@ export function splitArgs([_1, _2, ...args]: string[]): {|
   const monopackArgs = args.slice(0, firstDoubleColon);
 
   const secondDoubleColon = args.indexOf('::', firstDoubleColon + 1);
-
   if (secondDoubleColon === -1) {
     return {
       monopackArgs,

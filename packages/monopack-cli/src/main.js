@@ -35,8 +35,9 @@ export type MonopackArgs = {|
   +printError: string => void,
   +currentWorkingDirectory: string,
   +extraModules: $ReadOnlyArray<string>,
-  +runArgs: string[],
-  +nodeArgs: string[],
+  +runArgs: $ReadOnlyArray<string>,
+  +nodeArgs: $ReadOnlyArray<string>,
+  +debugOptions: {| +debugHostPort?: string, +debugBreak?: true |},
 |};
 export type MonopackResult = {|
   success: boolean,
@@ -56,6 +57,7 @@ export async function main({
   extraModules,
   runArgs,
   nodeArgs,
+  debugOptions: { debugHostPort, debugBreak },
 }: MonopackArgs): Promise<MonopackResult> {
   const version = require('../package.json').version;
   const mainJsFullPath = path.join(currentWorkingDirectory, mainJs);
@@ -79,17 +81,6 @@ export async function main({
         : '') +
       '\n'
   );
-
-  if (command === 'debug') {
-    print(
-      '=>> ' + chalk.inverse('debug command is not implemented yet !') + '\n'
-    );
-    return {
-      success: false,
-      exitCode: -1,
-      outputDirectory: path.dirname(mainJsFullPath),
-    };
-  }
 
   if (watch) {
     print(
@@ -242,17 +233,28 @@ export async function main({
     ) + '\n'
   );
 
-  if (command === 'run') {
+  if (command === 'run' || command === 'debug') {
+    const nodeArgsWithDebugOptions =
+      command === 'debug'
+        ? [
+            '--inspect',
+            ...(debugHostPort ? [`--inspect-port=${debugHostPort}`] : []),
+            ...(debugBreak ? [`--inspect-brk`] : []),
+            ...nodeArgs,
+          ]
+        : nodeArgs;
     print(
       chalk.white(
         `=>> monopack will run $ node${
-          nodeArgs.length > 0 ? ' ' + nodeArgs.join(' ') + ' ' : ' '
+          nodeArgsWithDebugOptions.length > 0
+            ? ' ' + nodeArgsWithDebugOptions.join(' ') + ' '
+            : ' '
         }main.js ${runArgs.length > 0 ? runArgs.join(' ') : ''}`
       ) + '\n'
     );
     const execution = await executeChildProcess(
       'node',
-      [...nodeArgs, 'main.js', ...runArgs],
+      [...nodeArgsWithDebugOptions, 'main.js', ...runArgs],
       {
         cwd: builderParams.outputDirectory,
         outPrint: data => print(data),

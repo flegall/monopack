@@ -3,7 +3,7 @@ import { executeChildProcess } from 'monopack-process';
 
 jest.setTimeout(60000);
 
-describe('monopack cli validation', () => {
+describe('cli validation', () => {
   it('when invoking without arguments, it should return an error and display help', async () => {
     const { result, stdout, stderr } = await executeChildProcess(
       'node',
@@ -87,16 +87,86 @@ Not enough non-option arguments: got 0, need at least 1
   it('when invoking with a command, a main file and -d without target it should return an error and display help for the command', async () => {
     const { result, stdout, stderr } = await executeChildProcess(
       'node',
-      ['../../bin/monopack.js', 'build', '-d'],
+      ['../../bin/monopack.js', 'build', 'main.js', '-d'],
       { cwd: __dirname }
     );
 
     expect(result).toEqual({ type: 'EXIT', exitCode: 1 });
     expect(stderr).toBe(
       `${buildCommandHelp}
-Not enough non-option arguments: got 0, need at least 1
+Not enough arguments following: d
 `
     );
+    expect(stdout).toBe('');
+  });
+
+  it('when invoking with a command, a main file and -m without extra modules it should return an error and display help for the command', async () => {
+    const { result, stdout, stderr } = await executeChildProcess(
+      'node',
+      ['../../bin/monopack.js', 'build', 'main.js', '-m'],
+      { cwd: __dirname }
+    );
+
+    expect(result).toEqual({ type: 'EXIT', exitCode: 1 });
+    expect(stderr).toBe(
+      `${buildCommandHelp}
+Not enough arguments following: m
+`
+    );
+    expect(stdout).toBe('');
+  });
+
+  it('when invoking with a command, a main file and -i and -n it it should return an error and display message', async () => {
+    const { result, stdout, stderr } = await executeChildProcess(
+      'node',
+      ['../../bin/monopack.js', 'build', 'main.js', '-i', '-n'],
+      { cwd: __dirname }
+    );
+
+    expect(result).toEqual({ type: 'EXIT', exitCode: 1 });
+    expect(stderr).toContain(
+      'Error: --install-packages && --no-packages-installation are mutually exclusive'
+    );
+    expect(stdout).toBe('');
+  });
+
+  it('when invoking with the debug command, a main file and --debug-host-port without arguments it should return an error and display help for the command', async () => {
+    const { result, stdout, stderr } = await executeChildProcess(
+      'node',
+      ['../../bin/monopack.js', 'debug', 'main.js', '--debug-host-port'],
+      { cwd: __dirname }
+    );
+
+    expect(result).toEqual({ type: 'EXIT', exitCode: 1 });
+    expect(stderr).toBe(
+      `${debugCommandHelp}
+Not enough arguments following: debug-host-port
+`
+    );
+    expect(stdout).toBe('');
+  });
+
+  it('when invoking with the run command, a main file and --debug-host-port it should return an error and display a message', async () => {
+    const { result, stdout, stderr } = await executeChildProcess(
+      'node',
+      ['../../bin/monopack.js', 'run', 'main.js', '--debug-host-port', '1337'],
+      { cwd: __dirname }
+    );
+
+    expect(result).toEqual({ type: 'EXIT', exitCode: 1 });
+    expect(stderr).toContain('Error: --debug-host-port requires debug command');
+    expect(stdout).toBe('');
+  });
+
+  it('when invoking with the run command, a main file and --debug-break it should return an error and display a message', async () => {
+    const { result, stdout, stderr } = await executeChildProcess(
+      'node',
+      ['../../bin/monopack.js', 'run', 'main.js', '--debug-break'],
+      { cwd: __dirname }
+    );
+
+    expect(result).toEqual({ type: 'EXIT', exitCode: 1 });
+    expect(stderr).toContain('Error: --debug-break requires debug command');
     expect(stdout).toBe('');
   });
 });
@@ -125,7 +195,26 @@ const optionsHelp = `Options:
                                   Make sure to install it in the same package as
                                   the main file, otherwise another version might
                                   be picked up.                         [string]
+  --debug-host-port               [host:]port setting to pass to node --inspect
+                                  option.
+                                  It must be used with the debug command.
+                                                                        [string]
+  --debug-break                   Break at start of main script.
+                                  This option is required when you want to debug
+                                  something that gets immediately when starting.
+                                  It triggers the --inspect-brk node option.
+                                  It must be used with the debug command.
+                                                                       [boolean]
 `;
+
+const debugCommandHelp = `monopack.js debug main
+
+Runs an application in debug mode
+
+Positionals:
+  main  The application entry point source file              [string] [required]
+
+${optionsHelp}`;
 
 const buildCommandHelp = `monopack.js build main
 
