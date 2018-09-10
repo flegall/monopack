@@ -23,7 +23,7 @@
     "glob": "7.1.3",
     "glob-promise": "3.4.0",
     "lodash": "4.17.10",
-    "webpack": "4.17.2",
+    "webpack": "4.18.0",
     "webpack-bundle-analyzer": "2.13.1"
   },
   "gitHead": "92e32038520ceaf6990eb5ae64fd360513e5e4fc"
