@@ -24,15 +24,18 @@ describe('monopack run', () => {
       )
       .execute(async ({ root }) => {
         // when
-        const { buildDirectory, compilationOutput } = await monopack(
-          root,
-          'main.js',
-          {
-            command: 'run',
-          }
-        );
+        const {
+          buildDirectory,
+          compilationOutput,
+          success,
+          exitCode,
+        } = await monopack(root, 'main.js', {
+          command: 'run',
+        });
 
         // then
+        expect(success).toBe(true);
+        expect(exitCode).toBe(0);
         expect(compilationOutput).toContain('monopack will run $ node main.js');
         expect(fs.existsSync(path.join(buildDirectory, 'output.txt'))).toBe(
           true
@@ -62,16 +65,19 @@ describe('monopack run', () => {
       )
       .execute(async ({ root }) => {
         // when
-        const { buildDirectory, compilationOutput } = await monopack(
-          root,
-          'main.js',
-          {
-            command: 'run',
-            runArgs: ['hello', 'world'],
-          }
-        );
+        const {
+          buildDirectory,
+          compilationOutput,
+          success,
+          exitCode,
+        } = await monopack(root, 'main.js', {
+          command: 'run',
+          runArgs: ['hello', 'world'],
+        });
 
         // then
+        expect(success).toBe(true);
+        expect(exitCode).toBe(0);
         expect(compilationOutput).toContain(
           'monopack will run $ node main.js hello world'
         );
@@ -99,15 +105,44 @@ describe('monopack run', () => {
       )
       .execute(async ({ root }) => {
         // when
-        const { compilationOutput } = await monopack(root, 'main.js', {
-          command: 'run',
-          nodeArgs: ['--max-old-space-size=128'],
-        });
+        const { compilationOutput, success, exitCode } = await monopack(
+          root,
+          'main.js',
+          {
+            command: 'run',
+            nodeArgs: ['--max-old-space-size=128'],
+          }
+        );
 
         // then
+        expect(success).toBe(true);
+        expect(exitCode).toBe(0);
         expect(compilationOutput).toContain(
           'monopack will run $ node --max-old-space-size=128 main.js'
         );
+      });
+  });
+
+  it('should build and run a js file that exits with an exit code and propagate exit code', async () => {
+    // given
+    await aMonorepo()
+      .named('root')
+      .withEmptyConfigFile()
+      .withSource(
+        'main.js',
+        `
+          process.exit(42);
+        `
+      )
+      .execute(async ({ root }) => {
+        // when
+        const { success, exitCode } = await monopack(root, 'main.js', {
+          command: 'run',
+        });
+
+        // then
+        expect(success).toBe(false);
+        expect(exitCode).toBe(42);
       });
   });
 });

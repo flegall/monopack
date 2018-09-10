@@ -24,6 +24,7 @@ describe('monopack disabled commands', () => {
 
     expect(result).toEqual({
       success: false,
+      outputDirectory: '.',
       exitCode: -1,
     });
     expect(buffer).toContain('--watch toggle is not implemented yet !');
@@ -51,6 +52,7 @@ describe('monopack disabled commands', () => {
 
     expect(result).toEqual({
       success: false,
+      outputDirectory: '.',
       exitCode: -1,
     });
     expect(buffer).toContain('debug command is not implemented yet !');

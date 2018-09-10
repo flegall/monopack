@@ -46,6 +46,8 @@ export async function monopack(
 ): Promise<{
   compilationOutput: string,
   buildDirectory: string,
+  success: boolean,
+  exitCode: number,
 }> {
   let compilationOutput = '';
   const result = await main({
@@ -66,12 +68,11 @@ export async function monopack(
     nodeArgs,
     runArgs,
   });
-  if (result.success) {
-    const buildDirectory = result.outputDirectory;
-    return { compilationOutput, buildDirectory };
-  } else {
-    throw new Error(
-      `Compilation failed : '${compilationOutput}' exitCode: ${result.exitCode}`
-    );
-  }
+  const buildDirectory = result.outputDirectory;
+  return {
+    compilationOutput,
+    buildDirectory,
+    success: result.success,
+    exitCode: result.exitCode,
+  };
 }

@@ -38,15 +38,11 @@ export type MonopackArgs = {|
   +runArgs: string[],
   +nodeArgs: string[],
 |};
-export type MonopackResult =
-  | {|
-      success: true,
-      outputDirectory: string,
-    |}
-  | {|
-      success: false,
-      exitCode: number,
-    |};
+export type MonopackResult = {|
+  success: boolean,
+  exitCode: number,
+  outputDirectory: string,
+|};
 
 export async function main({
   command,
@@ -88,14 +84,22 @@ export async function main({
     print(
       '=>> ' + chalk.inverse('debug command is not implemented yet !') + '\n'
     );
-    return { success: false, exitCode: -1 };
+    return {
+      success: false,
+      exitCode: -1,
+      outputDirectory: path.dirname(mainJsFullPath),
+    };
   }
 
   if (watch) {
     print(
       '=>> ' + chalk.inverse('--watch toggle is not implemented yet !') + '\n'
     );
-    return { success: false, exitCode: -1 };
+    return {
+      success: false,
+      exitCode: -1,
+      outputDirectory: path.dirname(mainJsFullPath),
+    };
   }
 
   const monopackConfig = getMonopackConfig({
@@ -158,6 +162,7 @@ export async function main({
     return {
       exitCode: result.exitCode,
       success: false,
+      outputDirectory: builderParams.outputDirectory,
     };
   }
 
@@ -255,10 +260,37 @@ export async function main({
       }
     );
 
-    const success = _.isEqual(execution.result, { type: 'EXIT', exitCode: 0 });
+    const success: boolean = _.isEqual(execution.result, {
+      type: 'EXIT',
+      exitCode: 0,
+    });
 
-    return { success, outputDirectory: builderParams.outputDirectory };
+    if (success) {
+      return {
+        success,
+        exitCode: 0,
+        outputDirectory: builderParams.outputDirectory,
+      };
+    } else {
+      if (execution.result.type === 'EXIT') {
+        return {
+          success: false,
+          exitCode: execution.result.exitCode,
+          outputDirectory: builderParams.outputDirectory,
+        };
+      } else {
+        return {
+          success: false,
+          exitCode: -1,
+          outputDirectory: builderParams.outputDirectory,
+        };
+      }
+    }
   }
 
-  return { success: true, outputDirectory: builderParams.outputDirectory };
+  return {
+    success: true,
+    exitCode: 0,
+    outputDirectory: builderParams.outputDirectory,
+  };
 }
