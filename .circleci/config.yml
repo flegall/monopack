@@ -51,7 +51,7 @@ jobs:
     working_directory: ~/repo
     docker:
       # specify the version you desire here
-      - image: circleci/node:10@sha256:41150dac652e893346037d3064fe90ce57a0ded9a2d3bb6ac31a8413a4dd02c5
+      - image: circleci/node:10@sha256:484f398f1189c27a20b0a0f7633e5ff2a6648c2f732d6d68ba034a601518a4f2
     steps:
       - checkout
       - restore_cache:
