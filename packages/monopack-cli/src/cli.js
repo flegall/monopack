@@ -5,8 +5,23 @@ import yargs from 'yargs';
 
 import { main, type MonopackArgs } from './main';
 
-export function run() {
-  const { monopackArgs, nodeArgs, runArgs } = splitArgs(process.argv);
+export function run(): void {
+  const args = getArgs(process.argv);
+  main(args)
+    .then(result => {
+      // eslint-disable-next-line promise/always-return
+      if (!result.success) {
+        process.exit(result.exitCode);
+      }
+    })
+    .catch(error => {
+      console.log(error);
+      process.exit(1);
+    });
+}
+
+export function getArgs(allArgs: $ReadOnlyArray<string>): MonopackArgs {
+  const { monopackArgs, nodeArgs, runArgs } = splitArgs(allArgs);
   const { argv } = yargs(monopackArgs)
     .command('build main', 'Builds an application', commandOption)
     .command('run main', 'Runs an application', commandOption)
@@ -30,13 +45,11 @@ export function run() {
     })
     .option('no-packages-installation', {
       alias: 'n',
-      default: false,
       type: 'boolean',
       describe: 'Do not install packages after build',
     })
     .option('install-packages', {
       alias: 'i',
-      default: true,
       type: 'boolean',
       describe: 'Install packages after build',
     })
@@ -71,9 +84,10 @@ export function run() {
   const mainJs = argv.main;
   const installPackages = (() => {
     if (argv['install-packages'] && argv['no-packages-installation']) {
-      throw new Error(
-        '--install-packages && --no-packages-installation are mutually exclusive'
+      console.error(
+        'Error: --install-packages && --no-packages-installation are mutually exclusive'
       );
+      process.exit(1);
     }
     if (argv['install-packages']) {
       return true;
@@ -86,13 +100,16 @@ export function run() {
 
   const debugOptions = (() => {
     if (command === 'debug' && process.version.startsWith('v6.')) {
-      throw new Error('Debug command is not available on node v6.');
+      console.error('Error: Debug command is not available on node v6.');
+      process.exit(1);
     }
     if (argv['debug-host-port'] && command !== 'debug') {
-      throw new Error('--debug-host-port requires debug command');
+      console.error('Error: --debug-host-port requires debug command');
+      process.exit(1);
     }
     if (argv['debug-break'] && command !== 'debug') {
-      throw new Error('--debug-break requires debug command');
+      console.error('Error: --debug-break requires debug command');
+      process.exit(1);
     }
     if (command !== 'debug') {
       return {};
@@ -119,7 +136,8 @@ export function run() {
       return [((withExtraModule: any): string)];
     }
   })();
-  const args: MonopackArgs = {
+
+  return {
     command,
     mainJs,
     outputDirectory: argv['out-dir'] || null,
@@ -137,18 +155,6 @@ export function run() {
     runArgs,
     debugOptions,
   };
-
-  main(args)
-    .then(result => {
-      // eslint-disable-next-line promise/always-return
-      if (!result.success) {
-        process.exit(result.exitCode);
-      }
-    })
-    .catch(error => {
-      console.log(error);
-      process.exit(1);
-    });
 }
 
 function commandOption(yargs) {

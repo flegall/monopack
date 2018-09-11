@@ -84,10 +84,8 @@ With npm
       --watch, -w                     Enable watch mode   [boolean] [default: false]
       --out-dir, -d                   Output directory (default into a temp dir)
                                                                             [string]
-      --no-packages-installation, -n  Do not install packages after build
-                                                          [boolean] [default: false]
-      --install-packages, -i          Install packages after build
-                                                           [boolean] [default: true]
+      --no-packages-installation, -n  Do not install packages after build  [boolean]
+      --install-packages, -i          Install packages after build         [boolean]
       --with-extra-module, -m         Adds an extra module to the dependencies.
                                       It can be useful for dynamically required
                                       dependencies that monopack cannot detect
@@ -112,7 +110,7 @@ With npm
                                       starting.
                                       It triggers the --inspect-brk node option.
                                       It must be used with the debug command.
-                                                                           [boolean]
+                                                                          [boolean]
 
 ### Default configuration
 
