@@ -10,7 +10,11 @@ export function run() {
   const { argv } = yargs(monopackArgs)
     .command('build main', 'Builds an application', commandOption)
     .command('run main', 'Runs an application', commandOption)
-    .command('debug main', 'Runs an application in debug mode', commandOption)
+    .command(
+      'debug main',
+      'Runs an application in debug mode (Node >= v8 only)',
+      commandOption
+    )
     .demandCommand(1, 'You need to enter a command')
     .option('watch', {
       alias: 'w',
@@ -57,7 +61,7 @@ export function run() {
     .option('debug-break', {
       type: 'boolean',
       describe: `Break at start of main script.
-      This option is required when you want to debug something that gets immediately when starting.
+      This option is required when you want to debug something that gets immediately executed when starting.
       It triggers the --inspect-brk node option.
       It must be used with the debug command.`,
     })
@@ -81,11 +85,14 @@ export function run() {
   })();
 
   const debugOptions = (() => {
+    if (command === 'debug' && process.version.startsWith('v6.')) {
+      throw new Error('Debug command is not available on node v6.');
+    }
     if (argv['debug-host-port'] && command !== 'debug') {
-      throw new Error('Error: --debug-host-port requires debug command');
+      throw new Error('--debug-host-port requires debug command');
     }
     if (argv['debug-break'] && command !== 'debug') {
-      throw new Error('Error: --debug-break requires debug command');
+      throw new Error('--debug-break requires debug command');
     }
     if (command !== 'debug') {
       return {};

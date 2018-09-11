@@ -57,6 +57,7 @@
     "selfBuild": "yarn monopack build ./packages/monopack/src/run-cli.js",
     "selfRun": "yarn monopack run ./packages/monopack/src/run-cli.js :: run main.js",
     "selfDebug": "yarn monopack debug ./packages/monopack/src/run-cli.js :: run main.js",
+    "selfDebugBreak": "yarn monopack debug ./packages/monopack/src/run-cli.js --debug-break :: run main.js",
     "eslint": "eslint . --cache",
     "format": "prettier --write \"**/*.js\" \"**/*.json\" \"**/*.css\" \"**/*.md\"",
     "copyReadmes": "yarn lerna exec cp ../../README.md .",

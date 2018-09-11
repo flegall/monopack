@@ -130,21 +130,37 @@ Not enough arguments following: m
     expect(stdout).toBe('');
   });
 
-  it('when invoking with the debug command, a main file and --debug-host-port without arguments it should return an error and display help for the command', async () => {
-    const { result, stdout, stderr } = await executeChildProcess(
-      'node',
-      ['../../bin/monopack.js', 'debug', 'main.js', '--debug-host-port'],
-      { cwd: __dirname }
-    );
+  if (!process.version.startsWith('v6.')) {
+    it('when invoking with the debug command, a main file and --debug-host-port without arguments it should return an error and display help for the command', async () => {
+      const { result, stdout, stderr } = await executeChildProcess(
+        'node',
+        ['../../bin/monopack.js', 'debug', 'main.js', '--debug-host-port'],
+        { cwd: __dirname }
+      );
 
-    expect(result).toEqual({ type: 'EXIT', exitCode: 1 });
-    expect(stderr).toBe(
-      `${debugCommandHelp}
+      expect(result).toEqual({ type: 'EXIT', exitCode: 1 });
+      expect(stderr).toBe(
+        `${debugCommandHelp}
 Not enough arguments following: debug-host-port
 `
-    );
-    expect(stdout).toBe('');
-  });
+      );
+      expect(stdout).toBe('');
+    });
+  } else {
+    it('when invoking with the debug command, on node v6, a error should be reported', async () => {
+      const { result, stdout, stderr } = await executeChildProcess(
+        'node',
+        ['../../bin/monopack.js', 'debug', 'main.js'],
+        { cwd: __dirname }
+      );
+
+      expect(result).toEqual({ type: 'EXIT', exitCode: 1 });
+      expect(stderr).toContain(
+        'Error: Debug command is not available on node v6.'
+      );
+      expect(stdout).toBe('');
+    });
+  }
 
   it('when invoking with the run command, a main file and --debug-host-port it should return an error and display a message', async () => {
     const { result, stdout, stderr } = await executeChildProcess(
@@ -201,7 +217,8 @@ const optionsHelp = `Options:
                                                                         [string]
   --debug-break                   Break at start of main script.
                                   This option is required when you want to debug
-                                  something that gets immediately when starting.
+                                  something that gets immediately executed when
+                                  starting.
                                   It triggers the --inspect-brk node option.
                                   It must be used with the debug command.
                                                                        [boolean]
@@ -209,7 +226,7 @@ const optionsHelp = `Options:
 
 const debugCommandHelp = `monopack.js debug main
 
-Runs an application in debug mode
+Runs an application in debug mode (Node >= v8 only)
 
 Positionals:
   main  The application entry point source file              [string] [required]
@@ -230,6 +247,6 @@ const helpMessage = `monopack.js <command>
 Commands:
   monopack.js build main  Builds an application
   monopack.js run main    Runs an application
-  monopack.js debug main  Runs an application in debug mode
+  monopack.js debug main  Runs an application in debug mode (Node >= v8 only)
 
 ${optionsHelp}`;
