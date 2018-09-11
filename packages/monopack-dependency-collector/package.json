@@ -1,13 +1,13 @@
 {
   "name": "monopack-dependency-collector",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "A JavaScript bundler for node.js monorepo applications",
   "main": "build/index.js",
   "repository": "https://github.com/flegall/monopack",
   "author": "Florent Le Gall <florent.legall@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "monopack-repo-builder": "^0.2.4"
+    "monopack-repo-builder": "^0.2.5"
   },
   "dependencies": {
     "@yarnpkg/lockfile": "1.1.0",
