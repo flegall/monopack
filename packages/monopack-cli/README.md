@@ -76,7 +76,7 @@ With npm
     Commands:
       monopack build main  Builds an application
       monopack run main    Runs an application
-      monopack debug main  Runs an application in debug mode
+      monopack debug main  Runs an application in debug mode (Node >= v8 only)
 
     Options:
       --help                          Show help                            [boolean]
@@ -102,6 +102,17 @@ With npm
                                       Make sure to install it in the same package as
                                       the main file, otherwise another version might
                                       be picked up.                         [string]
+      --debug-host-port               [host:]port setting to pass to node --inspect
+                                      option.
+                                      It must be used with the debug command.
+                                                                            [string]
+      --debug-break                   Break at start of main script.
+                                      This option is required when you want to debug
+                                      something that gets immediately executed when
+                                      starting.
+                                      It triggers the --inspect-brk node option.
+                                      It must be used with the debug command.
+                                                                           [boolean]
 
 ### Default configuration
 
