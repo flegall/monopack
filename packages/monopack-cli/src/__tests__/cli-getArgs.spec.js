@@ -5,7 +5,7 @@ import { checkOutput } from './cli-validation-helper';
 
 jest.setTimeout(60000);
 
-describe('cli validation', () => {
+describe('cli getArgs', () => {
   it('when invoking with build command, it should produce full args', () => {
     const argv = ['node', 'monopack.js', 'build', 'main.js'];
     const { exit, errors, logs, warnings, result } = checkOutput(
@@ -118,29 +118,31 @@ describe('cli validation', () => {
     expect(result.watch).toEqual(false);
   });
 
-  it('when invoking with debug command, it should produce full args', () => {
-    const argv = ['node', 'monopack.js', 'debug', 'main.js'];
-    const { exit, errors, logs, warnings, result } = checkOutput(
-      args => getArgs(args),
-      argv
-    );
+  if (!process.version.startsWith('v6.')) {
+    it('when invoking with debug command, it should produce full args', () => {
+      const argv = ['node', 'monopack.js', 'debug', 'main.js'];
+      const { exit, errors, logs, warnings, result } = checkOutput(
+        args => getArgs(args),
+        argv
+      );
 
-    expect(exit).toBe(null);
-    expect(errors).toEqual([]);
-    expect(logs).toEqual([]);
-    expect(warnings).toEqual([]);
+      expect(exit).toBe(null);
+      expect(errors).toEqual([]);
+      expect(logs).toEqual([]);
+      expect(warnings).toEqual([]);
 
-    expect(result.command).toBe('debug');
-    expect(result.currentWorkingDirectory).toBe(process.cwd());
-    expect(result.debugOptions).toEqual({});
-    expect(result.extraModules).toEqual([]);
-    expect(result.installPackages).toEqual(null);
-    expect(result.mainJs).toEqual('main.js');
-    expect(result.nodeArgs).toEqual([]);
-    expect(result.outputDirectory).toEqual(null);
-    expect(result.runArgs).toEqual([]);
-    expect(result.watch).toEqual(false);
-  });
+      expect(result.command).toBe('debug');
+      expect(result.currentWorkingDirectory).toBe(process.cwd());
+      expect(result.debugOptions).toEqual({});
+      expect(result.extraModules).toEqual([]);
+      expect(result.installPackages).toEqual(null);
+      expect(result.mainJs).toEqual('main.js');
+      expect(result.nodeArgs).toEqual([]);
+      expect(result.outputDirectory).toEqual(null);
+      expect(result.runArgs).toEqual([]);
+      expect(result.watch).toEqual(false);
+    });
+  }
 
   it('when invoking with run command and --watch option, it should produce full args', () => {
     const argv = ['node', 'monopack.js', 'run', 'main.js', '--watch'];
@@ -290,58 +292,60 @@ describe('cli validation', () => {
     expect(result.watch).toEqual(false);
   });
 
-  it('when invoking with debug command and --debug-host-port option, it should produce full args', () => {
-    const argv = [
-      'node',
-      'monopack.js',
-      'debug',
-      'main.js',
-      '--debug-host-port',
-      'localhost:1337',
-    ];
-    const { exit, errors, logs, warnings, result } = checkOutput(
-      args => getArgs(args),
-      argv
-    );
+  if (!process.version.startsWith('v6.')) {
+    it('when invoking with debug command and --debug-host-port option, it should produce full args', () => {
+      const argv = [
+        'node',
+        'monopack.js',
+        'debug',
+        'main.js',
+        '--debug-host-port',
+        'localhost:1337',
+      ];
+      const { exit, errors, logs, warnings, result } = checkOutput(
+        args => getArgs(args),
+        argv
+      );
 
-    expect(exit).toBe(null);
-    expect(errors).toEqual([]);
-    expect(logs).toEqual([]);
-    expect(warnings).toEqual([]);
+      expect(exit).toBe(null);
+      expect(errors).toEqual([]);
+      expect(logs).toEqual([]);
+      expect(warnings).toEqual([]);
 
-    expect(result.command).toBe('debug');
-    expect(result.currentWorkingDirectory).toBe(process.cwd());
-    expect(result.debugOptions).toEqual({ debugHostPort: 'localhost:1337' });
-    expect(result.extraModules).toEqual([]);
-    expect(result.installPackages).toEqual(null);
-    expect(result.mainJs).toEqual('main.js');
-    expect(result.nodeArgs).toEqual([]);
-    expect(result.outputDirectory).toEqual(null);
-    expect(result.runArgs).toEqual([]);
-    expect(result.watch).toEqual(false);
-  });
+      expect(result.command).toBe('debug');
+      expect(result.currentWorkingDirectory).toBe(process.cwd());
+      expect(result.debugOptions).toEqual({ debugHostPort: 'localhost:1337' });
+      expect(result.extraModules).toEqual([]);
+      expect(result.installPackages).toEqual(null);
+      expect(result.mainJs).toEqual('main.js');
+      expect(result.nodeArgs).toEqual([]);
+      expect(result.outputDirectory).toEqual(null);
+      expect(result.runArgs).toEqual([]);
+      expect(result.watch).toEqual(false);
+    });
 
-  it('when invoking with debug command and --debug-break option, it should produce full args', () => {
-    const argv = ['node', 'monopack.js', 'debug', 'main.js', '--debug-break'];
-    const { exit, errors, logs, warnings, result } = checkOutput(
-      args => getArgs(args),
-      argv
-    );
+    it('when invoking with debug command and --debug-break option, it should produce full args', () => {
+      const argv = ['node', 'monopack.js', 'debug', 'main.js', '--debug-break'];
+      const { exit, errors, logs, warnings, result } = checkOutput(
+        args => getArgs(args),
+        argv
+      );
 
-    expect(exit).toBe(null);
-    expect(errors).toEqual([]);
-    expect(logs).toEqual([]);
-    expect(warnings).toEqual([]);
+      expect(exit).toBe(null);
+      expect(errors).toEqual([]);
+      expect(logs).toEqual([]);
+      expect(warnings).toEqual([]);
 
-    expect(result.command).toBe('debug');
-    expect(result.currentWorkingDirectory).toBe(process.cwd());
-    expect(result.debugOptions).toEqual({ debugBreak: true });
-    expect(result.extraModules).toEqual([]);
-    expect(result.installPackages).toEqual(null);
-    expect(result.mainJs).toEqual('main.js');
-    expect(result.nodeArgs).toEqual([]);
-    expect(result.outputDirectory).toEqual(null);
-    expect(result.runArgs).toEqual([]);
-    expect(result.watch).toEqual(false);
-  });
+      expect(result.command).toBe('debug');
+      expect(result.currentWorkingDirectory).toBe(process.cwd());
+      expect(result.debugOptions).toEqual({ debugBreak: true });
+      expect(result.extraModules).toEqual([]);
+      expect(result.installPackages).toEqual(null);
+      expect(result.mainJs).toEqual('main.js');
+      expect(result.nodeArgs).toEqual([]);
+      expect(result.outputDirectory).toEqual(null);
+      expect(result.runArgs).toEqual([]);
+      expect(result.watch).toEqual(false);
+    });
+  }
 });
