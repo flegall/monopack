@@ -1,6 +1,6 @@
 {
   "name": "monopack-config",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "A JavaScript bundler for node.js monorepo applications",
   "main": "build/index.js",
   "monopack-source": "src/index.js",
@@ -8,7 +8,7 @@
   "author": "Florent Le Gall <florent.legall@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "monopack-repo-builder": "^0.2.5"
+    "monopack-repo-builder": "^0.2.6"
   },
   "dependencies": {
     "lodash": "4.17.10",
