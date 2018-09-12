@@ -69,7 +69,9 @@
     "prerelease": "yarn pretest && yarn test && yarn build && yarn cleanErrorFiles && yarn copyReadmes && yarn copyLicenses",
     "release": "yarn lerna publish",
     "premonopack": "yarn build",
-    "monopack": "./node_modules/.bin/monopack"
+    "monopack": "./node_modules/.bin/monopack",
+    "predebugMonopack": "yarn build",
+    "debugMonopack": "node --inspect --inspect-brk ./node_modules/.bin/monopack"
   },
   "lint-staged": {
     "linters": {
