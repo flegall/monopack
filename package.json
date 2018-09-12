@@ -20,6 +20,7 @@
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "9.0.0",
     "babel-jest": "23.6.0",
+    "babel-merge": "2.0.1",
     "chalk": "2.4.1",
     "eslint": "5.5.0",
     "eslint-config-prettier": "3.0.1",
@@ -42,7 +43,8 @@
     "mkdirp": "0.5.1",
     "prettier": "1.14.2",
     "rimraf": "2.6.2",
-    "string-length": "2.0.0"
+    "string-length": "2.0.0",
+    "webpack-merge": "4.1.4"
   },
   "scripts": {
     "clean": "yarn lerna clean -y && rimraf node_modules",

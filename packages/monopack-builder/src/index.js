@@ -80,6 +80,7 @@ export async function build({
     };
     const modifiedBabelConfig = babelConfigModifier(baseBabelConfig);
     const baseWebPackConfig = {
+      context: monorepoRootPath,
       entry: mainJs,
       output: {
         path: outputDirectory,
