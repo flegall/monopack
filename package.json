@@ -64,7 +64,6 @@
     "format": "prettier --write \"**/*.js\" \"**/*.json\" \"**/*.css\" \"**/*.md\"",
     "copyReadmes": "yarn lerna exec cp ../../README.md .",
     "copyLicenses": "yarn lerna exec cp ../../LICENSE .",
-    "precommit": "lint-staged && yarn run flow && yarn test",
     "cleanErrorFiles": "rm -vf `find . -name 'lerna-debug.log'` && rm -vf `find . -name 'yarn-error.log'`",
     "prerelease": "yarn pretest && yarn test && yarn build && yarn cleanErrorFiles && yarn copyReadmes && yarn copyLicenses",
     "release": "yarn lerna publish",
@@ -72,6 +71,11 @@
     "monopack": "./node_modules/.bin/monopack",
     "predebugMonopack": "yarn build",
     "debugMonopack": "node --inspect --inspect-brk ./node_modules/.bin/monopack"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && yarn run flow && yarn test"
+    }
   },
   "lint-staged": {
     "linters": {
