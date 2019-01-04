@@ -44,7 +44,7 @@
     "prettier": "1.15.3",
     "rimraf": "2.6.3",
     "string-length": "2.0.0",
-    "webpack-merge": "4.1.5"
+    "webpack-merge": "4.2.1"
   },
   "scripts": {
     "clean": "yarn lerna clean -y && rimraf node_modules",
