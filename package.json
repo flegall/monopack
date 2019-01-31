@@ -41,7 +41,7 @@
     "lint-staged": "7.3.0",
     "micromatch": "3.1.10",
     "mkdirp": "0.5.1",
-    "prettier": "1.16.2",
+    "prettier": "1.16.3",
     "rimraf": "2.6.3",
     "string-length": "2.0.0",
     "webpack-merge": "4.2.1"
