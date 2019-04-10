@@ -25,7 +25,7 @@
     "glob-promise": "3.4.0",
     "lodash": "4.17.11",
     "webpack": "4.29.6",
-    "webpack-bundle-analyzer": "3.2.0"
+    "webpack-bundle-analyzer": "3.3.0"
   },
   "gitHead": "92e32038520ceaf6990eb5ae64fd360513e5e4fc"
 }
