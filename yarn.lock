@@ -2475,7 +2475,7 @@ bluebird@3.5.4:
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.4.tgz#d6cc661595de30d5b3af5fcedd3c0b3ef6ec5714"
   integrity sha512-FG+nFEZChJrbQ9tIccIfZJBz3J7mLrAhxakAbnrJWn8d7aKOC+LWifa0G+p4ZqKp4y13T7juYvdhq9NzKdsrjw==
 
-bluebird@^3.5.0, bluebird@^3.5.1:
+bluebird@^3.5.1:
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.2.tgz#1be0908e054a751754549c270489c1505d4ab15a"
   integrity sha512-dhHTWMI7kMx5whMQntl7Vr9C6BvV10lFXDAasnqnrMYhXVCzzk6IO9Fo2L75jXHT07WrOngL1WDXOp+yYS91Yg==
@@ -9481,12 +9481,11 @@ timers-browserify@^2.0.4:
   dependencies:
     setimmediate "^1.0.4"
 
-tmp-promise@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/tmp-promise/-/tmp-promise-1.1.0.tgz#bb924d239029157b9bc1d506a6aa341f8b13e64c"
-  integrity sha512-8+Ah9aB1IRXCnIOxXZ0uFozV1nMU5xiu7hhFVUSxZ3bYu+psD4TzagCzVbexUCgNNGJnsmNDQlS4nG3mTyoNkw==
+tmp-promise@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/tmp-promise/-/tmp-promise-2.0.0.tgz#8d63f4a221a641f1085ef72baede3624aaafae13"
+  integrity sha512-kChVEhT3MTvFKrFEiKZEgDpIzUDj/EAsivMW/x0dFYPtymbLU0IkJeEJLHQ5UZfxacV3fi85NBqDDI4vT0QsYA==
   dependencies:
-    bluebird "^3.5.0"
     tmp "0.1.0"
 
 tmp@0.1.0:
