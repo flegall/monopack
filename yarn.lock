@@ -4112,10 +4112,10 @@ eslint-plugin-es@^1.3.1:
     eslint-utils "^1.3.0"
     regexpp "^2.0.0"
 
-eslint-plugin-flowtype@3.11.0:
-  version "3.11.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-3.11.0.tgz#1fea97ceceb42aefd48d919dd3d1ff76467c32c1"
-  integrity sha512-wcp4Uofwe33DKIgPj0uT95A+85ofU0DvOaOsmsz1CJ/JpEnuDWQ8Ct0irK8KxHVCYIOEo3gk1e7tFb4Du57A2w==
+eslint-plugin-flowtype@3.11.1:
+  version "3.11.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-3.11.1.tgz#1aae15a10dbcd5aecc89897f810f2e9fcc18a5e3"
+  integrity sha512-4NiaaGZuz9iEGRTK8j4lkA/scibOXSYaYoHbsTtgLOxxqQCkbWV3xt8ETqILKg7DAYDqB69z1H5U71UmtdF9hw==
   dependencies:
     lodash "^4.17.11"
 
