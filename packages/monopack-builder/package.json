@@ -23,7 +23,7 @@
     "babel-loader": "8.0.6",
     "glob": "7.1.4",
     "glob-promise": "3.4.0",
-    "lodash": "4.17.11",
+    "lodash": "4.17.13",
     "webpack": "4.35.3",
     "webpack-bundle-analyzer": "3.3.2"
   },
