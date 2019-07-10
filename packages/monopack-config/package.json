@@ -11,7 +11,7 @@
     "monopack-repo-builder": "^0.2.6"
   },
   "dependencies": {
-    "lodash": "4.17.13",
+    "lodash": "4.17.14",
     "tcomb-validation": "3.4.1"
   },
   "gitHead": "92e32038520ceaf6990eb5ae64fd360513e5e4fc"
