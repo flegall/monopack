@@ -9,7 +9,7 @@
   "license": "MIT",
   "dependencies": {
     "bluebird": "3.7.1",
-    "tmp-promise": "1.1.0"
+    "tmp-promise": "2.1.1"
   },
   "devDependencies": {
     "monopack-process": "^0.2.6"
