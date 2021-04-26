@@ -14,7 +14,7 @@
     "@yarnpkg/lockfile": "1.1.0",
     "await-semaphore": "0.1.3",
     "bluebird": "3.7.1",
-    "lodash": "4.17.15"
+    "lodash": "4.17.21"
   },
   "gitHead": "92e32038520ceaf6990eb5ae64fd360513e5e4fc"
 }
