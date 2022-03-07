@@ -11,7 +11,7 @@
     "bluebird": "3.7.1",
     "chalk": "2.4.2",
     "fs-copy-file": "2.1.2",
-    "import-local": "2.0.0",
+    "import-local": "3.1.0",
     "lodash": "4.17.15",
     "monopack-builder": "^0.2.6",
     "monopack-config": "^0.2.6",
